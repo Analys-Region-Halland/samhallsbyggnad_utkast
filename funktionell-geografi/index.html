@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Rörelsernas geografi — pendling och flyttning i Halland – Kapitelrapport Halland</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../data/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-ef1505cedaabdda5d1165613ba7a8468.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="../site_libs/maplibre-gl-5.24.0/maplibre-gl.css" rel="stylesheet">
+
+<script src="../site_libs/maplibre-gl-5.24.0/maplibre-gl.js"></script>
+
+<link href="../site_libs/mapbox-gl-draw-1.5.1/mapbox-gl-draw.css" rel="stylesheet">
+
+<script src="../site_libs/mapbox-gl-draw-1.5.1/mapbox-gl-draw.js"></script>
+
+<script src="../site_libs/freehand-mode-1.0.0/freehand-mode.js"></script>
+
+<script src="../site_libs/rectangle-mode-1.0.0/rectangle-mode.js"></script>
+
+<script src="../site_libs/radius-mode-1.0.0/radius-mode.js"></script>
+
+<script src="../site_libs/bezier-mode-1.1.0/bezier-mode.js"></script>
+
+<link href="../site_libs/maplibre-gl-geocoder-1.5.0/maplibre-gl-geocoder.css" rel="stylesheet">
+
+<script src="../site_libs/maplibre-gl-geocoder-1.5.0/maplibre-gl-geocoder.min.js"></script>
+
+<script src="../site_libs/mapbox-gl-globe-minimap-1.2.1/bundle.js"></script>
+
+<script src="../site_libs/pmtiles-4.4.0/pmtiles.js"></script>
+
+<script src="../site_libs/h3j-h3t-0.9.7/h3j_h3t.js"></script>
+
+<link href="../site_libs/maptiler-geocoding-control-2.1.7/style.css" rel="stylesheet">
+
+<script src="../site_libs/maptiler-geocoding-control-2.1.7/maplibregl.umd.js"></script>
+
+<script src="../site_libs/turf-7.3.0/turf.min.js"></script>
+
+<script src="../site_libs/turf-operations-1.0.0/turf-operations.js"></script>
+
+<script src="../site_libs/html2canvas-1.4.1/html2canvas.min.js"></script>
+
+<script src="../site_libs/screenshot-1.0.0/screenshot.js"></script>
+
+<link href="../site_libs/legend-interactivity-1.0.0/legend-interactivity.css" rel="stylesheet">
+
+<script src="../site_libs/legend-interactivity-1.0.0/legend-interactivity.js"></script>
+
+<script src="../site_libs/mapgl-slider-1.0.0/slider.js"></script>
+
+<link href="../site_libs/mapgl-slider-css-1.0.0/slider-control.css" rel="stylesheet">
+
+<script src="../site_libs/maplibregl-binding-0.5.0/maplibregl.js"></script>
+
+<link href="../site_libs/layers-control-1.0.0/layers-control.css" rel="stylesheet">
+
+<script src="../site_libs/d3-7.9.0/d3.min.js"></script>
+
+<script src="../site_libs/flowmap-gl-9.3.0/flowmap-gl-bundle.min.js"></script>
+
+<link href="../site_libs/flowmap-plugin-1.0.0/flowmap.css" rel="stylesheet">
+
+<script src="../site_libs/flowmap-plugin-1.0.0/flowmap.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="9" data-source-offset="-57"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 8;"><span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { linjediagram } <span class="im">from</span> <span class="st">"../js/grafer/linjediagram.js"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { stapeldiagram } <span class="im">from</span> <span class="st">"../js/grafer/stapeldiagram.js"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { lollipop } <span class="im">from</span> <span class="st">"../js/grafer/lollipop.js"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { scatterplot } <span class="im">from</span> <span class="st">"../js/grafer/scatterplot.js"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { beeswarm } <span class="im">from</span> <span class="st">"../js/grafer/beeswarm.js"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { facetLinjer } <span class="im">from</span> <span class="st">"../js/grafer/facetLinjer.js"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">// ── Ladda kapitlets pendlingsdata (bearbetning_data/ → data/) ──</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>pendlNulage <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/pendling-nulage.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>pendlUtv    <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/pendling-utveckling.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>pendlKomp   <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/pendling-komparativ.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>pendlForandring <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/pendling-flodesforandring.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="kr-rapport" style="--accent:#1A7BB0;">
+<div class="kr-rapport-hero">
+<div class="kr-rapport-kicker">
+<p>03 · Rörlighet</p>
+</div>
+<section id="rörelsernas-geografi" class="level1">
+<h1>Rörelsernas geografi</h1>
+<div class="kr-rapport-ingress">
+<p>Hallands sex kommuner är den administrativa indelningen — men arbetsmarknaden följer en annan geografi. Genom att använda tätorten som byggsten och pendlingen som mekanism växer tio funktionella tätortsregioner fram, formade underifrån av hur människor faktiskt rör sig. Vid sidan av den dagliga pendlingen tecknas också flyttningarna — hur hallänningarna byter bostadsort och ritar om var i regionen de bor.</p>
+</div>
+</section>
+</div>
+<div class="kr-rapport-lead">
+<p>Varje dag korsar tusentals pendlare kommungränser på väg till jobb, skola och service. De mönster som uppstår beskriver en funktionell geografi som sällan sammanfaller med de politiska gränserna: vilka orter som graviterar mot vilka kärnor, vilka stråk som bär de tunga flödena och vilka kopplingar som binder samman regionen med omvärlden. Att kartlägga denna geografi är centralt för den fysiska planeringen — bostäder, transportinfrastruktur och serviceförsörjning dimensioneras i förhållande till faktiska rörelsemönster, inte till administrativa gränser.</p>
+</div>
+<section id="funktionell-geografi-drivkrafter" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="funktionell-geografi-drivkrafter">Regionförstoring och drivkrafter</h2>
+<p>Pendlingen är den vardagliga rörelse som binder samman en regions orter till en gemensam arbetsmarknad. Under de senaste decennierna har svenskarnas arbetsresor blivit både fler och längre, och fler människor passerar varje dag den kommungräns som skiljer bostaden från arbetsplatsen. När allt fler orter knyts samman av sådana resor växer de lokala arbetsmarknaderna ihop till större funktionella regioner, och avståndet mellan var människor bor och var de arbetar blir en allt mindre begränsning (SKR 2008).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-drivkrafter-regionforstoring">
+Regionförstoring
+</h3>
+<p>Med regionförstoring menas att en arbetsmarknadsregion växer geografiskt: en allt större yta hänger samman till en marknad där människor kan bo på en ort och arbeta på en annan utan att behöva flytta. Drivkraften är att en större arbetsmarknad rymmer fler och mer specialiserade jobb, vilket gör det lättare för arbetsgivare att hitta rätt kompetens och för den enskilde att hitta rätt arbete. Förbättrad infrastruktur, framför allt snabbare och tätare förbindelser, är en grundförutsättning, eftersom det är restiden snarare än avståndet i kilometer som avgör hur långt en daglig arbetsresa rimligen kan sträcka sig (Trafikverket 2014). För regionen hänger regionförstoringen därför nära ihop med tillgängligheten: ju lättare orterna når varandra, desto större blir den gemensamma marknaden för arbete, bostäder och service (Trafikanalys 2011).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-drivkrafter-regionalisering">
+Regionalisering
+</h3>
+<p>Regionförstoringen är en del av en bredare regionalisering, där allt mer av människors vardag och ekonomiska liv organiseras på en regional nivå snarare än inom den enskilda kommunen. Följden är att den administrativa kartan och den funktionella kartan glider isär. Kommun- och länsgränserna ligger fast medan arbetsmarknaden växer ut över dem, och en allt större del av befolkningen lever ett vardagsliv som spänner över flera kommuner. För den fysiska planeringen innebär det att bostadsförsörjning, infrastruktur och service behöver dimensioneras efter de faktiska rörelsemönstren, inte enbart efter var de administrativa gränserna råkar gå (SKR 2008; Tillväxtanalys 2013).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-drivkrafter-drivkrafter">
+Drivkrafterna bakom pendlingen
+</h3>
+<p>Bakom den enskilda arbetsresan ligger en avvägning mellan var man vill bo och var man kan arbeta. Många väljer att bo kvar på en attraktiv boendeort och i stället resa till jobbet, eller att söka sig till en bättre betald och mer passande anställning längre bort. Forskningen visar att större arbetsmarknader ger mätbart högre löner och bättre matchning mellan arbete och arbetstagare, vilket gör pendlingen lönsam både för den enskilde och för regionen (Tillväxtanalys 2020). Till detta kommer mer vardagsnära faktorer: bostadspriser och bostadsutbud, hushållets samlade resmönster när två personer ska nå var sitt arbete, och tillgången till goda förbindelser. En del av regionförstoringen är dessutom mental, i den meningen att människor med tiden vänjer sig vid att betrakta ett större område som sitt rimliga pendlingsavstånd (SKR 2008).</p>
+<div class="kr-rapport-figcap">
+<p>Källor: SKR (2008), <em>Pendlare utan gränser?</em>; Trafikverket (2014), <em>Den attraktiva regionen</em>; Tillväxtanalys (2020), <em>Pendling, urbana lönepremier och regionala spridningseffekter</em>; Trafikanalys (2011). Fullständiga referenser i kapitlets källförteckning.</p>
+</div>
+</section>
+<section id="funktionell-geografi-granser" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="funktionell-geografi-granser">Pendlingen i Halland idag</h2>
+<p>Det mest direkta måttet på rörlighet är att räkna hur många som passerar en kommun- eller länsgräns på väg till arbetet. Statistiken delar då in de sysselsatta i två befolkningar för varje område: nattbefolkningen, de som bor där, och dagbefolkningen, de som arbetar där. Den som bor i en kommun men har sitt arbete i en annan räknas som utpendlare från bostadskommunen och som inpendlare till arbetskommunen, och skillnaden mellan ett områdes dag- och nattbefolkning är dess pendlingsnetto. Samma bokföring görs på länsnivå.</p>
+<p>Kvoten mellan de två befolkningarna, självförsörjningsgraden, sammanfattar balansen. En grad nära hundra betyder att ett område rymmer ungefär lika många arbetstillfällen som sysselsatta invånare, medan en lägre grad innebär att orten bor fler än den sysselsätter och alltså exporterar arbetskraft. Det är denna administrativa och kommunvisa bild av pendlingen som tecknas här, först för länet som helhet och sedan kommun för kommun, som en grund att senare ställa mot den finmaskiga bild där tätorten är byggsten.</p>
+<p>Genomgången följer samma ordning två gånger. Först ställs flödena i faktiska tal mot varandra och följs över tid, sedan placeras de i en jämförelse med resten av landet, innan det samlade utbytet vägs samman på både kommun- och länsnivå.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-granser-floden">
+Flödena i faktiska tal
+</h3>
+<p>En naturlig utgångspunkt är att se hur många personer varje flöde faktiskt rymmer, och hur de har förändrats sedan millennieskiftet. Av de knappt 173 000 sysselsatta som bodde i Halland 2024 arbetade närmare 116 000 i sin egen hemkommun. Resten korsade varje dag minst en gräns: knappt 18 000 pendlade till en annan kommun inom länet, närmare 39 000 lämnade länet helt för ett arbete någon annanstans, och åt motsatt håll sökte sig drygt 16 700 personer in till Halland.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="50" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 49;"><span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>figHallFloden <span class="op">=</span> {</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ts <span class="op">=</span> pendlUtv<span class="op">.</span><span class="at">halland</span><span class="op">;</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="co">// [namn, antalsfunktion, andelsfunktion] — inpendling som andel av dagbefolkningen, övriga av nattbefolkningen</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> serier <span class="op">=</span> [</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Bor och arbetar"</span><span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">nattbef</span> <span class="op">-</span> d<span class="op">.</span><span class="at">utpendling</span> <span class="op">-</span> d<span class="op">.</span><span class="at">intra</span><span class="op">,</span> d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> (d<span class="op">.</span><span class="at">nattbef</span> <span class="op">-</span> d<span class="op">.</span><span class="at">utpendling</span> <span class="op">-</span> d<span class="op">.</span><span class="at">intra</span>) <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Inom Halland"</span><span class="op">,</span>    d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">intra</span><span class="op">,</span>        d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">intra</span> <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Ut ur länet"</span><span class="op">,</span>     d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">utpendling</span><span class="op">,</span>   d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">utpendling</span> <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"In till länet"</span><span class="op">,</span>   d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">inpendling</span><span class="op">,</span>   d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">inpendling</span> <span class="op">/</span> d<span class="op">.</span><span class="at">dagbef</span>]</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">;</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> bas <span class="op">=</span> {}<span class="op">;</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> [namn<span class="op">,</span> f] <span class="kw">of</span> serier) bas[namn] <span class="op">=</span> <span class="fu">f</span>(ts<span class="op">.</span><span class="fu">find</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">ar</span> <span class="op">===</span> <span class="dv">2000</span>))<span class="op">;</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> antal <span class="op">=</span> []<span class="op">,</span> idx <span class="op">=</span> []<span class="op">,</span> andel <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> d <span class="kw">of</span> ts) {</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> [namn<span class="op">,</span> f<span class="op">,</span> fa] <span class="kw">of</span> serier) {</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>      antal<span class="op">.</span><span class="fu">push</span>({ <span class="dt">år</span><span class="op">:</span> d<span class="op">.</span><span class="at">ar</span><span class="op">,</span> <span class="dt">serie</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">värde</span><span class="op">:</span> <span class="fu">f</span>(d) })<span class="op">;</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>      idx<span class="op">.</span><span class="fu">push</span>({ <span class="dt">år</span><span class="op">:</span> d<span class="op">.</span><span class="at">ar</span><span class="op">,</span> <span class="dt">serie</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">värde</span><span class="op">:</span> <span class="dv">100</span> <span class="op">*</span> <span class="fu">f</span>(d) <span class="op">/</span> bas[namn] })<span class="op">;</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>      andel<span class="op">.</span><span class="fu">push</span>({ <span class="dt">år</span><span class="op">:</span> d<span class="op">.</span><span class="at">ar</span><span class="op">,</span> <span class="dt">serie</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">värde</span><span class="op">:</span> <span class="fu">fa</span>(d) })<span class="op">;</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> namn <span class="op">=</span> serier<span class="op">.</span><span class="fu">map</span>(s <span class="kw">=&gt;</span> s[<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> farger <span class="op">=</span> [<span class="st">"#00664D"</span><span class="op">,</span> <span class="st">"#0C8C7E"</span><span class="op">,</span> <span class="st">"#FF7E00"</span><span class="op">,</span> <span class="st">"#1A7BB0"</span>]<span class="op">;</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mAntal <span class="op">=</span> {</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    <span class="dt">key</span><span class="op">:</span> <span class="st">"antal"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Antal personer"</span><span class="op">,</span> <span class="dt">filterLabel</span><span class="op">:</span> <span class="st">"Antal personer"</span><span class="op">,</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Antal personer per år, 2000–2024"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> antal<span class="op">,</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Antal personer"</span><span class="op">,</span> <span class="dt">yMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mIdx <span class="op">=</span> {</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    <span class="dt">key</span><span class="op">:</span> <span class="st">"index"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Index (2000 = 100)"</span><span class="op">,</span> <span class="dt">filterLabel</span><span class="op">:</span> <span class="st">"Index (2000 = 100)"</span><span class="op">,</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Index 100 = år 2000, 2000–2024"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> idx<span class="op">,</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Index"</span><span class="op">,</span> <span class="dt">yMin</span><span class="op">:</span> <span class="st">"auto"</span><span class="op">,</span> <span class="dt">hline</span><span class="op">:</span> { <span class="dt">value</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span> <span class="dt">dashed</span><span class="op">:</span> <span class="kw">true</span> }<span class="op">,</span> <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">0</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mAndel <span class="op">=</span> {</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>    <span class="dt">key</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Andel av befolkningen"</span><span class="op">,</span> <span class="dt">filterLabel</span><span class="op">:</span> <span class="st">"Andel"</span><span class="op">,</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Andel av nattbefolkningen (inpendling av dagbefolkningen), 2000–2024"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> andel<span class="op">,</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"%"</span><span class="op">,</span> <span class="dt">yMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="st">" %"</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">linjediagram</span>(antal<span class="op">,</span> {</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">"år"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"värde"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"serie"</span><span class="op">,</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Hallands pendlingsflöden"</span><span class="op">,</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> [mAntal<span class="op">,</span> mIdx<span class="op">,</span> mAndel]<span class="op">,</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    <span class="dt">highlight</span><span class="op">:</span> namn<span class="op">,</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> farger<span class="op">,</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: SCB. RAMS 2000–2019, BAS 2020–2024 (metodbyte mellan 2019 och 2020). Inomregional pendling härledd ur kommun- och länsaggregat. Andel: inpendling av dagbefolkningen, övriga flöden av nattbefolkningen."</span><span class="op">,</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<p>De fyra flödena har vuxit i olika takt. Stommen, de som bor och arbetar i samma kommun, är det klart största flödet men också det som vuxit långsammast: från drygt 91 000 år 2000 till knappt 116 000, en ökning med ungefär en fjärdedel. Att byta från antal till index gör skillnaden tydlig. De tre flöden som korsar en gräns har alla dragit ifrån. Den inomregionala pendlingen mellan länets egna kommuner har mer än fördubblats, från knappt 8 700 till närmare 18 000 personer, vilket betyder att kuststråkets kommuner år för år har knutits närmare varandra. Också inpendlingen har mer än fördubblats, från drygt 8 200 till knappt 16 800, ett tecken på att Halland inte bara skickar arbetskraft norrut utan i ökande grad själv drar till sig pendlare utifrån.</p>
+<p>Utpendlingen över länsgränsen är det näst största flödet och har vuxit från knappt 26 000 till nära 39 000, alltså med ungefär hälften. Av dem som lämnar länet arbetar drygt 27 000 i Västra Götaland, och Göteborg är den enskilt största arbetskommunen: dit pendlar drygt 19 000 hallänningar, nära hälften av hela länets utpendling. Eftersom utpendlingen är så mycket större än inpendlingen i absoluta tal har länets pendlingsnetto ändå fortsatt att bli mer negativt, från ett underskott på drygt 17 600 år 2000 till drygt 22 100 i dag. Självförsörjningsgraden har trots det legat stilla kring 87 procent under hela perioden, eftersom dag- och nattbefolkning vuxit i ungefär samma takt. Halland har alltså inte blivit mer eller mindre självförsörjande, men betydligt rörligare. Att tidsserien vilar på två delvis olika statistikkällor, med ett metodbyte mellan 2019 och 2020, ger en mindre nivåförskjutning men ändrar inte de långsiktiga mönstren.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-granser-lan">
+Halland bland landets län
+</h3>
+<p>För att förstå hur utpräglat Hallands mönster är behöver länet ställas mot de övriga. Ett sätt att fånga både riktning och styrka i ett enda diagram är att räkna inpendlare respektive utpendlare per tusen sysselsatta som bor i länet, och ställa de två måtten mot varandra. Län som hamnar på den streckade linjen har lika stort utbyte åt båda håll, medan län ovanför den sänder ut fler än de tar in.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="55" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 54;"><span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>figLanSpridning <span class="op">=</span> <span class="fu">scatterplot</span>(pendlKomp<span class="op">.</span><span class="at">lan</span><span class="op">,</span> {</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> <span class="st">"in_per1000"</span><span class="op">,</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> <span class="st">"ut_per1000"</span><span class="op">,</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"namn_kort"</span><span class="op">,</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  <span class="dt">xMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="dt">yMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  <span class="dt">refDiagonal</span><span class="op">:</span> { <span class="dt">label</span><span class="op">:</span> <span class="st">"Lika många in som ut"</span> }<span class="op">,</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  <span class="dt">highlight</span><span class="op">:</span> [<span class="st">"Halland"</span>]<span class="op">,</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#1A7BB0"</span>]<span class="op">,</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span><span class="op">:</span> <span class="st">"In- och utpendling över länsgränsen"</span><span class="op">,</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Länen 2024, pendlare per 1000 i nattbefolkningen"</span><span class="op">,</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  <span class="dt">xLabel</span><span class="op">:</span> <span class="st">"Inpendlare per 1000 sysselsatta som bor i länet"</span><span class="op">,</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Utpendlare per 1000 sysselsatta som bor i länet"</span><span class="op">,</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>  <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: SCB (BAS 2024). Varje punkt är ett län; endast Halland markerat. Över linjen pendlar fler ut än in."</span><span class="op">,</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>  <span class="dt">formatX</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<p>Halland hamnar högt ovanför balanslinjen. På varje tusen sysselsatta hallänningar pendlar drygt 225 ut ur länet men bara knappt 100 in, en obalans som få andra län kommer i närheten av. Bara Uppsala ligger ännu längre ut, och tillsammans med Södermanland bildar de tre ett tydligt sällskap av län med stor utpendling och litet inflöde. Det de har gemensamt är geografin: alla tre gränsar till en storstad, och deras arbetsmarknader är till stor del förlängningar av Göteborg respektive Stockholm. I motsatt hörn, under linjen, ligger storstadslänen själva och de utpräglade centralortslänen som Stockholm och Kronoberg, dit pendlingen i stället strömmar in. Att Halland har en av landets lägsta självförsörjningsgrader, drygt 87 procent och näst lägst efter Uppsala, är baksidan av samma mynt: länet rymmer påtagligt färre arbetstillfällen än det finns sysselsatta hallänningar, och mellanskillnaden hämtas i grannlänen, framför allt i Göteborg.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-granser-kommuner">
+Sex kommuner, sex mönster
+</h3>
+<p>Bakom länssiffran rör sig kommunerna olika, och samma genomgång kan göras för var och en av dem. Eftersom kommunerna skiljer sig kraftigt i storlek visas varje kommun med sin egen skala, så att det är formen på utvecklingen, inte nivån, som jämförs mellan panelerna.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb4" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb4-0"><a href="#cb4-0" aria-hidden="true" tabindex="-1"></a>figKomFacet <span class="op">=</span> {</span>
+<span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ordning <span class="op">=</span> [<span class="st">"Kungsbacka"</span><span class="op">,</span> <span class="st">"Varberg"</span><span class="op">,</span> <span class="st">"Falkenberg"</span><span class="op">,</span> <span class="st">"Halmstad"</span><span class="op">,</span> <span class="st">"Laholm"</span><span class="op">,</span> <span class="st">"Hylte"</span>]<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// [namn, antalsfunktion, andelsfunktion] — inpendling som andel av dagbefolkningen, övriga av nattbefolkningen.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">// d.intra (inomregional per kommun) finns i utveckling.json; saknas den faller flödet tillbaka på 0.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> flMap <span class="op">=</span> [</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Bor och arbetar"</span><span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">nattbef</span> <span class="op">-</span> d<span class="op">.</span><span class="at">utpendling</span><span class="op">,</span> d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> (d<span class="op">.</span><span class="at">nattbef</span> <span class="op">-</span> d<span class="op">.</span><span class="at">utpendling</span>) <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Inom Halland"</span><span class="op">,</span>    d <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">intra</span> <span class="op">||</span> <span class="dv">0</span>)<span class="op">,</span>            d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> (d<span class="op">.</span><span class="at">intra</span> <span class="op">||</span> <span class="dv">0</span>) <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Ut ur länet"</span><span class="op">,</span>     d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">utpendling</span> <span class="op">-</span> (d<span class="op">.</span><span class="at">intra</span> <span class="op">||</span> <span class="dv">0</span>)<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> (d<span class="op">.</span><span class="at">utpendling</span> <span class="op">-</span> (d<span class="op">.</span><span class="at">intra</span> <span class="op">||</span> <span class="dv">0</span>)) <span class="op">/</span> d<span class="op">.</span><span class="at">nattbef</span>]<span class="op">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Inpendling"</span><span class="op">,</span>      d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">inpendling</span><span class="op">,</span>              d <span class="kw">=&gt;</span> <span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">inpendling</span> <span class="op">/</span> d<span class="op">.</span><span class="at">dagbef</span>]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ]<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> antal <span class="op">=</span> []<span class="op">,</span> andel <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> d <span class="kw">of</span> pendlUtv<span class="op">.</span><span class="at">kommuner</span>) {</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> [namn<span class="op">,</span> f<span class="op">,</span> fa] <span class="kw">of</span> flMap) {</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      antal<span class="op">.</span><span class="fu">push</span>({ <span class="dt">kommun</span><span class="op">:</span> d<span class="op">.</span><span class="at">kommun</span><span class="op">,</span> <span class="dt">år</span><span class="op">:</span> d<span class="op">.</span><span class="at">ar</span><span class="op">,</span> <span class="dt">serie</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">värde</span><span class="op">:</span> <span class="fu">f</span>(d) })<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      andel<span class="op">.</span><span class="fu">push</span>({ <span class="dt">kommun</span><span class="op">:</span> d<span class="op">.</span><span class="at">kommun</span><span class="op">,</span> <span class="dt">år</span><span class="op">:</span> d<span class="op">.</span><span class="at">ar</span><span class="op">,</span> <span class="dt">serie</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">värde</span><span class="op">:</span> <span class="fu">fa</span>(d) })<span class="op">;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mAntal <span class="op">=</span> {</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">key</span><span class="op">:</span> <span class="st">"antal"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Antal"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> antal<span class="op">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span> <span class="dt">formatEnd</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">shareY</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span> <span class="dt">note</span><span class="op">:</span> <span class="st">"personer per år, egen y-skala per kommun, 2000–2024"</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> mAndel <span class="op">=</span> {</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">key</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Andel"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> andel<span class="op">,</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="st">" %"</span><span class="op">,</span> <span class="dt">formatEnd</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">0</span>) <span class="op">+</span> <span class="st">" %"</span><span class="op">,</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">shareY</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">note</span><span class="op">:</span> <span class="st">"av nattbefolkningen (inpendling av dagbefolkningen), delad skala, 2000–2024"</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">facetLinjer</span>(antal<span class="op">,</span> {</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">facet</span><span class="op">:</span> <span class="st">"kommun"</span><span class="op">,</span> <span class="dt">x</span><span class="op">:</span> <span class="st">"år"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"värde"</span><span class="op">,</span> <span class="dt">series</span><span class="op">:</span> <span class="st">"serie"</span><span class="op">,</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">facetOrder</span><span class="op">:</span> ordning<span class="op">,</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">seriesOrder</span><span class="op">:</span> [<span class="st">"Bor och arbetar"</span><span class="op">,</span> <span class="st">"Inom Halland"</span><span class="op">,</span> <span class="st">"Ut ur länet"</span><span class="op">,</span> <span class="st">"Inpendling"</span>]<span class="op">,</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#00664D"</span><span class="op">,</span> <span class="st">"#0C8C7E"</span><span class="op">,</span> <span class="st">"#FF7E00"</span><span class="op">,</span> <span class="st">"#1A7BB0"</span>]<span class="op">,</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">columns</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> [mAntal<span class="op">,</span> mAndel]<span class="op">,</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Kommunernas pendlingsflöden"</span><span class="op">,</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"personer per år, egen y-skala per kommun, 2000–2024"</span><span class="op">,</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: SCB. RAMS 2000–2019, BAS 2020–2024. Bor och arbetar = både bor och arbetar i kommunen; inom Halland = pendling till annan hallandskommun; ut ur länet = pendling ut ur Halland; inpendling = över kommungränsen. Klicka på ett flöde i förklaringen för att tona ned det; peka i en panel för årsvärden."</span><span class="op">,</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<p>Bakom de sex panelerna framträder tre roller. Halmstad är länets arbetsmarknadsnav och den enda kommun där inpendlingen, drygt 11 000 personer, är större än de båda utflödena tillsammans, och den egna arbetsmarknaden på drygt 43 000 sysselsatta är länets största. Kungsbacka är dess motpol: pendlingen ut ur länet, drygt 23 000 personer, är det helt dominerande flödet, större än de knappt 20 000 som arbetar i hemkommunen, och den går nästan uteslutande norrut mot Göteborg. De fyra övriga kommunerna ligger mellan dessa ytterligheter. Gemensamt för samtliga är att de gränsöverskridande flödena har vuxit snabbare än den lokala stommen, tydligast i Laholm och Varberg, ett kvitto på den regionförstoring, att arbetsmarknaderna växer ihop över allt större avstånd, som pågått överallt. Växlar man från antal till andel framträder samma sak från andra hållet: i de flesta kommuner arbetar en allt mindre del av de sysselsatta i den egna kommunen.</p>
+<p>Hur de bosatta fördelar sig mellan arbete i hemkommunen, i en grannkommun inom Halland och utanför länet skiljer sig påtagligt mellan kommunerna, och tyngdpunkten i den inomregionala pendlingen ligger i mitten och söder. Laholm och Falkenberg är de mest länsintegrerade kommunerna, med ungefär en fjärdedel respektive en femtedel av sina sysselsatta på arbete i en grannkommun inom Halland, oftast Halmstad eller Varberg. I norr är bilden den motsatta. Av Kungsbackas sysselsatta arbetar bara omkring fyra procent i en annan hallandskommun, medan mer än hälften lämnar länet helt. Kommunens arbetsmarknad vetter norrut, mot Göteborg, snarare än söderut mot det egna länet, och det är just denna skillnad som gör att Halland aldrig riktigt fungerar som en enda sammanhållen arbetsmarknad.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-granser-kommuner-jmf">
+Kommunerna i hela landets bild
+</h3>
+<p>Samma jämförelse som gjordes för länen kan göras för kommunerna, nu med alla landets 290 kommuner som bakgrund och Hallands sex markerade. Måttet och linjen är desamma: in- och utpendlare per tusen invånare, och en balanslinje där lika många pendlar åt båda håll.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb5" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb5-0"><a href="#cb5-0" aria-hidden="true" tabindex="-1"></a>figKomSpridning <span class="op">=</span> <span class="fu">scatterplot</span>(pendlKomp<span class="op">.</span><span class="at">kommuner</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">in_per1000</span> <span class="op">&lt;=</span> <span class="dv">800</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">ut_per1000</span> <span class="op">&lt;=</span> <span class="dv">800</span>)<span class="op">,</span> {</span>
+<span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> <span class="st">"in_per1000"</span><span class="op">,</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> <span class="st">"ut_per1000"</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"namn"</span><span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">xMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">yMin</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">refDiagonal</span><span class="op">:</span> { <span class="dt">label</span><span class="op">:</span> <span class="st">"Lika många in som ut"</span> }<span class="op">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">highlight</span><span class="op">:</span> [<span class="st">"Kungsbacka"</span><span class="op">,</span> <span class="st">"Varberg"</span><span class="op">,</span> <span class="st">"Falkenberg"</span><span class="op">,</span> <span class="st">"Halmstad"</span><span class="op">,</span> <span class="st">"Laholm"</span><span class="op">,</span> <span class="st">"Hylte"</span>]<span class="op">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#1A7BB0"</span>]<span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span><span class="op">:</span> <span class="st">"In- och utpendling i landets kommuner"</span><span class="op">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Kommunerna 2024, pendlare per 1000 i nattbefolkningen"</span><span class="op">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">xLabel</span><span class="op">:</span> <span class="st">"Inpendlare per 1000 som bor i kommunen"</span><span class="op">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">yLabel</span><span class="op">:</span> <span class="st">"Utpendlare per 1000 som bor i kommunen"</span><span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: SCB (BAS 2024). Varje punkt är en kommun; Hallands sex är markerade. Sex kommuner med extrema värden (t.ex. Solna och Sundbyberg, kranskommuner till storstäderna) ligger utanför skalan och visas inte. Dra för att zooma."</span><span class="op">,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">formatX</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">,</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<p>På kommunnivå nyanseras bilden ytterligare. De flesta av landets kommuner ligger ovanför balanslinjen, eftersom det bara finns ett fåtal stora arbetsmarknadskommuner som drar till sig fler än de sänder iväg. Mot den bakgrunden är Hallands kommuner förhållandevis återhållsamma. Med undantag för Kungsbacka, vars utpendling per tusen invånare hör till landets högre, och Laholm ligger de under den nationella mittpunkten. Halmstad sticker ut åt andra hållet och är en av de kommuner som tar in fler än de sänder ut, i sällskap med andra regioncentra. Spännvidden inom länet är ändå stor: Halland rymmer i miniatyr nästan hela skalan, från den självförsörjande regionstaden till boendekommunen i en storstads omland.</p>
+<div class="graf-container">
+<div class="graf-header">
+<div class="graf-title">
+<p>Pendlingsflödena i och kring Halland</p>
+</div>
+<div class="graf-subtitle">
+<p>Daglig arbetspendling mellan kommuner 2024. Varje båge går från bostadskommun till arbetskommun, och ju fler pendlare desto tjockare linje. Inom Halland ritas alla flöden, över länsgränsen de med minst 50 pendlare. Peka på en kommun för att lyfta fram bara dess flöden, och klicka för in- och utpendling och pendlingsnetto. Med knapparna nere till vänster kan du välja en kommun i taget, eller hela Halland.</p>
+</div>
+</div>
+<style>
+.fm-pop{font:13px/1.45 system-ui,-apple-system,'Inter',sans-serif;min-width:150px}
+.fm-pop .fm-h{font-weight:700;font-size:14px;color:#0B3A57;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #e6eef4}
+.fm-pop .fm-row{display:flex;justify-content:space-between;gap:20px;padding:1px 0}
+.fm-pop .fm-row span{color:#5a6b78}
+.fm-pop .fm-row b{color:#15202b;font-variant-numeric:tabular-nums}
+.fm-pop .fm-net{margin-top:4px;padding-top:5px;border-top:1px solid #e6eef4}
+.fm-pop .fm-net b{color:#1A7BB0}
+.fm-clickpop .maplibregl-popup-content{border:1px solid #1A7BB0;border-radius:9px;padding:11px 13px;box-shadow:0 4px 16px rgba(11,58,87,.18)}
+.fm-clickpop .maplibregl-popup-close-button{font-size:16px;color:#7a8b98;padding:1px 6px;line-height:1}
+.fm-clickpop .maplibregl-popup-tip{border-top-color:#fff;border-bottom-color:#fff}
+.kr-fmfilter{background:#fff;border-radius:10px;padding:7px;box-shadow:0 1px 6px rgba(0,0,0,.18);font-family:system-ui,-apple-system,'Inter',sans-serif;display:flex;flex-direction:column;gap:2px;min-width:132px}
+.kr-fmfilter-lbl{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#8294a3;padding:2px 7px 4px}
+.kr-fmfilter button{box-sizing:border-box;width:100%;border:0;background:transparent;color:#39495a;text-align:left;padding:6px 10px;border-radius:6px;cursor:pointer;font:600 12.5px/1 system-ui,'Inter',sans-serif;transition:background .12s,color .12s}
+.kr-fmfilter button:hover:not(.active){background:#eef4f8}
+.kr-fmfilter button.active{background:#1A7BB0;color:#fff}
+</style>
+<div class="cell">
+<div class="cell-output-display">
+<div id="htmlwidget-bed80e17b39b12188c23" style="width:100%;height:760px;" class="maplibregl html-widget"></div>
+<script type="application/json" data-for="htmlwidget-bed80e17b39b12188c23">{"x":{"style":"https://basemaps.cartocdn.com/gl/positron-gl-style/style.json","center":[0,0],"zoom":0,"bearing":0,"pitch":0,"projection":"mercator","additional_params":{"bounds":[11.8,56.35,13.1,57.8]},"flowmaps":[{"id":"pendling","data":{"locations":{"id":["0662","0683","0767","0780","0781","1257","1278","1280","1281","1283","1284","1292","1293","1315","1380","1381","1382","1383","1384","1401","1402","1440","1441","1463","1465","1480","1481","1482","1490"],"lat":[57.28972,57.12684,56.54083,56.91702,56.82525,56.31056,56.43719,55.58133,55.66197,56.08762,56.29853,56.25369,56.18418,56.9681,56.74137,56.50397,56.99152,57.15784,57.36577,57.66387,57.72969,57.96314,57.85207,57.45565,57.40774,57.68594,57.61483,57.89845,57.75205],"lon":[13.49212,14.04654,13.63314,14.90855,13.79381,13.35407,12.62025,12.97818,13.45544,12.73326,12.49694,12.95772,13.72118,13.27526,12.87467,13.15446,12.53496,12.19174,11.9966,12.29985,12.13051,12.21393,12.30521,12.60029,13.06198,11.89023,12.11514,11.77327,12.97951],"name":["Gislaved","Värnamo","Markaryd","Växjö","Ljungby","Örkelljunga","Båstad","Malmö","Lund","Helsingborg","Höganäs","Ängelholm","Hässleholm","Hylte","Halmstad","Laholm","Falkenberg","Varberg","Kungsbacka","Härryda","Partille","Ale","Lerum","Mark","Svenljunga","Göteborg","Mölndal","Kungälv","Borås"],"in_pend":[855,124,520,142,267,160,910,678,202,848,75,739,73,1369,11080,2287,4826,6641,8443,667,374,81,103,608,125,19205,5148,176,607],"ut_pend":[408,71,136,64,249,158,773,300,149,484,114,695,114,1556,8599,5855,6598,9075,24439,321,206,99,139,1238,231,4453,1788,127,278],"netto":[447,53,384,78,18,2,137,378,53,364,-39,44,-41,-187,2481,-3568,-1772,-2434,-15996,346,168,-18,-36,-630,-106,14752,3360,49,329],"halland":[false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false],"popup_html":["<div class='fm-pop'><div class='fm-h'>Gislaved<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>855<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>408<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Värnamo<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>124<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>71<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Markaryd<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>520<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>136<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Växjö<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>142<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>64<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Ljungby<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>267<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>249<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Örkelljunga<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>160<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>158<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Båstad<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>910<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>773<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Malmö<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>678<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>300<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Lund<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>202<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>149<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Helsingborg<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>848<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>484<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Höganäs<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>75<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>114<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Ängelholm<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>739<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>695<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Hässleholm<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>73<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>114<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Hylte<\/div><div class='fm-row'><span>Inpendling<\/span><b>1 369<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>1 556<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>-187<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Halmstad<\/div><div class='fm-row'><span>Inpendling<\/span><b>11 080<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>8 599<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>+2 481<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Laholm<\/div><div class='fm-row'><span>Inpendling<\/span><b>2 287<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>5 855<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>-3 568<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Falkenberg<\/div><div class='fm-row'><span>Inpendling<\/span><b>4 826<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>6 598<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>-1 772<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Varberg<\/div><div class='fm-row'><span>Inpendling<\/span><b>6 641<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>9 075<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>-2 434<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Kungsbacka<\/div><div class='fm-row'><span>Inpendling<\/span><b>8 443<\/b><\/div><div class='fm-row'><span>Utpendling<\/span><b>24 439<\/b><\/div><div class='fm-row fm-net'><span>Pendlingsnetto<\/span><b>-15 996<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Härryda<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>667<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>321<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Partille<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>374<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>206<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Ale<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>81<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>99<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Lerum<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>103<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>139<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Mark<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>608<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>1 238<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Svenljunga<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>125<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>231<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Göteborg<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>19 205<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>4 453<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Mölndal<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>5 148<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>1 788<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Kungälv<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>176<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>127<\/b><\/div><\/div>","<div class='fm-pop'><div class='fm-h'>Borås<\/div><div class='fm-row'><span>Från Halland hit<\/span><b>607<\/b><\/div><div class='fm-row'><span>Härifrån till Halland<\/span><b>278<\/b><\/div><\/div>"]},"flows":{"origin":["1384","1384","1480","1381","1383","1382","1382","1383","1481","1380","1384","1380","1383","1383","1380","1382","1381","1480","1380","1463","1463","1383","1384","1315","1315","1380","1381","1292","1278","1380","1383","1381","1480","1283","1380","1278","0662","1381","1384","1380","1383","1401","1384","1384","1292","1380","1380","1382","1481","1465","1384","1380","1315","0781","1380","1280","1480","1402","1381","1384","1382","1382","1490","1380","1257","1381","1441","1381","1384","1482","1490","1382","1281","1380","1293","1382","1383","1380","1284","1440","0767","0662","1380","1384","1383","1463","1382","1380","1383","1382","1315","0767","1383","1384","0781","1481","1283","1315","1381","1382","1381","1315","1315","1383","1384","1315","1381","1384"],"dest":["1480","1481","1384","1380","1480","1383","1380","1382","1384","1382","1383","1381","1384","1380","1480","1480","1278","1383","1315","1383","1384","1481","1401","1380","0662","1383","1292","1380","1380","1283","1463","0767","1380","1380","1280","1381","1315","1283","1402","1292","1490","1384","1380","1490","1381","1278","0662","1315","1383","1382","1463","0781","1382","1380","0767","1380","1382","1384","1257","1482","1384","1481","1384","1481","1381","1382","1384","1280","1382","1384","1383","0662","1380","1490","1380","1465","1401","1281","1380","1384","1381","1380","1384","1441","1402","1382","1283","0780","1283","1490","0781","1380","1315","1440","1315","1380","1381","0683","1383","1381","1315","1383","1381","1381","1381","1384","1384","1315"],"count":[691.8589443050016,297.3642855293946,244.8484534003633,226.3268006885255,203.620709926816,185.5171482265573,178.8826824268596,174.5345631671436,146.1561461016562,145.1776745963431,131.8165164830148,118.2159720733321,118.0719973042503,100.1302904778985,97.70411689865227,88.85325062402461,84.77534944383066,83.50853518537154,78.25998475968538,74.90530101359379,74.72679245275563,74.36917170608788,71.75167716784551,70.65538629339181,69.82788946158196,66.56470956219118,63.41749973018459,61.86493254272596,61.47392671077937,59.10271498112054,54.94419666286495,54.21947150791491,53.59463164037451,52.2288794866669,50.41707714323483,48.57409537440829,46.13892390822219,46.02680810551985,44.10063857724261,42.48417048578318,41.89983049571472,40.60054185630724,39.76345496451647,37.81807985570495,37.69494098977634,37.57161253278951,36.45292057912251,35.95051998441699,34.1653051075423,32.99418119259403,32.73127772672004,32.20246241855445,32.06962020414653,31.66952836243545,30.72657052359991,30.18158589943526,29.90735229011361,29.07743370156698,27.95318269021012,26.80723186240088,26.66237355520919,26.22555482554222,25.63774153813095,23.68147360705165,23.21924621588504,23.21924621588504,22.43906617272282,22.28150072303807,22.12340916779531,21.32479703914466,21.32479703914466,21.0013985651259,20.51185177416036,20.18241363956301,19.85042515272753,19.51580284497713,19.34747658927692,19.17845832379478,19.00873616015566,18.49522184324203,18.14912438666367,17.79989259206419,17.79989259206419,17.79989259206419,17.6240639755835,17.6240639755835,17.44740594560852,17.09153554398273,17.09153554398273,16.55108041939013,16.36908062530922,16.18612351968178,15.81725206472908,15.81725206472908,15.2562089729316,15.2562089729316,15.06703359710537,14.49264718687873,14.10370886287254,12.07602303527657,11.65137478794243,11.00032872825864,10.330609652426,7.668322989352109,5.106778554236745,2.987442829349742,2.566851795125809,2.110777485788888]}},"settings":{"colorScheme":["#9BC4DF","#1A7BB0","#0B3A57"],"darkMode":false,"opacity":1,"flowBlend":"multiply","fadeAmount":62,"highlightColor":"#ff9b29","locationsEnabled":true,"locationTotalsEnabled":true,"locationLabelsEnabled":false,"flowLinesRenderingMode":"straight","flowLineThicknessScale":1.15,"flowLineCurviness":1,"clusteringEnabled":true,"clusteringAuto":true,"clusteringLevel":null,"fadeEnabled":true,"fadeOpacityEnabled":false,"adaptiveScalesEnabled":true,"temporalScaleDomain":"selected","maxTopFlowsDisplayNum":5000,"flowEndpointsInViewportMode":"any","timeColumn":null,"selectedTimeRange":null,"selectedLocations":null,"locationFilterMode":"ALL"},"visibility":"visible","beforeId":null,"slot":null,"tooltip":{"enabled":true,"location":"{name}","flow":"{origin_name} → {dest_name}","style":{"background_color":"rgba(255, 255, 255, 0.96)","text_color":"#222222","border_color":"rgba(0, 0, 0, 0.12)","border_width":1,"border_radius":6,"shadow":true,"shadow_color":"rgba(0, 0, 0, 0.16)","shadow_size":8,"padding":8,"font_size":12}}}],"navigation_control":{"show_compass":true,"show_zoom":true,"visualize_pitch":false,"position":"top-right","orientation":"vertical"},"scale_control":{"position":"bottom-right","unit":"metric","maxWidth":100},"custom_controls":{"custom":{"html":"<div class='kr-fmfilter'>\n  <div class='kr-fmfilter-lbl'>Visa pendling för<\/div>\n  <button type='button' data-id='' class='active'>Hela Halland<\/button>\n  <button type='button' data-id='1384'>Kungsbacka<\/button>\n  <button type='button' data-id='1383'>Varberg<\/button>\n  <button type='button' data-id='1382'>Falkenberg<\/button>\n  <button type='button' data-id='1380'>Halmstad<\/button>\n  <button type='button' data-id='1381'>Laholm<\/button>\n  <button type='button' data-id='1315'>Hylte<\/button>\n<\/div>","position":"bottom-left"}}},"evals":[],"jsHooks":{"render":[{"code":"function(el, x) {\n      function popupCtor(){ return (window.maplibregl && maplibregl.Popup) || (window.mapboxgl && mapboxgl.Popup); }\n      (function wire(){\n        var m = el.map;\n        if (!m || !m._flowmapsConfig || !m._flowmapsConfig.length) { setTimeout(wire, 80); return; }\n        var cfg = m._flowmapsConfig[0];\n        var FP = window.MapGLFlowmapPlugin;\n        cfg.settings = cfg.settings || {};\n        cfg.settings.hoverHighlightDelay = 150;\n        if (FP && FP.setSettings) { FP.setSettings(m, cfg.id, { hoverToHighlight: true, clickToFilter: true }); }\n        else { cfg.settings.hoverToHighlight = true; cfg.settings.clickToFilter = true; }\n\n        var ctrl = el.querySelector('.kr-fmfilter');\n        var curSel = [];\n        function syncBtns(){\n          if (!ctrl) return;\n          var s = {}; curSel.forEach(function(x){ s[String(x)] = 1; });\n          ctrl.querySelectorAll('button').forEach(function(b){\n            var id = b.getAttribute('data-id');\n            b.classList.toggle('active', id ? !!s[id] : curSel.length === 0);\n          });\n        }\n        function applyFilter(sel){\n          curSel = sel.slice();\n          m._flowmapSelectedLocations[cfg.id] = curSel;\n          if (FP && FP.setFilter) FP.setFilter(m, cfg.id, { selectedLocations: curSel });\n          cfg.settings.hoverToHighlight = (curSel.length === 0);  // peek bara i helhetsvyn\n          syncBtns();\n        }\n        if (ctrl && !ctrl._wired) {\n          ctrl._wired = true;\n          ctrl.addEventListener('click', function(ev){\n            var b = ev.target.closest('button[data-id]'); if (!b) return;\n            var id = b.getAttribute('data-id');\n            applyFilter(id ? [id] : []);   // ett val i taget; tom = hela Halland\n          });\n          syncBtns();\n        }\n\n        if (!m._fmClickWired) {\n          m._fmClickWired = true;\n          var Popup = popupCtor();\n          m.on('click', function(e){\n            if (!m._deckgl) return;\n            var info; try { info = m._deckgl.pickObject({ x: e.point.x, y: e.point.y, radius: 6 }); } catch(_) { return; }\n            var o = info && info.object;\n            if (!o || o.type !== 'location') return;\n            // återställ urvalet till knappläget (neutralisera bindningens click-toggle)\n            applyFilter(curSel);\n            var id = (o.id != null) ? String(o.id) : (o.location && String(o.location.id));\n            var rows = (cfg.data && cfg.data._locationsRows) || [];\n            var row = null;\n            for (var i = 0; i < rows.length; i++) { if (String(rows[i].id) === id) { row = rows[i]; break; } }\n            if (!row || !row.popup_html || !Popup) return;\n            new Popup({ closeButton: true, closeOnClick: true, maxWidth: '280px', className: 'fm-clickpop', offset: 14 })\n              .setLngLat([row.lon, row.lat]).setHTML(row.popup_html).addTo(m);\n          });\n        }\n      })();\n    }","data":null}]}}</script>
+</div>
+</div>
+<div class="graf-caption">
+<p>Källa: SCB, registerbaserad arbetsmarknadsstatistik (BAS, ArRegPend2) 2024. Flöden mellan bostads- och arbetsställekommun bland sysselsatta 15–74 år; självpendling (bor och arbetar i samma kommun) ingår inte. Inom länet ritas alla flöden, över länsgränsen de på minst 50 pendlare inom pendlingsavstånd (cirka 150 km, så enstaka långdistansrelationer i registret faller bort). Linjebredden är komprimerad så att även mindre flöden syns. Punkterna ligger i kommunernas mittpunkt. Bakgrund: CARTO Positron. Visualisering: Flowmap.gl via mapgl.</p>
+</div>
+</div>
+<p>Kartan samlar hela den administrativa pendlingsbilden i en enda bild, och tre drag framträder direkt. Det starkaste är den breda mörka strömmen i norr: mellan Kungsbacka och Göteborg rör sig drygt 18 000 pendlare varje dag, och med Kungsbacka–Mölndal (knappt 5 900) och Varberg–Göteborg (drygt 3 100) blir det tydligt att norra länets arbetsmarknad till stor del är en förlängning av Göteborgs. Inget internt hallandsstråk är i närheten av den tyngden.</p>
+<p>Under de göteborgsvända strömmarna ligger länets egna axlar, tunnare men fullt läsbara sedan linjebredden trappats: Falkenberg–Varberg (drygt 4 100), Halmstad–Laholm (drygt 4 000) och Halmstad–Falkenberg (drygt 3 500). De binder mellan- och sydkommunerna till sin närmaste större granne och kretsar kring de två interna tyngdpunkterna Halmstad och Varberg. Längst ned i trappan bleknar de minsta flödena ut, enstaka hundratal mot Skåne i söder och mot Sjuhärad och Gnosjöbygden i öster.</p>
+<p>Vänder man på utbytet, från total ström till netto, pekar obalansen åt två håll. Halmstad är den enda kommun som tar in fler än den sänder ut och fungerar som länets arbetsmarknadsnav, medan Kungsbacka i norr är dess motpol med ett nettounderskott på närmare 16 000, nästan uteslutande mot Göteborg. Däremellan matar Laholm och Falkenberg in mot Halmstad, och Varberg lutar norrut.</p>
+<p>Den bilden är ett ögonblick, och frågan är hur den har vuxit fram. Tabellen nedan visar för varje kommun de fem relationer vars totalpendling, summan av in- och utpendling, förändrats mest sedan millennieskiftet. Det första som slår en är att nästan allt pekar uppåt: regionförstoringen, att arbetsmarknaderna växer ihop över allt större avstånd, syns i så gott som varje rad. De största ökningarna i antal följer de redan stora strömmarna, med Kungsbacka–Göteborg i topp (drygt 4 700 fler), men de snabbaste relativa ökningarna sitter i de interna länkarna, som i de flesta fall mer än fördubblats.</p>
+<p>Mönstret skiljer sig ändå åt mellan kommunerna. För Kungsbacka handlar förändringen nästan bara om Göteborgsregionen, där Göteborg och Mölndal står för merparten av tillväxten. Halmstad och Varberg har i stället knutits närmare sina hallandsgrannar samtidigt som deras egna göteborgslänkar vuxit, och Laholm har dragits söderut: vid sidan av den starka kopplingen till Halmstad är det relationerna mot nordvästra Skåne och Markaryd som ökat mest. Hylte, länets minsta arbetsmarknad, rör sig i små men snabbt växande flöden mot Halmstad och Gislaved. Minskningarna är försvinnande få och små, uteslutande långväga registerrelationer på några tiotal personer som tunnats ut, vilket snarast bekräftar att det är den funktionella närregionen som vuxit sig tätare.</p>
+<div class="graf-container">
+<div class="graf-header">
+<div class="graf-title">
+<p>Pendlingens största förändringar, 2000–2024</p>
+</div>
+<div class="graf-subtitle">
+<p>De fem relationer per kommun där totalpendlingen (in- plus utpendling) förändrats mest. Sparklinjen visar hela förloppet 2000–2024. Grön relation inom länet, blå över länsgräns.</p>
+</div>
+</div>
+<style>
+.kr-fandtab{display:grid;grid-template-columns:1fr 1fr;gap:30px 52px;font-family:system-ui,-apple-system,'Inter',sans-serif;margin:6px 2px}
+@media (max-width:820px){.kr-fandtab{grid-template-columns:1fr;gap:26px}}
+.kr-fandtab-head{font:700 13px/1 system-ui,'Inter',sans-serif;text-transform:uppercase;letter-spacing:.07em;color:#0B3A57;padding:0 2px 9px;border-bottom:2px solid #0B3A57;margin-bottom:4px}
+.kr-fandtab-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
+.kr-fandtab-tbl td{padding:10px 4px;border-bottom:1px solid #eef2f5;vertical-align:middle}
+.kr-fandtab-tbl tr:last-child td{border-bottom:none}
+.kr-fandtab-tbl .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:9px;vertical-align:middle}
+.kr-fandtab-tbl .mot{font:600 13px/1.25 system-ui,'Inter',sans-serif;color:#1a2730;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kr-fandtab-tbl .spk{width:86px;padding-left:6px;padding-right:10px}
+.kr-fandtab-tbl .vals{text-align:right;font:13px/1.35 system-ui,'Inter',sans-serif;font-variant-numeric:tabular-nums;color:#8294a3;white-space:nowrap}
+.kr-fandtab-tbl .vals b{color:#15202b;font-weight:600}
+.kr-fandtab-tbl .chg{width:66px;text-align:right;white-space:nowrap;line-height:1.2;padding-left:10px}
+.kr-fandtab-tbl .chgnum{font:700 14px/1.2 system-ui,'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.kr-fandtab-tbl .pct{display:block;color:#9aa9b6;font:10.5px/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums;margin-top:2px}
+.kr-spark{display:block}
+.kr-fandtab-tbl tr{transition:background .1s}
+.kr-fandtab-tbl tr:hover td{background:#f6f9fb;cursor:default}
+.kr-fandtip{width:262px;background:#fff;border:1px solid #e8eef2;border-radius:12px;box-shadow:0 10px 34px rgba(11,58,87,.20),0 2px 7px rgba(11,58,87,.10);font-family:system-ui,-apple-system,'Inter',sans-serif;overflow:hidden}
+.kr-fandtip .fttip-head{display:flex;align-items:center;gap:9px;padding:13px 16px 0}
+.kr-fandtip .fttip-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.kr-fandtip .fttip-rel{font:700 14.5px/1.2 system-ui,'Inter',sans-serif;color:#15202b}
+.kr-fandtip .fttip-arr{color:#c0ccd4;font-weight:400}
+.kr-fandtip .fttip-sub{padding:3px 16px 12px 34px;font:700 10px/1 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+.kr-fandtip .fttip-block{padding:11px 16px;border-top:1px solid #eef2f5}
+.kr-fandtip .fttip-lbl{font:700 9.5px/1 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.07em;color:#9aa9b6;margin-bottom:6px}
+.kr-fandtip .fttip-big{font:700 19px/1.05 system-ui,'Inter',sans-serif;color:#15202b;font-variant-numeric:tabular-nums}
+.kr-fandtip .fttip-u{font:600 11.5px/1 system-ui,sans-serif;color:#8294a3}
+.kr-fandtip .fttip-rank{margin-top:5px;font:12.5px/1.35 system-ui,'Inter',sans-serif;color:#46586a}
+.kr-fandtip .fttip-rank b{font-weight:700;color:#15202b}
+.kr-fandtip .fttip-of{color:#9aa9b6;font-size:11px}
+.kr-fandtip .fttip-dir{margin-top:10px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;font:12px/1.25 system-ui,'Inter',sans-serif;color:#5a6b78;font-variant-numeric:tabular-nums}
+.kr-fandtip .fttip-dir b{color:#15202b;font-weight:600;text-align:right}
+</style>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb6-0"><a href="#cb6-0" aria-hidden="true" tabindex="-1"></a>forandringTabell <span class="op">=</span> {</span>
+<span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> D <span class="op">=</span> pendlForandring<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> fmt <span class="op">=</span> n <span class="kw">=&gt;</span> n<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span>)<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> COL <span class="op">=</span> { <span class="dt">intra</span><span class="op">:</span> <span class="st">"#00664D"</span><span class="op">,</span> <span class="dt">extern</span><span class="op">:</span> <span class="st">"#1A7BB0"</span> }<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">spark</span>(serie<span class="op">,</span> color) {</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> w <span class="op">=</span> <span class="dv">84</span><span class="op">,</span> h <span class="op">=</span> <span class="dv">26</span><span class="op">,</span> pad <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> vs <span class="op">=</span> serie<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">v</span>)<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> vmin <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(<span class="op">...</span>vs)<span class="op">,</span> vmax <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="op">...</span>vs)<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> n <span class="op">=</span> serie<span class="op">.</span><span class="at">length</span><span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> sx <span class="op">=</span> i <span class="kw">=&gt;</span> pad <span class="op">+</span> i <span class="op">*</span> (w <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> pad) <span class="op">/</span> (n <span class="op">-</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> sy <span class="op">=</span> v <span class="kw">=&gt;</span> (h <span class="op">-</span> pad) <span class="op">-</span> (vmax <span class="op">&gt;</span> vmin <span class="op">?</span> (v <span class="op">-</span> vmin) <span class="op">/</span> (vmax <span class="op">-</span> vmin) <span class="op">:</span> <span class="fl">0.5</span>) <span class="op">*</span> (h <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> pad)<span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> pts <span class="op">=</span> serie<span class="op">.</span><span class="fu">map</span>((d<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">sx</span>(i)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">1</span>)<span class="sc">}</span><span class="vs">,</span><span class="sc">${</span><span class="fu">sy</span>(d<span class="op">.</span><span class="at">v</span>)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">1</span>)<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">join</span>(<span class="st">" "</span>)<span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> li <span class="op">=</span> n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Bygg SVG:n via innerHTML — htl:s svg`` sätter 'points' som property (no-op för</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// sträng) och ritar då bara cirkeln. innerHTML sätter points som riktigt attribut.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> span <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">"span"</span>)<span class="op">;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    span<span class="op">.</span><span class="at">className</span> <span class="op">=</span> <span class="st">"kr-spark"</span><span class="op">;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    span<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="vs">`&lt;svg width="</span><span class="sc">${</span>w<span class="sc">}</span><span class="vs">" height="</span><span class="sc">${</span>h<span class="sc">}</span><span class="vs">" viewBox="0 0 </span><span class="sc">${</span>w<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>h<span class="sc">}</span><span class="vs">" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible"&gt;`</span> <span class="op">+</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="vs">`&lt;polygon points="</span><span class="sc">${</span>pad<span class="sc">}</span><span class="vs">,</span><span class="sc">${</span>h <span class="op">-</span> pad<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>pts<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>w <span class="op">-</span> pad<span class="sc">}</span><span class="vs">,</span><span class="sc">${</span>h <span class="op">-</span> pad<span class="sc">}</span><span class="vs">" fill="</span><span class="sc">${</span>color<span class="sc">}</span><span class="vs">" opacity="0.13"&gt;&lt;/polygon&gt;`</span> <span class="op">+</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="vs">`&lt;polyline points="</span><span class="sc">${</span>pts<span class="sc">}</span><span class="vs">" fill="none" stroke="</span><span class="sc">${</span>color<span class="sc">}</span><span class="vs">" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"&gt;&lt;/polyline&gt;`</span> <span class="op">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="vs">`&lt;circle cx="</span><span class="sc">${</span><span class="fu">sx</span>(li)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">1</span>)<span class="sc">}</span><span class="vs">" cy="</span><span class="sc">${</span><span class="fu">sy</span>(serie[li]<span class="op">.</span><span class="at">v</span>)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">1</span>)<span class="sc">}</span><span class="vs">" r="2.3" fill="</span><span class="sc">${</span>color<span class="sc">}</span><span class="vs">"&gt;&lt;/circle&gt;`</span> <span class="op">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      <span class="vs">`&lt;/svg&gt;`</span><span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> span<span class="op">;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ---- regional ranking-tooltip (storlek i dag + utvecklingens storlek) ----</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">ord</span>(n) {</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> m <span class="op">=</span> {<span class="dv">1</span><span class="op">:</span><span class="st">"största"</span><span class="op">,</span><span class="dv">2</span><span class="op">:</span><span class="st">"näst största"</span><span class="op">,</span><span class="dv">3</span><span class="op">:</span><span class="st">"tredje största"</span><span class="op">,</span><span class="dv">4</span><span class="op">:</span><span class="st">"fjärde största"</span><span class="op">,</span><span class="dv">5</span><span class="op">:</span><span class="st">"femte största"</span><span class="op">,</span><span class="dv">6</span><span class="op">:</span><span class="st">"sjätte största"</span><span class="op">,</span><span class="dv">7</span><span class="op">:</span><span class="st">"sjunde största"</span><span class="op">,</span><span class="dv">8</span><span class="op">:</span><span class="st">"åttonde största"</span><span class="op">,</span><span class="dv">9</span><span class="op">:</span><span class="st">"nionde största"</span><span class="op">,</span><span class="dv">10</span><span class="op">:</span><span class="st">"tionde största"</span>}<span class="op">;</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> m[n] <span class="op">||</span> <span class="vs">`</span><span class="sc">${</span>n<span class="sc">}</span><span class="vs">:e största`</span><span class="op">;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">tipHTML</span>(r<span class="op">,</span> kommun) {</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> c <span class="op">=</span> COL[r<span class="op">.</span><span class="at">typ</span>]<span class="op">;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> typtext <span class="op">=</span> r<span class="op">.</span><span class="at">typ</span> <span class="op">===</span> <span class="st">"intra"</span> <span class="op">?</span> <span class="st">"Pendling inom Halland"</span> <span class="op">:</span> <span class="st">"Pendling över länsgränsen"</span><span class="op">;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="vs">`</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div class="fttip-head"&gt;&lt;span class="fttip-dot" style="background:</span><span class="sc">${</span>c<span class="sc">}</span><span class="vs">"&gt;&lt;/span&gt;&lt;span class="fttip-rel"&gt;</span><span class="sc">${</span>kommun<span class="sc">}</span><span class="vs"> &lt;span class="fttip-arr"&gt;↔&lt;/span&gt; </span><span class="sc">${</span>r<span class="op">.</span><span class="at">motpart</span><span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div class="fttip-sub" style="color:</span><span class="sc">${</span>c<span class="sc">}</span><span class="vs">"&gt;</span><span class="sc">${</span>typtext<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div class="fttip-block"&gt;</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-lbl"&gt;Storlek i dag&lt;/div&gt;</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-big"&gt;</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">t2024</span>)<span class="sc">}</span><span class="vs"> &lt;span class="fttip-u"&gt;pendlare&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-rank"&gt;Regionens &lt;b&gt;</span><span class="sc">${</span><span class="fu">ord</span>(r<span class="op">.</span><span class="at">rank_storlek</span>)<span class="sc">}</span><span class="vs">&lt;/b&gt; pendlingsrelation &lt;span class="fttip-of"&gt;av </span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">n_rel</span>)<span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-dir"&gt;&lt;span&gt;</span><span class="sc">${</span>kommun<span class="sc">}</span><span class="vs"> → </span><span class="sc">${</span>r<span class="op">.</span><span class="at">motpart</span><span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;b&gt;</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">ab</span>)<span class="sc">}</span><span class="vs">&lt;/b&gt;&lt;span&gt;</span><span class="sc">${</span>r<span class="op">.</span><span class="at">motpart</span><span class="sc">}</span><span class="vs"> → </span><span class="sc">${</span>kommun<span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;b&gt;</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">ba</span>)<span class="sc">}</span><span class="vs">&lt;/b&gt;&lt;/div&gt;</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;/div&gt;</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div class="fttip-block"&gt;</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-lbl"&gt;Utveckling sedan 2000&lt;/div&gt;</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-big" style="color:</span><span class="sc">${</span>c<span class="sc">}</span><span class="vs">"&gt;+</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">forandring</span>)<span class="sc">}</span><span class="vs"> &lt;span class="fttip-u"&gt;pendlare · +</span><span class="sc">${</span>r<span class="op">.</span><span class="at">pct</span><span class="sc">}</span><span class="vs"> %&lt;/span&gt;&lt;/div&gt;</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="fttip-rank"&gt;Regionens &lt;b&gt;</span><span class="sc">${</span><span class="fu">ord</span>(r<span class="op">.</span><span class="at">rank_forandring</span>)<span class="sc">}</span><span class="vs">&lt;/b&gt; ökning&lt;/div&gt;</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> tip <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">"div"</span>)<span class="op">;</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  tip<span class="op">.</span><span class="at">className</span> <span class="op">=</span> <span class="st">"kr-fandtip"</span><span class="op">;</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  tip<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">cssText</span> <span class="op">=</span> <span class="st">"position:fixed;display:none;z-index:9999;pointer-events:none"</span><span class="op">;</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">moveTip</span>(ev) {</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> off <span class="op">=</span> <span class="dv">18</span><span class="op">,</span> tw <span class="op">=</span> tip<span class="op">.</span><span class="at">offsetWidth</span> <span class="op">||</span> <span class="dv">260</span><span class="op">,</span> th <span class="op">=</span> tip<span class="op">.</span><span class="at">offsetHeight</span> <span class="op">||</span> <span class="dv">220</span><span class="op">;</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> ev<span class="op">.</span><span class="at">clientX</span> <span class="op">+</span> off<span class="op">,</span> y <span class="op">=</span> ev<span class="op">.</span><span class="at">clientY</span> <span class="op">+</span> off<span class="op">;</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="op">+</span> tw <span class="op">&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="at">innerWidth</span> <span class="op">-</span> <span class="dv">10</span>) x <span class="op">=</span> ev<span class="op">.</span><span class="at">clientX</span> <span class="op">-</span> tw <span class="op">-</span> off<span class="op">;</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (y <span class="op">+</span> th <span class="op">&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="at">innerHeight</span> <span class="op">-</span> <span class="dv">10</span>) y <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">10</span><span class="op">,</span> <span class="bu">window</span><span class="op">.</span><span class="at">innerHeight</span> <span class="op">-</span> th <span class="op">-</span> <span class="dv">10</span>)<span class="op">;</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    tip<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">left</span> <span class="op">=</span> x <span class="op">+</span> <span class="st">"px"</span><span class="op">;</span> tip<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">top</span> <span class="op">=</span> y <span class="op">+</span> <span class="st">"px"</span><span class="op">;</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">showTip</span>(r<span class="op">,</span> kommun<span class="op">,</span> ev) { tip<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span> <span class="fu">tipHTML</span>(r<span class="op">,</span> kommun)<span class="op">;</span> tip<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">display</span> <span class="op">=</span> <span class="st">"block"</span><span class="op">;</span> <span class="fu">moveTip</span>(ev)<span class="op">;</span> }</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">hideTip</span>() { tip<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="at">display</span> <span class="op">=</span> <span class="st">"none"</span><span class="op">;</span> }</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> container <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;div class="kr-fandtab"&gt;</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="vs">    </span><span class="sc">${</span>D<span class="op">.</span><span class="at">kommuner</span><span class="op">.</span><span class="fu">map</span>(k <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div class="kr-fandtab-grupp"&gt;</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;div class="kr-fandtab-head"&gt;</span><span class="sc">${</span>k<span class="op">.</span><span class="at">namn</span><span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;table class="kr-fandtab-tbl"&gt;</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="vs">          </span><span class="sc">${</span>k<span class="op">.</span><span class="at">relationer</span><span class="op">.</span><span class="fu">map</span>(r <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`&lt;tr&gt;</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;td class="mot"&gt;&lt;span class="dot" style=</span><span class="sc">${</span><span class="vs">`background:</span><span class="sc">${</span>COL[r<span class="op">.</span><span class="at">typ</span>]<span class="sc">}</span><span class="vs">`</span><span class="sc">}</span><span class="vs">&gt;&lt;/span&gt;</span><span class="sc">${</span>r<span class="op">.</span><span class="at">motpart</span><span class="sc">}</span><span class="vs">&lt;/td&gt;</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;td class="spk"&gt;</span><span class="sc">${</span><span class="fu">spark</span>(r<span class="op">.</span><span class="at">serie</span><span class="op">,</span> COL[r<span class="op">.</span><span class="at">typ</span>])<span class="sc">}</span><span class="vs">&lt;/td&gt;</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;td class="vals"&gt;</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">t2000</span>)<span class="sc">}</span><span class="vs"> → &lt;b&gt;</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">t2024</span>)<span class="sc">}</span><span class="vs">&lt;/b&gt;&lt;/td&gt;</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="vs">            &lt;td class="chg"&gt;&lt;span class="chgnum" style=</span><span class="sc">${</span><span class="vs">`color:</span><span class="sc">${</span>COL[r<span class="op">.</span><span class="at">typ</span>]<span class="sc">}</span><span class="vs">`</span><span class="sc">}</span><span class="vs">&gt;+</span><span class="sc">${</span><span class="fu">fmt</span>(r<span class="op">.</span><span class="at">forandring</span>)<span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;span class="pct"&gt;+</span><span class="sc">${</span>r<span class="op">.</span><span class="at">pct</span><span class="sc">}</span><span class="vs">%&lt;/span&gt;&lt;/td&gt;</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="vs">          &lt;/tr&gt;`</span>)<span class="sc">}</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="vs">        &lt;/table&gt;</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;/div&gt;`</span>)<span class="sc">}</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Koppla hover-listeners programmatiskt (htl inlinear funktioner i on*-attribut)</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> groups <span class="op">=</span> container<span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">".kr-fandtab-grupp"</span>)<span class="op">;</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  D<span class="op">.</span><span class="at">kommuner</span><span class="op">.</span><span class="fu">forEach</span>((k<span class="op">,</span> gi) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> rows <span class="op">=</span> groups[gi] <span class="op">?</span> groups[gi]<span class="op">.</span><span class="fu">querySelectorAll</span>(<span class="st">"tr"</span>) <span class="op">:</span> []<span class="op">;</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>    k<span class="op">.</span><span class="at">relationer</span><span class="op">.</span><span class="fu">forEach</span>((r<span class="op">,</span> ri) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> tr <span class="op">=</span> rows[ri]<span class="op">;</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="op">!</span>tr) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>      tr<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"mouseenter"</span><span class="op">,</span> ev <span class="kw">=&gt;</span> <span class="fu">showTip</span>(r<span class="op">,</span> k<span class="op">.</span><span class="at">namn</span><span class="op">,</span> ev))<span class="op">;</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>      tr<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"mousemove"</span><span class="op">,</span> moveTip)<span class="op">;</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>      tr<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">"mouseleave"</span><span class="op">,</span> hideTip)<span class="op">;</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  container<span class="op">.</span><span class="fu">appendChild</span>(tip)<span class="op">;</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> container<span class="op">;</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="graf-caption">
+<p>Källa: SCB, registerbaserad arbetsmarknadsstatistik. RAMS 2000–2019, BAS 2020–2024. Totalpendling = summan av in- och utpendling mellan två kommuner (båda riktningar). För varje hallandskommun visas de fem relationer vars totalpendling förändrats mest mellan 2000 och 2024; sparklinjen visar relationens utveckling över hela perioden. Metodbytet mellan 2019 och 2020 gör de minsta flödena inte helt jämförbara över brottet, medan de stora relationerna är robusta.</p>
+</div>
+</div>
+</section>
+<section id="funktionell-geografi-metoden" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="funktionell-geografi-metoden">Att bygga den funktionella kartan</h2>
+<p>Den kommun- och länsvisa bilden ovan är den vanligaste, men den är trubbig. Den döljer all variation inom kommunen och tvingar in varje område i en enda tillhörighet. För att komma närmare hur arbetsmarknaden faktiskt hänger ihop bygger vi i stället en egen karta underifrån, lager för lager, med tätorten som minsta enhet och pendlingen som det kitt som binder samman orterna. Varje steg nedan lägger till ett lager, och tillsammans växer en funktionell geografi fram som sällan sammanfaller med de administrativa gränserna. Den interaktiva kartan sist i kapitlet är slutprodukten av denna uppbyggnad.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-metoden-varfor">
+Varför inte kommunen eller länet?
+</h3>
+<p>Den etablerade metoden för att beskriva funktionella arbetsmarknadsregioner i Sverige är SCB:s lokala arbetsmarknader (LA-regioner). Indelningen bygger på pendlingsflöden mellan kommuner och har fördelen att den är rikstäckande, standardiserad och uppdateras regelbundet. Den har dock egenskaper som begränsar dess användbarhet i regional fysisk planering.</p>
+<p>Den mest grundläggande begränsningen är att kommunen används som minsta analysenhet. En kommun klassas som tillhörande en viss arbetsmarknadsregion baserat på sina sammanlagda pendlingsflöden, vilket innebär att all intern variation försvinner. Kungsbacka kommun tilldelas exempelvis en enda regiontillhörighet, trots att pendlingsmönstren för invånarna i Kungsbacka tätort, Onsala och Åsa kan skilja sig markant. Tilldelningen är dessutom exklusiv: varje kommun tillhör en och bara en arbetsmarknadsregion. I verkligheten har många orter betydande pendlingsrelationer till flera kärnor, och en kommun i gränslandet mellan två starka arbetsmarknader tvingas in i en av dem medan de andra kopplingarna osynliggörs. För en region som Halland, belägen mellan Göteborg och de skånska arbetsmarknaderna, innebär det att viktiga relationer faller bort ur bilden.</p>
+<p>I den analys som presenteras här används i stället tätorten som byggsten. SCB:s tätortsdefinition ger en betydligt högre upplösning än kommunen: Hallands sex kommuner rymmer mer än sjuttio tätorter, från Halmstad med drygt 36 000 förvärvsarbetande invånare ned till orter med någon hundra. Det innebär att pendlingsmönstren kan beskrivas ort för ort, vilket fångar den variation som döljs i kommunaggregaten. Kartan nedan visar utgångsläget: varje prick är en tätort, och storleken speglar ortens sysselsatta nattbefolkning.</p>
+<div class="graf-container">
+  <div class="graf-header">
+    <div class="graf-title">Tätorten som byggsten</div>
+    <div class="graf-subtitle">Hallands tätorter, punktstorlek efter sysselsatt nattbefolkning, 2024</div>
+  </div>
+  <div class="graf-svg-container"><iframe src="zonkarta/karta-zoner.html?embed&amp;stage=orter" style="width:100%; height:560px; border:none; border-radius:10px; display:block;" loading="lazy" title="Hallands tätorter"></iframe></div>
+  <div class="graf-caption">Källa: SCB 2024. Tätorter utanför Halland visas tonade. Peka på en ort för namn och storlek; dra och zooma för att utforska.</div>
+</div>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-metoden-lankar">
+Pendlingslänkar och kärnor
+</h3>
+<p>Indelningen vilar på en enda mekanism: pendlingslänken. Om minst tio procent av en tätorts förvärvsarbetande invånare pendlar till en annan ort uppstår en länk. Tröskeln är medvetet andelsbaserad: det avgörande är inte hur många personer som pendlar utan hur stor del av ortens arbetskraft som riktas mot en given destination. En ort med femtio förvärvsarbetande där fem pendlar till Halmstad är länkad till Halmstad, eftersom tio procent av arbetskraften då vetter dit, oavsett att fem pendlare i absoluta tal är en blygsam siffra. Samma ort kan samtidigt vara länkad till flera destinationer, och gör det i praktiken ofta.</p>
+<p>Ur dessa länkar växer kärnorna fram av sig själva. En tätort som andra orter är länkade till, dit folk faktiskt pendlar, blir per definition ett centrum för en egen tätortsregion. Kärnstatusen är alltså en konsekvens av att orten fyller en funktion för omgivande orters arbetskraftsförsörjning, inte ett resultat av något storlekskrav. Metoden urskiljer tio kärnor i Halland, ordnade i tre nivåer efter hur stor del av länets samlade dagbefolkning de rymmer. Halmstad är det enda huvudcentrumet. Varberg, Falkenberg och Kungsbacka bildar tillsammans med Göteborgs halländska del de stora centrumen, medan Laholm, Ullared, Hyltebruk, Ringhals och Smålandsstenar utgör mindre centra med egna men begränsade omland.</p>
+<p>Hierarkin uppstår genom samma logik. Om ett centrum i sin tur har en länk till en annan, större ort ingår centrumet också i den ortens region. En liten kärna kan på så vis ha ett eget omland och samtidigt själv vara underordnad en större kärna. Resultatet är inte en förutbestämd hierarki utan en struktur som växer underifrån, formad av de pendlingsmönster som faktiskt finns i data. På kartan nedan dras varje ort mot den kärna som störst andel av dess arbetskraft pendlar till. Två kärnor framträder genast som de starkaste gravitationspunkterna: Halmstad i söder och Göteborg i norr.</p>
+<div class="graf-container">
+  <div class="graf-header">
+    <div class="graf-title">Pendlingslänkar och kärnor</div>
+    <div class="graf-subtitle">Varje ort dras mot den kärna dit störst andel av arbetskraften pendlar, tröskel 10 procent</div>
+  </div>
+  <div class="graf-svg-container"><iframe src="zonkarta/karta-zoner.html?embed&amp;stage=lankar" style="width:100%; height:560px; border:none; border-radius:10px; display:block;" loading="lazy" title="Pendlingslänkar mellan orter och kärnor"></iframe></div>
+  <div class="graf-caption">Källa: SCB 2024, pendling tätort till tätort. Linjernas färg anger ortens primära kärna. Peka, dra och zooma för att utforska.</div>
+</div>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-metoden-zoner">
+Tio tätortsregioner
+</h3>
+<p>När länkarna aggregeras till zoner framträder tio tätortsregioner. Tillsammans omfattar de 91 tätorter och drygt 127 000 förvärvsarbetande invånare, och de varierar kraftigt i storlek, från Halmstads zon med 36 länkade orter till Ringhals med två. Halmstad är den överlägset dominerande arbetsmarknadsregionen. Tätorten har en dagbefolkning på nära 42 700 sysselsatta och ett nettoinflöde om drygt 6 600 personer varje arbetsdag, och zonen sträcker sig långt utanför kommungränsen och innefattar större delen av Laholms tätorter samt enskilda orter i Falkenberg och Hylte.</p>
+<p>Varberg och Falkenberg bildar var sin region med starka interna kopplingar, Varberg med en närmast perfekt balans mellan dag- och nattbefolkning och en zon på 24 orter, Falkenberg med en viss nettoutpendling och 14 orter. Den mest anmärkningsvärda strukturen återfinns i norr. Kungsbacka bildar ett eget centrum med 16 länkade orter, men kärnan är i sin tur så starkt länkad till Göteborg att Göteborgs tätortsregion i praktiken omfattar hela Kungsbacka kommun och delar av norra Varberg. Med en dagbefolkning på över 400 000 utgör Göteborg en gravitationskraft som sträcker sig långt in i Halland.</p>
+<p>Att zonerna tillåts överlappa är en poäng, inte en brist. Av de 91 tätorterna har 42 pendlingslänkar till mer än en kärna, vilket innebär att nästan hälften av länets orter befinner sig i överlappande influensområden. Mönstret är särskilt tydligt i Kungsbacka kommun, där samtliga orter tillhör både Göteborgs och Kungsbackas zon, och i gränszonen mellan Laholm och Halmstad. En indelning som tvingar fram ett entydigt val skulle dölja just dessa delade tillhörigheter, som ofta är de mest planeringsrelevanta.</p>
+<div class="graf-container">
+  <div class="graf-header">
+    <div class="graf-title">Tio tätortsregioner</div>
+    <div class="graf-subtitle">Funktionella arbetsmarknadszoner, delvis överlappande, 2024</div>
+  </div>
+  <div class="graf-svg-container"><iframe src="zonkarta/karta-zoner.html?embed&amp;stage=zoner" style="width:100%; height:560px; border:none; border-radius:10px; display:block;" loading="lazy" title="Tio tätortsregioner i Halland"></iframe></div>
+  <div class="graf-caption">Källa: SCB 2024. En ort tillhör en zon om minst 10 procent av nattbefolkningen pendlar till kärnan; överlappande tillhörigheter tillåts.</div>
+</div>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-metoden-floden">
+Volym och flöden på vägnätet
+</h3>
+<p>Den andelsbaserade indelningen fångar var orter hör hemma funktionellt, men den missar volym. En relation där tre procent av en stor orts arbetskraft pendlar till en annan stor ort kan i absoluta tal röra hundratals personer och ett trafikflöde som är avgörande för infrastrukturen, men ändå falla under den andelsbaserade tröskeln. Analysen kompletteras därför med en volymbaserad kartläggning av kopplingar som korsar zongränserna. Logiken är en annan: en koppling mellan en tätortsregion och en extern ort räknas som reell om det sammanlagda flödet, summerat i båda riktningarna, uppgår till minst hundra pendlare. Aggregeringen är central, eftersom enskilda orters flöden till en avlägsen destination sällan når tröskeln var för sig men summerade ger en bild av hur hela regionen relaterar till omvärlden.</p>
+<p>För att synliggöra den rumsliga dimensionen routas varje pendlingsrelation på det faktiska vägnätet. Varje pendlingspar dras längs snabbaste bilväg, och antalet pendlare ackumuleras segment för segment. Resultatet, som visas på kartan nedan, är en bild av hur flödena fysiskt fördelar sig i landskapet: av närmare 2 000 vägsegment bär det mest trafikerade över 21 000 pendlare per dygn. Det avsnittet är E6 norr om Kungsbacka, på väg mot Göteborg, som ensam dominerande relation. E6 fungerar som regionens pulsåder, där pendling från flera tätortsregioner överlagras och bildar de tunga stråk som inte syns i en ren flödesmatris. Längs kustaxeln binder samtidigt kärna-till-kärna-flöden samman arbetsmarknaden, bland annat omkring 2 700 pendlare mellan Varberg och Kungsbacka, medan pendlingen söderut mot Skåne är mindre i volym men funktionellt viktig för regionförstoringen.</p>
+<div class="graf-container">
+  <div class="graf-header">
+    <div class="graf-title">Pendlingsflöden på vägnätet</div>
+    <div class="graf-subtitle">Ackumulerat antal pendlare per vägsegment, 2024</div>
+  </div>
+  <div class="graf-svg-container"><iframe src="zonkarta/karta-zoner.html?embed&amp;stage=flode" style="width:100%; height:560px; border:none; border-radius:10px; display:block;" loading="lazy" title="Ackumulerade pendlingsflöden på vägnätet"></iframe></div>
+  <div class="graf-caption">Källa: SCB 2024, vägnät OpenStreetMap. Linjebredd efter ackumulerat flöde; utomregionala kopplingar räknas vid minst 100 pendlare.</div>
+</div>
+<h3 class="kr-rapport-underrubrik anchored" id="funktionell-geografi-metoden-kartan">
+Den interaktiva kartan
+</h3>
+<p>De fyra lagren möts i den interaktiva kartan, som samlar hela den funktionella geografin på ett ställe. I standardvyn visas alla ackumulerade flöden på vägnätet, med tätortsregionernas zoner som tonade fält under. Härifrån kan kartan utforskas i tre nivåer. Genom att klicka på en zon, eller välja en region i panelen i helskärmsläge, isoleras zonens egna flöden, och panelen redovisar dess befolkning, självförsörjningsgrad, inomregionala kopplingar och utomregionala relationer. Klickar man i stället på en enskild ort ritas just den ortens pendlingsrutter ut, med bredd proportionell mot varje flödes storlek. Vid hovring över ett vägsegment visas de fem största bidragande pendlingsparen med riktning och volym. Det är samma data och samma metod som byggts upp lager för lager ovan, nu sammanförda till ett verktyg för att läsa Hallands arbetsmarknadsgeografi på egen hand.</p>
+<div class="graf-container" style="max-width:1120px;">
+  <div class="graf-header">
+    <div class="graf-title">Hela den funktionella geografin</div>
+    <div class="graf-subtitle">Interaktiv karta: tätortsregioner, pendlingsflöden och orter, 2024</div>
+  </div>
+  <div class="graf-svg-container" style="position:relative;">
+    <iframe id="zonkarta-iframe" src="zonkarta/karta-zoner.html?embed" style="width:100%; height:720px; border:none; border-radius:10px; display:block;" loading="lazy" allow="fullscreen" allowfullscreen="" title="Hallands tätortsregioner och pendlingsflöden"></iframe>
+  </div>
+  <div class="graf-caption">Källa: SCB RAMS 2024, pendling tätort till tätort. Vägnät: OpenStreetMap. Klicka på en zon eller ort för att utforska; helskärm ger den fullständiga panelen.</div>
+</div>
+</section>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb7" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb7-0"><a href="#cb7-0" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { byggToc } <span class="im">from</span> <span class="st">"../js/toc.js"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb8" data-startfrom="1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">byggToc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display hidden">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIOKUgOKUgCBJbXBvcnRlcmEgZGUgcG9ydGFkZSBEMy1tb2R1bGVybmEgKGdncGxvdC1saWthKSDilIDilIBcbmltcG9ydCB7IGxpbmplZGlhZ3JhbSB9IGZyb20gXCIuLi9qcy9ncmFmZXIvbGluamVkaWFncmFtLmpzXCJcbmltcG9ydCB7IHN0YXBlbGRpYWdyYW0gfSBmcm9tIFwiLi4vanMvZ3JhZmVyL3N0YXBlbGRpYWdyYW0uanNcIlxuaW1wb3J0IHsgbG9sbGlwb3AgfSBmcm9tIFwiLi4vanMvZ3JhZmVyL2xvbGxpcG9wLmpzXCJcbmltcG9ydCB7IHNjYXR0ZXJwbG90IH0gZnJvbSBcIi4uL2pzL2dyYWZlci9zY2F0dGVycGxvdC5qc1wiXG5pbXBvcnQgeyBiZWVzd2FybSB9IGZyb20gXCIuLi9qcy9ncmFmZXIvYmVlc3dhcm0uanNcIlxuaW1wb3J0IHsgZmFjZXRMaW5qZXIgfSBmcm9tIFwiLi4vanMvZ3JhZmVyL2ZhY2V0TGluamVyLmpzXCJcblxuLy8g4pSA4pSAIExhZGRhIGthcGl0bGV0cyBwZW5kbGluZ3NkYXRhIChiZWFyYmV0bmluZ19kYXRhLyDihpIgZGF0YS8pIOKUgOKUgFxucGVuZGxOdWxhZ2UgPSBGaWxlQXR0YWNobWVudChcImRhdGEvcGVuZGxpbmctbnVsYWdlLmpzb25cIikuanNvbigpXG5wZW5kbFV0diAgICA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9wZW5kbGluZy11dHZlY2tsaW5nLmpzb25cIikuanNvbigpXG5wZW5kbEtvbXAgICA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9wZW5kbGluZy1rb21wYXJhdGl2Lmpzb25cIikuanNvbigpXG5wZW5kbEZvcmFuZHJpbmcgPSBGaWxlQXR0YWNobWVudChcImRhdGEvcGVuZGxpbmctZmxvZGVzZm9yYW5kcmluZy5qc29uXCIpLmpzb24oKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiZmlnSGFsbEZsb2RlbiA9IHtcbiAgY29uc3QgdHMgPSBwZW5kbFV0di5oYWxsYW5kO1xuICAvLyBbbmFtbiwgYW50YWxzZnVua3Rpb24sIGFuZGVsc2Z1bmt0aW9uXSDigJQgaW5wZW5kbGluZyBzb20gYW5kZWwgYXYgZGFnYmVmb2xrbmluZ2VuLCDDtnZyaWdhIGF2IG5hdHRiZWZvbGtuaW5nZW5cbiAgY29uc3Qgc2VyaWVyID0gW1xuICAgIFtcIkJvciBvY2ggYXJiZXRhclwiLCBkID0+IGQubmF0dGJlZiAtIGQudXRwZW5kbGluZyAtIGQuaW50cmEsIGQgPT4gMTAwICogKGQubmF0dGJlZiAtIGQudXRwZW5kbGluZyAtIGQuaW50cmEpIC8gZC5uYXR0YmVmXSxcbiAgICBbXCJJbm9tIEhhbGxhbmRcIiwgICAgZCA9PiBkLmludHJhLCAgICAgICAgZCA9PiAxMDAgKiBkLmludHJhIC8gZC5uYXR0YmVmXSxcbiAgICBbXCJVdCB1ciBsw6RuZXRcIiwgICAgIGQgPT4gZC51dHBlbmRsaW5nLCAgIGQgPT4gMTAwICogZC51dHBlbmRsaW5nIC8gZC5uYXR0YmVmXSxcbiAgICBbXCJJbiB0aWxsIGzDpG5ldFwiLCAgIGQgPT4gZC5pbnBlbmRsaW5nLCAgIGQgPT4gMTAwICogZC5pbnBlbmRsaW5nIC8gZC5kYWdiZWZdXG4gIF07XG4gIGNvbnN0IGJhcyA9IHt9O1xuICBmb3IgKGNvbnN0IFtuYW1uLCBmXSBvZiBzZXJpZXIpIGJhc1tuYW1uXSA9IGYodHMuZmluZChkID0+IGQuYXIgPT09IDIwMDApKTtcbiAgY29uc3QgYW50YWwgPSBbXSwgaWR4ID0gW10sIGFuZGVsID0gW107XG4gIGZvciAoY29uc3QgZCBvZiB0cykge1xuICAgIGZvciAoY29uc3QgW25hbW4sIGYsIGZhXSBvZiBzZXJpZXIpIHtcbiAgICAgIGFudGFsLnB1c2goeyDDpXI6IGQuYXIsIHNlcmllOiBuYW1uLCB2w6RyZGU6IGYoZCkgfSk7XG4gICAgICBpZHgucHVzaCh7IMOlcjogZC5hciwgc2VyaWU6IG5hbW4sIHbDpHJkZTogMTAwICogZihkKSAvIGJhc1tuYW1uXSB9KTtcbiAgICAgIGFuZGVsLnB1c2goeyDDpXI6IGQuYXIsIHNlcmllOiBuYW1uLCB2w6RyZGU6IGZhKGQpIH0pO1xuICAgIH1cbiAgfVxuICBjb25zdCBuYW1uID0gc2VyaWVyLm1hcChzID0+IHNbMF0pO1xuICBjb25zdCBmYXJnZXIgPSBbXCIjMDA2NjREXCIsIFwiIzBDOEM3RVwiLCBcIiNGRjdFMDBcIiwgXCIjMUE3QkIwXCJdO1xuICBjb25zdCBtQW50YWwgPSB7XG4gICAga2V5OiBcImFudGFsXCIsIGxhYmVsOiBcIkFudGFsIHBlcnNvbmVyXCIsIGZpbHRlckxhYmVsOiBcIkFudGFsIHBlcnNvbmVyXCIsXG4gICAgc3VidGl0bGU6IFwiQW50YWwgcGVyc29uZXIgcGVyIMOlciwgMjAwMOKAkzIwMjRcIiwgZGF0YTogYW50YWwsXG4gICAgeUxhYmVsOiBcIkFudGFsIHBlcnNvbmVyXCIsIHlNaW46IDAsIGZvcm1hdFk6IGQgPT4gZC50b0xvY2FsZVN0cmluZyhcInN2LVNFXCIpXG4gIH07XG4gIGNvbnN0IG1JZHggPSB7XG4gICAga2V5OiBcImluZGV4XCIsIGxhYmVsOiBcIkluZGV4ICgyMDAwID0gMTAwKVwiLCBmaWx0ZXJMYWJlbDogXCJJbmRleCAoMjAwMCA9IDEwMClcIixcbiAgICBzdWJ0aXRsZTogXCJJbmRleCAxMDAgPSDDpXIgMjAwMCwgMjAwMOKAkzIwMjRcIiwgZGF0YTogaWR4LFxuICAgIHlMYWJlbDogXCJJbmRleFwiLCB5TWluOiBcImF1dG9cIiwgaGxpbmU6IHsgdmFsdWU6IDEwMCwgZGFzaGVkOiB0cnVlIH0sIGZvcm1hdFk6IGQgPT4gZC50b0ZpeGVkKDApXG4gIH07XG4gIGNvbnN0IG1BbmRlbCA9IHtcbiAgICBrZXk6IFwiYW5kZWxcIiwgbGFiZWw6IFwiQW5kZWwgYXYgYmVmb2xrbmluZ2VuXCIsIGZpbHRlckxhYmVsOiBcIkFuZGVsXCIsXG4gICAgc3VidGl0bGU6IFwiQW5kZWwgYXYgbmF0dGJlZm9sa25pbmdlbiAoaW5wZW5kbGluZyBhdiBkYWdiZWZvbGtuaW5nZW4pLCAyMDAw4oCTMjAyNFwiLCBkYXRhOiBhbmRlbCxcbiAgICB5TGFiZWw6IFwiJVwiLCB5TWluOiAwLCBmb3JtYXRZOiBkID0+IGQudG9GaXhlZCgwKSArIFwiICVcIlxuICB9O1xuICByZXR1cm4gbGluamVkaWFncmFtKGFudGFsLCB7XG4gICAgeDogXCLDpXJcIiwgeTogXCJ2w6RyZGVcIiwgY29sb3I6IFwic2VyaWVcIixcbiAgICB0aXRsZTogXCJIYWxsYW5kcyBwZW5kbGluZ3NmbMO2ZGVuXCIsXG4gICAgbWVhc3VyZXM6IFttQW50YWwsIG1JZHgsIG1BbmRlbF0sXG4gICAgaGlnaGxpZ2h0OiBuYW1uLFxuICAgIGNvbG9yczogZmFyZ2VyLFxuICAgIGNhcHRpb246IFwiS8OkbGxhOiBTQ0IuIFJBTVMgMjAwMOKAkzIwMTksIEJBUyAyMDIw4oCTMjAyNCAobWV0b2RieXRlIG1lbGxhbiAyMDE5IG9jaCAyMDIwKS4gSW5vbXJlZ2lvbmFsIHBlbmRsaW5nIGjDpHJsZWRkIHVyIGtvbW11bi0gb2NoIGzDpG5zYWdncmVnYXQuIEFuZGVsOiBpbnBlbmRsaW5nIGF2IGRhZ2JlZm9sa25pbmdlbiwgw7Z2cmlnYSBmbMO2ZGVuIGF2IG5hdHRiZWZvbGtuaW5nZW4uXCIsXG4gICAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbiAgfSk7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTMiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJmaWdMYW5TcHJpZG5pbmcgPSBzY2F0dGVycGxvdChwZW5kbEtvbXAubGFuLCB7XG4gIHg6IFwiaW5fcGVyMTAwMFwiLFxuICB5OiBcInV0X3BlcjEwMDBcIixcbiAgbGFiZWw6IFwibmFtbl9rb3J0XCIsXG4gIHhNaW46IDAsXG4gIHlNaW46IDAsXG4gIHJlZkRpYWdvbmFsOiB7IGxhYmVsOiBcIkxpa2EgbcOlbmdhIGluIHNvbSB1dFwiIH0sXG4gIGhpZ2hsaWdodDogW1wiSGFsbGFuZFwiXSxcbiAgY29sb3JzOiBbXCIjMUE3QkIwXCJdLFxuICB0aXRsZTogXCJJbi0gb2NoIHV0cGVuZGxpbmcgw7Z2ZXIgbMOkbnNncsOkbnNlblwiLFxuICBzdWJ0aXRsZTogXCJMw6RuZW4gMjAyNCwgcGVuZGxhcmUgcGVyIDEwMDAgaSBuYXR0YmVmb2xrbmluZ2VuXCIsXG4gIHhMYWJlbDogXCJJbnBlbmRsYXJlIHBlciAxMDAwIHN5c3NlbHNhdHRhIHNvbSBib3IgaSBsw6RuZXRcIixcbiAgeUxhYmVsOiBcIlV0cGVuZGxhcmUgcGVyIDEwMDAgc3lzc2Vsc2F0dGEgc29tIGJvciBpIGzDpG5ldFwiLFxuICBjYXB0aW9uOiBcIkvDpGxsYTogU0NCIChCQVMgMjAyNCkuIFZhcmplIHB1bmt0IMOkciBldHQgbMOkbjsgZW5kYXN0IEhhbGxhbmQgbWFya2VyYXQuIMOWdmVyIGxpbmplbiBwZW5kbGFyIGZsZXIgdXQgw6RuIGluLlwiLFxuICBmb3JtYXRYOiBkID0+IGQudG9Mb2NhbGVTdHJpbmcoXCJzdi1TRVwiKSxcbiAgZm9ybWF0WTogZCA9PiBkLnRvTG9jYWxlU3RyaW5nKFwic3YtU0VcIiksXG4gIGxvZ286IFwiLi4vbG9nb19mYXJnLnN2Z1wiXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC00IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiZmlnS29tRmFjZXQgPSB7XG4gIGNvbnN0IG9yZG5pbmcgPSBbXCJLdW5nc2JhY2thXCIsIFwiVmFyYmVyZ1wiLCBcIkZhbGtlbmJlcmdcIiwgXCJIYWxtc3RhZFwiLCBcIkxhaG9sbVwiLCBcIkh5bHRlXCJdO1xuICAvLyBbbmFtbiwgYW50YWxzZnVua3Rpb24sIGFuZGVsc2Z1bmt0aW9uXSDigJQgaW5wZW5kbGluZyBzb20gYW5kZWwgYXYgZGFnYmVmb2xrbmluZ2VuLCDDtnZyaWdhIGF2IG5hdHRiZWZvbGtuaW5nZW4uXG4gIC8vIGQuaW50cmEgKGlub21yZWdpb25hbCBwZXIga29tbXVuKSBmaW5ucyBpIHV0dmVja2xpbmcuanNvbjsgc2FrbmFzIGRlbiBmYWxsZXIgZmzDtmRldCB0aWxsYmFrYSBww6UgMC5cbiAgY29uc3QgZmxNYXAgPSBbXG4gICAgW1wiQm9yIG9jaCBhcmJldGFyXCIsIGQgPT4gZC5uYXR0YmVmIC0gZC51dHBlbmRsaW5nLCBkID0+IDEwMCAqIChkLm5hdHRiZWYgLSBkLnV0cGVuZGxpbmcpIC8gZC5uYXR0YmVmXSxcbiAgICBbXCJJbm9tIEhhbGxhbmRcIiwgICAgZCA9PiAoZC5pbnRyYSB8fCAwKSwgICAgICAgICAgICBkID0+IDEwMCAqIChkLmludHJhIHx8IDApIC8gZC5uYXR0YmVmXSxcbiAgICBbXCJVdCB1ciBsw6RuZXRcIiwgICAgIGQgPT4gZC51dHBlbmRsaW5nIC0gKGQuaW50cmEgfHwgMCksIGQgPT4gMTAwICogKGQudXRwZW5kbGluZyAtIChkLmludHJhIHx8IDApKSAvIGQubmF0dGJlZl0sXG4gICAgW1wiSW5wZW5kbGluZ1wiLCAgICAgIGQgPT4gZC5pbnBlbmRsaW5nLCAgICAgICAgICAgICAgZCA9PiAxMDAgKiBkLmlucGVuZGxpbmcgLyBkLmRhZ2JlZl1cbiAgXTtcbiAgY29uc3QgYW50YWwgPSBbXSwgYW5kZWwgPSBbXTtcbiAgZm9yIChjb25zdCBkIG9mIHBlbmRsVXR2LmtvbW11bmVyKSB7XG4gICAgZm9yIChjb25zdCBbbmFtbiwgZiwgZmFdIG9mIGZsTWFwKSB7XG4gICAgICBhbnRhbC5wdXNoKHsga29tbXVuOiBkLmtvbW11biwgw6VyOiBkLmFyLCBzZXJpZTogbmFtbiwgdsOkcmRlOiBmKGQpIH0pO1xuICAgICAgYW5kZWwucHVzaCh7IGtvbW11bjogZC5rb21tdW4sIMOlcjogZC5hciwgc2VyaWU6IG5hbW4sIHbDpHJkZTogZmEoZCkgfSk7XG4gICAgfVxuICB9XG4gIGNvbnN0IG1BbnRhbCA9IHtcbiAgICBrZXk6IFwiYW50YWxcIiwgbGFiZWw6IFwiQW50YWxcIiwgZGF0YTogYW50YWwsXG4gICAgZm9ybWF0WTogZCA9PiBkLnRvTG9jYWxlU3RyaW5nKFwic3YtU0VcIiksIGZvcm1hdEVuZDogZCA9PiBkLnRvTG9jYWxlU3RyaW5nKFwic3YtU0VcIiksXG4gICAgc2hhcmVZOiBmYWxzZSwgbm90ZTogXCJwZXJzb25lciBwZXIgw6VyLCBlZ2VuIHktc2thbGEgcGVyIGtvbW11biwgMjAwMOKAkzIwMjRcIlxuICB9O1xuICBjb25zdCBtQW5kZWwgPSB7XG4gICAga2V5OiBcImFuZGVsXCIsIGxhYmVsOiBcIkFuZGVsXCIsIGRhdGE6IGFuZGVsLFxuICAgIGZvcm1hdFk6IGQgPT4gZC50b0ZpeGVkKDApICsgXCIgJVwiLCBmb3JtYXRFbmQ6IGQgPT4gZC50b0ZpeGVkKDApICsgXCIgJVwiLFxuICAgIHNoYXJlWTogdHJ1ZSwgbm90ZTogXCJhdiBuYXR0YmVmb2xrbmluZ2VuIChpbnBlbmRsaW5nIGF2IGRhZ2JlZm9sa25pbmdlbiksIGRlbGFkIHNrYWxhLCAyMDAw4oCTMjAyNFwiXG4gIH07XG4gIHJldHVybiBmYWNldExpbmplcihhbnRhbCwge1xuICAgIGZhY2V0OiBcImtvbW11blwiLCB4OiBcIsOlclwiLCB5OiBcInbDpHJkZVwiLCBzZXJpZXM6IFwic2VyaWVcIixcbiAgICBmYWNldE9yZGVyOiBvcmRuaW5nLFxuICAgIHNlcmllc09yZGVyOiBbXCJCb3Igb2NoIGFyYmV0YXJcIiwgXCJJbm9tIEhhbGxhbmRcIiwgXCJVdCB1ciBsw6RuZXRcIiwgXCJJbnBlbmRsaW5nXCJdLFxuICAgIGNvbG9yczogW1wiIzAwNjY0RFwiLCBcIiMwQzhDN0VcIiwgXCIjRkY3RTAwXCIsIFwiIzFBN0JCMFwiXSxcbiAgICBjb2x1bW5zOiAzLFxuICAgIG1lYXN1cmVzOiBbbUFudGFsLCBtQW5kZWxdLFxuICAgIHRpdGxlOiBcIktvbW11bmVybmFzIHBlbmRsaW5nc2Zsw7ZkZW5cIixcbiAgICBzdWJ0aXRsZTogXCJwZXJzb25lciBwZXIgw6VyLCBlZ2VuIHktc2thbGEgcGVyIGtvbW11biwgMjAwMOKAkzIwMjRcIixcbiAgICBjYXB0aW9uOiBcIkvDpGxsYTogU0NCLiBSQU1TIDIwMDDigJMyMDE5LCBCQVMgMjAyMOKAkzIwMjQuIEJvciBvY2ggYXJiZXRhciA9IGLDpWRlIGJvciBvY2ggYXJiZXRhciBpIGtvbW11bmVuOyBpbm9tIEhhbGxhbmQgPSBwZW5kbGluZyB0aWxsIGFubmFuIGhhbGxhbmRza29tbXVuOyB1dCB1ciBsw6RuZXQgPSBwZW5kbGluZyB1dCB1ciBIYWxsYW5kOyBpbnBlbmRsaW5nID0gw7Z2ZXIga29tbXVuZ3LDpG5zZW4uIEtsaWNrYSBww6UgZXR0IGZsw7ZkZSBpIGbDtnJrbGFyaW5nZW4gZsO2ciBhdHQgdG9uYSBuZWQgZGV0OyBwZWthIGkgZW4gcGFuZWwgZsO2ciDDpXJzdsOkcmRlbi5cIixcbiAgICBsb2dvOiBcIi4uL2xvZ29fZmFyZy5zdmdcIlxuICB9KTtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImZpZ0tvbVNwcmlkbmluZyA9IHNjYXR0ZXJwbG90KHBlbmRsS29tcC5rb21tdW5lci5maWx0ZXIoZCA9PiBkLmluX3BlcjEwMDAgPD0gODAwICYmIGQudXRfcGVyMTAwMCA8PSA4MDApLCB7XG4gIHg6IFwiaW5fcGVyMTAwMFwiLFxuICB5OiBcInV0X3BlcjEwMDBcIixcbiAgbGFiZWw6IFwibmFtblwiLFxuICB4TWluOiAwLFxuICB5TWluOiAwLFxuICByZWZEaWFnb25hbDogeyBsYWJlbDogXCJMaWthIG3DpW5nYSBpbiBzb20gdXRcIiB9LFxuICBoaWdobGlnaHQ6IFtcIkt1bmdzYmFja2FcIiwgXCJWYXJiZXJnXCIsIFwiRmFsa2VuYmVyZ1wiLCBcIkhhbG1zdGFkXCIsIFwiTGFob2xtXCIsIFwiSHlsdGVcIl0sXG4gIGNvbG9yczogW1wiIzFBN0JCMFwiXSxcbiAgdGl0bGU6IFwiSW4tIG9jaCB1dHBlbmRsaW5nIGkgbGFuZGV0cyBrb21tdW5lclwiLFxuICBzdWJ0aXRsZTogXCJLb21tdW5lcm5hIDIwMjQsIHBlbmRsYXJlIHBlciAxMDAwIGkgbmF0dGJlZm9sa25pbmdlblwiLFxuICB4TGFiZWw6IFwiSW5wZW5kbGFyZSBwZXIgMTAwMCBzb20gYm9yIGkga29tbXVuZW5cIixcbiAgeUxhYmVsOiBcIlV0cGVuZGxhcmUgcGVyIDEwMDAgc29tIGJvciBpIGtvbW11bmVuXCIsXG4gIGNhcHRpb246IFwiS8OkbGxhOiBTQ0IgKEJBUyAyMDI0KS4gVmFyamUgcHVua3Qgw6RyIGVuIGtvbW11bjsgSGFsbGFuZHMgc2V4IMOkciBtYXJrZXJhZGUuIFNleCBrb21tdW5lciBtZWQgZXh0cmVtYSB2w6RyZGVuICh0LmV4LiBTb2xuYSBvY2ggU3VuZGJ5YmVyZywga3JhbnNrb21tdW5lciB0aWxsIHN0b3JzdMOkZGVybmEpIGxpZ2dlciB1dGFuZsO2ciBza2FsYW4gb2NoIHZpc2FzIGludGUuIERyYSBmw7ZyIGF0dCB6b29tYS5cIixcbiAgZm9ybWF0WDogZCA9PiBkLnRvTG9jYWxlU3RyaW5nKFwic3YtU0VcIiksXG4gIGZvcm1hdFk6IGQgPT4gZC50b0xvY2FsZVN0cmluZyhcInN2LVNFXCIpLFxuICBsb2dvOiBcIi4uL2xvZ29fZmFyZy5zdmdcIlxufSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImZvcmFuZHJpbmdUYWJlbGwgPSB7XG4gIGNvbnN0IEQgPSBwZW5kbEZvcmFuZHJpbmc7XG4gIGNvbnN0IGZtdCA9IG4gPT4gbi50b0xvY2FsZVN0cmluZyhcInN2LVNFXCIpO1xuICBjb25zdCBDT0wgPSB7IGludHJhOiBcIiMwMDY2NERcIiwgZXh0ZXJuOiBcIiMxQTdCQjBcIiB9O1xuXG4gIGZ1bmN0aW9uIHNwYXJrKHNlcmllLCBjb2xvcikge1xuICAgIGNvbnN0IHcgPSA4NCwgaCA9IDI2LCBwYWQgPSAzO1xuICAgIGNvbnN0IHZzID0gc2VyaWUubWFwKGQgPT4gZC52KTtcbiAgICBjb25zdCB2bWluID0gTWF0aC5taW4oLi4udnMpLCB2bWF4ID0gTWF0aC5tYXgoLi4udnMpO1xuICAgIGNvbnN0IG4gPSBzZXJpZS5sZW5ndGg7XG4gICAgY29uc3Qgc3ggPSBpID0+IHBhZCArIGkgKiAodyAtIDIgKiBwYWQpIC8gKG4gLSAxKTtcbiAgICBjb25zdCBzeSA9IHYgPT4gKGggLSBwYWQpIC0gKHZtYXggPiB2bWluID8gKHYgLSB2bWluKSAvICh2bWF4IC0gdm1pbikgOiAwLjUpICogKGggLSAyICogcGFkKTtcbiAgICBjb25zdCBwdHMgPSBzZXJpZS5tYXAoKGQsIGkpID0+IGAke3N4KGkpLnRvRml4ZWQoMSl9LCR7c3koZC52KS50b0ZpeGVkKDEpfWApLmpvaW4oXCIgXCIpO1xuICAgIGNvbnN0IGxpID0gbiAtIDE7XG4gICAgLy8gQnlnZyBTVkc6biB2aWEgaW5uZXJIVE1MIOKAlCBodGw6cyBzdmdgYCBzw6R0dGVyICdwb2ludHMnIHNvbSBwcm9wZXJ0eSAobm8tb3AgZsO2clxuICAgIC8vIHN0csOkbmcpIG9jaCByaXRhciBkw6UgYmFyYSBjaXJrZWxuLiBpbm5lckhUTUwgc8OkdHRlciBwb2ludHMgc29tIHJpa3RpZ3QgYXR0cmlidXQuXG4gICAgY29uc3Qgc3BhbiA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJzcGFuXCIpO1xuICAgIHNwYW4uY2xhc3NOYW1lID0gXCJrci1zcGFya1wiO1xuICAgIHNwYW4uaW5uZXJIVE1MID1cbiAgICAgIGA8c3ZnIHdpZHRoPVwiJHt3fVwiIGhlaWdodD1cIiR7aH1cIiB2aWV3Qm94PVwiMCAwICR7d30gJHtofVwiIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIiBzdHlsZT1cImRpc3BsYXk6YmxvY2s7b3ZlcmZsb3c6dmlzaWJsZVwiPmAgK1xuICAgICAgICBgPHBvbHlnb24gcG9pbnRzPVwiJHtwYWR9LCR7aCAtIHBhZH0gJHtwdHN9ICR7dyAtIHBhZH0sJHtoIC0gcGFkfVwiIGZpbGw9XCIke2NvbG9yfVwiIG9wYWNpdHk9XCIwLjEzXCI+PC9wb2x5Z29uPmAgK1xuICAgICAgICBgPHBvbHlsaW5lIHBvaW50cz1cIiR7cHRzfVwiIGZpbGw9XCJub25lXCIgc3Ryb2tlPVwiJHtjb2xvcn1cIiBzdHJva2Utd2lkdGg9XCIxLjZcIiBzdHJva2UtbGluZWpvaW49XCJyb3VuZFwiIHN0cm9rZS1saW5lY2FwPVwicm91bmRcIj48L3BvbHlsaW5lPmAgK1xuICAgICAgICBgPGNpcmNsZSBjeD1cIiR7c3gobGkpLnRvRml4ZWQoMSl9XCIgY3k9XCIke3N5KHNlcmllW2xpXS52KS50b0ZpeGVkKDEpfVwiIHI9XCIyLjNcIiBmaWxsPVwiJHtjb2xvcn1cIj48L2NpcmNsZT5gICtcbiAgICAgIGA8L3N2Zz5gO1xuICAgIHJldHVybiBzcGFuO1xuICB9XG5cbiAgLy8gLS0tLSByZWdpb25hbCByYW5raW5nLXRvb2x0aXAgKHN0b3JsZWsgaSBkYWcgKyB1dHZlY2tsaW5nZW5zIHN0b3JsZWspIC0tLS1cbiAgZnVuY3Rpb24gb3JkKG4pIHtcbiAgICBjb25zdCBtID0gezE6XCJzdMO2cnN0YVwiLDI6XCJuw6RzdCBzdMO2cnN0YVwiLDM6XCJ0cmVkamUgc3TDtnJzdGFcIiw0OlwiZmrDpHJkZSBzdMO2cnN0YVwiLDU6XCJmZW10ZSBzdMO2cnN0YVwiLDY6XCJzasOkdHRlIHN0w7Zyc3RhXCIsNzpcInNqdW5kZSBzdMO2cnN0YVwiLDg6XCLDpXR0b25kZSBzdMO2cnN0YVwiLDk6XCJuaW9uZGUgc3TDtnJzdGFcIiwxMDpcInRpb25kZSBzdMO2cnN0YVwifTtcbiAgICByZXR1cm4gbVtuXSB8fCBgJHtufTplIHN0w7Zyc3RhYDtcbiAgfVxuICBmdW5jdGlvbiB0aXBIVE1MKHIsIGtvbW11bikge1xuICAgIGNvbnN0IGMgPSBDT0xbci50eXBdO1xuICAgIGNvbnN0IHR5cHRleHQgPSByLnR5cCA9PT0gXCJpbnRyYVwiID8gXCJQZW5kbGluZyBpbm9tIEhhbGxhbmRcIiA6IFwiUGVuZGxpbmcgw7Z2ZXIgbMOkbnNncsOkbnNlblwiO1xuICAgIHJldHVybiBgXG4gICAgICA8ZGl2IGNsYXNzPVwiZnR0aXAtaGVhZFwiPjxzcGFuIGNsYXNzPVwiZnR0aXAtZG90XCIgc3R5bGU9XCJiYWNrZ3JvdW5kOiR7Y31cIj48L3NwYW4+PHNwYW4gY2xhc3M9XCJmdHRpcC1yZWxcIj4ke2tvbW11bn0gPHNwYW4gY2xhc3M9XCJmdHRpcC1hcnJcIj7ihpQ8L3NwYW4+ICR7ci5tb3RwYXJ0fTwvc3Bhbj48L2Rpdj5cbiAgICAgIDxkaXYgY2xhc3M9XCJmdHRpcC1zdWJcIiBzdHlsZT1cImNvbG9yOiR7Y31cIj4ke3R5cHRleHR9PC9kaXY+XG4gICAgICA8ZGl2IGNsYXNzPVwiZnR0aXAtYmxvY2tcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cImZ0dGlwLWxibFwiPlN0b3JsZWsgaSBkYWc8L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cImZ0dGlwLWJpZ1wiPiR7Zm10KHIudDIwMjQpfSA8c3BhbiBjbGFzcz1cImZ0dGlwLXVcIj5wZW5kbGFyZTwvc3Bhbj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cImZ0dGlwLXJhbmtcIj5SZWdpb25lbnMgPGI+JHtvcmQoci5yYW5rX3N0b3JsZWspfTwvYj4gcGVuZGxpbmdzcmVsYXRpb24gPHNwYW4gY2xhc3M9XCJmdHRpcC1vZlwiPmF2ICR7Zm10KHIubl9yZWwpfTwvc3Bhbj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cImZ0dGlwLWRpclwiPjxzcGFuPiR7a29tbXVufSDihpIgJHtyLm1vdHBhcnR9PC9zcGFuPjxiPiR7Zm10KHIuYWIpfTwvYj48c3Bhbj4ke3IubW90cGFydH0g4oaSICR7a29tbXVufTwvc3Bhbj48Yj4ke2ZtdChyLmJhKX08L2I+PC9kaXY+XG4gICAgICA8L2Rpdj5cbiAgICAgIDxkaXYgY2xhc3M9XCJmdHRpcC1ibG9ja1wiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwiZnR0aXAtbGJsXCI+VXR2ZWNrbGluZyBzZWRhbiAyMDAwPC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJmdHRpcC1iaWdcIiBzdHlsZT1cImNvbG9yOiR7Y31cIj4rJHtmbXQoci5mb3JhbmRyaW5nKX0gPHNwYW4gY2xhc3M9XCJmdHRpcC11XCI+cGVuZGxhcmUgwrcgKyR7ci5wY3R9ICU8L3NwYW4+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJmdHRpcC1yYW5rXCI+UmVnaW9uZW5zIDxiPiR7b3JkKHIucmFua19mb3JhbmRyaW5nKX08L2I+IMO2a25pbmc8L2Rpdj5cbiAgICAgIDwvZGl2PmA7XG4gIH1cbiAgY29uc3QgdGlwID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcImRpdlwiKTtcbiAgdGlwLmNsYXNzTmFtZSA9IFwia3ItZmFuZHRpcFwiO1xuICB0aXAuc3R5bGUuY3NzVGV4dCA9IFwicG9zaXRpb246Zml4ZWQ7ZGlzcGxheTpub25lO3otaW5kZXg6OTk5OTtwb2ludGVyLWV2ZW50czpub25lXCI7XG4gIGZ1bmN0aW9uIG1vdmVUaXAoZXYpIHtcbiAgICBjb25zdCBvZmYgPSAxOCwgdHcgPSB0aXAub2Zmc2V0V2lkdGggfHwgMjYwLCB0aCA9IHRpcC5vZmZzZXRIZWlnaHQgfHwgMjIwO1xuICAgIGxldCB4ID0gZXYuY2xpZW50WCArIG9mZiwgeSA9IGV2LmNsaWVudFkgKyBvZmY7XG4gICAgaWYgKHggKyB0dyA+IHdpbmRvdy5pbm5lcldpZHRoIC0gMTApIHggPSBldi5jbGllbnRYIC0gdHcgLSBvZmY7XG4gICAgaWYgKHkgKyB0aCA+IHdpbmRvdy5pbm5lckhlaWdodCAtIDEwKSB5ID0gTWF0aC5tYXgoMTAsIHdpbmRvdy5pbm5lckhlaWdodCAtIHRoIC0gMTApO1xuICAgIHRpcC5zdHlsZS5sZWZ0ID0geCArIFwicHhcIjsgdGlwLnN0eWxlLnRvcCA9IHkgKyBcInB4XCI7XG4gIH1cbiAgZnVuY3Rpb24gc2hvd1RpcChyLCBrb21tdW4sIGV2KSB7IHRpcC5pbm5lckhUTUwgPSB0aXBIVE1MKHIsIGtvbW11bik7IHRpcC5zdHlsZS5kaXNwbGF5ID0gXCJibG9ja1wiOyBtb3ZlVGlwKGV2KTsgfVxuICBmdW5jdGlvbiBoaWRlVGlwKCkgeyB0aXAuc3R5bGUuZGlzcGxheSA9IFwibm9uZVwiOyB9XG5cbiAgY29uc3QgY29udGFpbmVyID0gaHRtbGA8ZGl2IGNsYXNzPVwia3ItZmFuZHRhYlwiPlxuICAgICR7RC5rb21tdW5lci5tYXAoayA9PiBodG1sYFxuICAgICAgPGRpdiBjbGFzcz1cImtyLWZhbmR0YWItZ3J1cHBcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cImtyLWZhbmR0YWItaGVhZFwiPiR7ay5uYW1ufTwvZGl2PlxuICAgICAgICA8dGFibGUgY2xhc3M9XCJrci1mYW5kdGFiLXRibFwiPlxuICAgICAgICAgICR7ay5yZWxhdGlvbmVyLm1hcChyID0+IGh0bWxgPHRyPlxuICAgICAgICAgICAgPHRkIGNsYXNzPVwibW90XCI+PHNwYW4gY2xhc3M9XCJkb3RcIiBzdHlsZT0ke2BiYWNrZ3JvdW5kOiR7Q09MW3IudHlwXX1gfT48L3NwYW4+JHtyLm1vdHBhcnR9PC90ZD5cbiAgICAgICAgICAgIDx0ZCBjbGFzcz1cInNwa1wiPiR7c3Bhcmsoci5zZXJpZSwgQ09MW3IudHlwXSl9PC90ZD5cbiAgICAgICAgICAgIDx0ZCBjbGFzcz1cInZhbHNcIj4ke2ZtdChyLnQyMDAwKX0g4oaSIDxiPiR7Zm10KHIudDIwMjQpfTwvYj48L3RkPlxuICAgICAgICAgICAgPHRkIGNsYXNzPVwiY2hnXCI+PHNwYW4gY2xhc3M9XCJjaGdudW1cIiBzdHlsZT0ke2Bjb2xvcjoke0NPTFtyLnR5cF19YH0+KyR7Zm10KHIuZm9yYW5kcmluZyl9PC9zcGFuPjxzcGFuIGNsYXNzPVwicGN0XCI+KyR7ci5wY3R9JTwvc3Bhbj48L3RkPlxuICAgICAgICAgIDwvdHI+YCl9XG4gICAgICAgIDwvdGFibGU+XG4gICAgICA8L2Rpdj5gKX1cbiAgPC9kaXY+YDtcbiAgLy8gS29wcGxhIGhvdmVyLWxpc3RlbmVycyBwcm9ncmFtbWF0aXNrdCAoaHRsIGlubGluZWFyIGZ1bmt0aW9uZXIgaSBvbiotYXR0cmlidXQpXG4gIGNvbnN0IGdyb3VwcyA9IGNvbnRhaW5lci5xdWVyeVNlbGVjdG9yQWxsKFwiLmtyLWZhbmR0YWItZ3J1cHBcIik7XG4gIEQua29tbXVuZXIuZm9yRWFjaCgoaywgZ2kpID0+IHtcbiAgICBjb25zdCByb3dzID0gZ3JvdXBzW2dpXSA/IGdyb3Vwc1tnaV0ucXVlcnlTZWxlY3RvckFsbChcInRyXCIpIDogW107XG4gICAgay5yZWxhdGlvbmVyLmZvckVhY2goKHIsIHJpKSA9PiB7XG4gICAgICBjb25zdCB0ciA9IHJvd3NbcmldO1xuICAgICAgaWYgKCF0cikgcmV0dXJuO1xuICAgICAgdHIuYWRkRXZlbnRMaXN0ZW5lcihcIm1vdXNlZW50ZXJcIiwgZXYgPT4gc2hvd1RpcChyLCBrLm5hbW4sIGV2KSk7XG4gICAgICB0ci5hZGRFdmVudExpc3RlbmVyKFwibW91c2Vtb3ZlXCIsIG1vdmVUaXApO1xuICAgICAgdHIuYWRkRXZlbnRMaXN0ZW5lcihcIm1vdXNlbGVhdmVcIiwgaGlkZVRpcCk7XG4gICAgfSk7XG4gIH0pO1xuICBjb250YWluZXIuYXBwZW5kQ2hpbGQodGlwKTtcbiAgcmV0dXJuIGNvbnRhaW5lcjtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IGJ5Z2dUb2MgfSBmcm9tIFwiLi4vanMvdG9jLmpzXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtOCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImJ5Z2dUb2MoKVxuIn1dfQ==
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../funktionell-geografi";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,337 @@
+{
+  "version": "10.0",
+  "parametrar": {
+    "kluster_min_tathet": 300,
+    "kluster_gap": 1,
+    "stad_grans": [50000, 20000],
+    "centrum_tathet": 1500,
+    "tatort": "anvands ej (rent rutnat)",
+    "grid": "utvidgat: Halland + Storgoteborg (klippt till Halland)",
+    "peri_km": 10,
+    "lok_min": 3000,
+    "yttre_min": [45, 30],
+    "omvagsfaktor": 1.3,
+    "hastighet_kmh": 65
+  },
+  "centra": [
+    {
+      "namn": "Göteborg",
+      "klass": "Större stad (>50 tkr)",
+      "befolkning": 684829,
+      "karna_bef": 597473,
+      "klusterbef": 679168,
+      "kropp_rutor": 334,
+      "karna_rutor": 185,
+      "yttre_min": 45,
+      "yttre_km": 37.5,
+      "tp_x": 319953,
+      "tp_y": 6399629
+    },
+    {
+      "namn": "Halmstad",
+      "klass": "Större stad (>50 tkr)",
+      "befolkning": 72950,
+      "karna_bef": 51303,
+      "klusterbef": 71279,
+      "kropp_rutor": 56,
+      "karna_rutor": 19,
+      "yttre_min": 45,
+      "yttre_km": 37.5,
+      "tp_x": 369314,
+      "tp_y": 6282789
+    },
+    {
+      "namn": "Varberg",
+      "klass": "Stad (20–50 tkr)",
+      "befolkning": 36296,
+      "karna_bef": 28046,
+      "klusterbef": 35780,
+      "kropp_rutor": 34,
+      "karna_rutor": 13,
+      "yttre_min": 30,
+      "yttre_km": 25,
+      "tp_x": 334568,
+      "tp_y": 6332638
+    },
+    {
+      "namn": "Falkenberg",
+      "klass": "Stad (20–50 tkr)",
+      "befolkning": 26725,
+      "karna_bef": 17216,
+      "klusterbef": 25591,
+      "kropp_rutor": 31,
+      "karna_rutor": 9,
+      "yttre_min": 30,
+      "yttre_km": 25,
+      "tp_x": 348318,
+      "tp_y": 6309071
+    },
+    {
+      "namn": "Kungsbacka",
+      "klass": "Stad (20–50 tkr)",
+      "befolkning": 24518,
+      "karna_bef": 14439,
+      "klusterbef": 24378,
+      "kropp_rutor": 23,
+      "karna_rutor": 6,
+      "yttre_min": 30,
+      "yttre_km": 25,
+      "tp_x": 324938,
+      "tp_y": 6375788
+    }
+  ],
+  "lokala_centra": [
+    {
+      "namn": "Onsala",
+      "klass": "4 Lokalt centrum nära stad",
+      "befolkning": 10241,
+      "rutor": 15,
+      "max_tathet": 1150,
+      "narmsta": "Göteborg"
+    },
+    {
+      "namn": "Laholm",
+      "klass": "4 Lokalt centrum nära stad",
+      "befolkning": 6382,
+      "rutor": 6,
+      "max_tathet": 2291,
+      "narmsta": "Halmstad"
+    },
+    {
+      "namn": "Åsa",
+      "klass": "4 Lokalt centrum nära stad",
+      "befolkning": 4459,
+      "rutor": 7,
+      "max_tathet": 1508,
+      "narmsta": "Kungsbacka"
+    },
+    {
+      "namn": "Oskarström",
+      "klass": "4 Lokalt centrum nära stad",
+      "befolkning": 4053,
+      "rutor": 7,
+      "max_tathet": 1509,
+      "narmsta": "Halmstad"
+    },
+    {
+      "namn": "Hyltebruk",
+      "klass": "5 Lokalt centrum på landsbygd",
+      "befolkning": 3190,
+      "rutor": 5,
+      "max_tathet": 839,
+      "narmsta": "—"
+    }
+  ],
+  "fordelning": [
+    {
+      "klass": "1 Stadskärna",
+      "befolkning": 111004,
+      "rutor": 47,
+      "andel": 32.2
+    },
+    {
+      "klass": "2 Yttre stadsområde",
+      "befolkning": 57256,
+      "rutor": 135,
+      "andel": 16.6
+    },
+    {
+      "klass": "3 Peri-urbant",
+      "befolkning": 85492,
+      "rutor": 1477,
+      "andel": 24.8
+    },
+    {
+      "klass": "4 Lokalt centrum nära stad",
+      "befolkning": 26372,
+      "rutor": 51,
+      "andel": 7.6
+    },
+    {
+      "klass": "5 Lokalt centrum på landsbygd",
+      "befolkning": 3470,
+      "rutor": 6,
+      "andel": 1
+    },
+    {
+      "klass": "6 Stadsnära landsbygd",
+      "befolkning": 50640,
+      "rutor": 2659,
+      "andel": 14.7
+    },
+    {
+      "klass": "7 Landsbygd",
+      "befolkning": 10636,
+      "rutor": 1461,
+      "andel": 3.1
+    }
+  ],
+  "kommun": [
+    {
+      "kommun": "Falkenberg",
+      "klass": "1 Stadskärna",
+      "bef": 17216,
+      "andel": 36.4
+    },
+    {
+      "kommun": "Falkenberg",
+      "klass": "2 Yttre stadsområde",
+      "bef": 9860,
+      "andel": 20.9
+    },
+    {
+      "kommun": "Falkenberg",
+      "klass": "3 Peri-urbant",
+      "bef": 14010,
+      "andel": 29.6
+    },
+    {
+      "kommun": "Falkenberg",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 2238,
+      "andel": 4.7
+    },
+    {
+      "kommun": "Falkenberg",
+      "klass": "7 Landsbygd",
+      "bef": 3973,
+      "andel": 8.4
+    },
+    {
+      "kommun": "Halmstad",
+      "klass": "1 Stadskärna",
+      "bef": 51303,
+      "andel": 48.4
+    },
+    {
+      "kommun": "Halmstad",
+      "klass": "2 Yttre stadsområde",
+      "bef": 21969,
+      "andel": 20.7
+    },
+    {
+      "kommun": "Halmstad",
+      "klass": "3 Peri-urbant",
+      "bef": 21574,
+      "andel": 20.4
+    },
+    {
+      "kommun": "Halmstad",
+      "klass": "4 Lokalt centrum nära stad",
+      "bef": 4087,
+      "andel": 3.9
+    },
+    {
+      "kommun": "Halmstad",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 7000,
+      "andel": 6.6
+    },
+    {
+      "kommun": "Hylte",
+      "klass": "5 Lokalt centrum på landsbygd",
+      "bef": 3470,
+      "andel": 34.5
+    },
+    {
+      "kommun": "Hylte",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 2420,
+      "andel": 24.1
+    },
+    {
+      "kommun": "Hylte",
+      "klass": "7 Landsbygd",
+      "bef": 4153,
+      "andel": 41.4
+    },
+    {
+      "kommun": "Kungsbacka",
+      "klass": "1 Stadskärna",
+      "bef": 14439,
+      "andel": 16.8
+    },
+    {
+      "kommun": "Kungsbacka",
+      "klass": "2 Yttre stadsområde",
+      "bef": 17014,
+      "andel": 19.8
+    },
+    {
+      "kommun": "Kungsbacka",
+      "klass": "3 Peri-urbant",
+      "bef": 28740,
+      "andel": 33.5
+    },
+    {
+      "kommun": "Kungsbacka",
+      "klass": "4 Lokalt centrum nära stad",
+      "bef": 15903,
+      "andel": 18.5
+    },
+    {
+      "kommun": "Kungsbacka",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 9809,
+      "andel": 11.4
+    },
+    {
+      "kommun": "Laholm",
+      "klass": "3 Peri-urbant",
+      "bef": 858,
+      "andel": 3.3
+    },
+    {
+      "kommun": "Laholm",
+      "klass": "4 Lokalt centrum nära stad",
+      "bef": 6382,
+      "andel": 24.3
+    },
+    {
+      "kommun": "Laholm",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 17552,
+      "andel": 66.7
+    },
+    {
+      "kommun": "Laholm",
+      "klass": "7 Landsbygd",
+      "bef": 1500,
+      "andel": 5.7
+    },
+    {
+      "kommun": "Varberg",
+      "klass": "1 Stadskärna",
+      "bef": 28046,
+      "andel": 40.4
+    },
+    {
+      "kommun": "Varberg",
+      "klass": "2 Yttre stadsområde",
+      "bef": 8413,
+      "andel": 12.1
+    },
+    {
+      "kommun": "Varberg",
+      "klass": "3 Peri-urbant",
+      "bef": 20310,
+      "andel": 29.3
+    },
+    {
+      "kommun": "Varberg",
+      "klass": "6 Stadsnära landsbygd",
+      "bef": 11621,
+      "andel": 16.7
+    },
+    {
+      "kommun": "Varberg",
+      "klass": "7 Landsbygd",
+      "bef": 1010,
+      "andel": 1.5
+    }
+  ],
+  "overlapp": {
+    "andel_minst_2_omland": 41.6,
+    "andel_utanfor_alla": 4.1
+  }
+}

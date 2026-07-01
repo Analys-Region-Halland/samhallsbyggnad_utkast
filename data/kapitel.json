@@ -1,0 +1,96 @@
+{
+  "rapport": {
+    "avsandare": "En rapport från",
+    "titel": "Halland",
+    "titel_accent": "en hållbar och attraktiv region",
+    "underrubrik": "Ett underlag om planeringsförutsättningarna i regionen",
+    "ingress": "Hur växer och förändras Halland? Underlaget belyser regionens förutsättningar i en rad fristående men sammanhängande områden — från regional översikt och befolkning till den funktionella geografin — som grund för en långsiktigt hållbar och attraktiv utveckling.",
+    "utgivare": "Region Halland",
+    "uppdaterad": "juni 2026"
+  },
+  "kommuner": [
+    { "id": "1384", "namn": "Kungsbacka", "invanare": 85600 },
+    { "id": "1383", "namn": "Varberg", "invanare": 67200 },
+    { "id": "1382", "namn": "Falkenberg", "invanare": 47800 },
+    { "id": "1380", "namn": "Halmstad", "invanare": 105200 },
+    { "id": "1381", "namn": "Laholm", "invanare": 26300 },
+    { "id": "1315", "namn": "Hylte", "invanare": 10600 }
+  ],
+  "kapitel": [
+    {
+      "id": "oversikt",
+      "nummer": 1,
+      "kategori": "Struktur",
+      "titel": "Geografi och rumslig struktur",
+      "ingress": "Vad för slags region är Halland, rumsligt? Kapitlet tecknar regionens ekonomiska geografi — läget vid kustkorridoren, den höga tätheten, den flerkärniga ortsstrukturen och fördelningen mellan stad och land — och de förutsättningar för tillväxt och tillgänglighet som följer av den.",
+      "farg": "#00664D",
+      "avsnitt": [
+        { "id": "inramning", "titel": "En flerkärnig och tät region" },
+        { "id": "koncentration", "titel": "Befolkningsfördelning och koncentration" },
+        { "id": "stad-land", "titel": "Stad och land" },
+        { "id": "typologi", "titel": "Hallandstypologin: stad och land" },
+        { "id": "var-bor", "titel": "Var bor hallänningarna?" }
+      ]
+    },
+    {
+      "id": "befolkning",
+      "nummer": 2,
+      "kategori": "Tillväxt",
+      "titel": "Befolkningsutvecklingens geografi",
+      "ingress": "Halland hör till landets snabbast växande län. En kartläggning av tillväxten sedan 1969 — var den sker, vilka kommuner och orter som driver den, och hur den koncentreras mot kusten och tätorterna.",
+      "farg": "#0C8C7E",
+      "avsnitt": [
+        { "id": "regional-utveckling", "titel": "Regional utveckling" },
+        { "id": "kommunerna", "titel": "Kommunerna i Halland" },
+        { "id": "tillvaxtens-geografi", "titel": "Tillväxtens geografi" },
+        { "id": "tatorter", "titel": "Tätorter och landsbygd" },
+        { "id": "prognos", "titel": "Befolkningsprognos" }
+      ]
+    },
+    {
+      "id": "funktionell-geografi",
+      "nummer": 3,
+      "kategori": "Rörlighet",
+      "titel": "Rörelsernas geografi",
+      "ingress": "Hallands sex kommuner är den administrativa indelningen — men arbetsmarknaden följer en annan geografi. Tio funktionella tätortsregioner växer fram, formade underifrån av pendlingen. Vid sidan av pendlingen tecknas också flyttningarna — hur hallänningarna byter bostadsort.",
+      "farg": "#1A7BB0",
+      "avsnitt": [
+        { "id": "drivkrafter", "titel": "Regionförstoring och drivkrafter" },
+        { "id": "granser", "titel": "Pendling över län och kommungräns" },
+        { "id": "metoden", "titel": "Att bygga den funktionella kartan" },
+        { "id": "flyttningar", "titel": "Flyttningar" }
+      ]
+    },
+    {
+      "id": "bostader",
+      "nummer": 4,
+      "kategori": "Boende",
+      "titel": "Hushåll och bostadsmarknad",
+      "ingress": "Bostadsmarknadens grundenhet är hushållet, inte invånaren. Kapitlet följer hur hushållen växer och krymper, hur bostadsbeståndet ser ut och vem som äger det, och går vidare genom byggande, priser och hyror till frågan om var behovet växer snabbast.",
+      "farg": "#1E63A8",
+      "avsnitt": [
+        { "id": "hushall", "titel": "Befolkning och hushåll" },
+        { "id": "hushallsstorlek", "titel": "Hushållsstorlek" },
+        { "id": "livscykel", "titel": "Hushållsformer över livscykeln" },
+        { "id": "bestand", "titel": "Bostadsbeståndet" },
+        { "id": "agande", "titel": "Vem äger bostäderna?" },
+        { "id": "storlek", "titel": "Bostädernas storlek och rumsantal" },
+        { "id": "byggande", "titel": "Bostadsbyggande och marknad" },
+        { "id": "syntes", "titel": "Syntes" }
+      ]
+    },
+    {
+      "id": "service-och-tillganglighet",
+      "nummer": 5,
+      "kategori": "Tillgänglighet",
+      "titel": "Service och tillgänglighet",
+      "ingress": "Kapitlet är under uppbyggnad. Det ska belysa hur tillgängligheten till arbete och service ser ut i Halland, och hur den skiljer sig mellan kommuner och orter.",
+      "farg": "#2E4D96",
+      "avsnitt": [
+        { "id": "om-tillganglighet", "titel": "Om tillgänglighet" },
+        { "id": "arbete", "titel": "Tillgänglighet till arbete" },
+        { "id": "service", "titel": "Service" }
+      ]
+    }
+  ]
+}

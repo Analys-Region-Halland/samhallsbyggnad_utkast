@@ -1,0 +1,44 @@
+[
+  {
+    "kommun": "Halmstad",
+    "tatortsgrad": 92.8,
+    "landsbygd_bef": 7664,
+    "total_bef": 106084,
+    "antal_tatorter": 19
+  },
+  {
+    "kommun": "Kungsbacka",
+    "tatortsgrad": 87.5,
+    "landsbygd_bef": 10686,
+    "total_bef": 85792,
+    "antal_tatorter": 16
+  },
+  {
+    "kommun": "Varberg",
+    "tatortsgrad": 82.3,
+    "landsbygd_bef": 12248,
+    "total_bef": 69070,
+    "antal_tatorter": 22
+  },
+  {
+    "kommun": "Falkenberg",
+    "tatortsgrad": 82.1,
+    "landsbygd_bef": 8460,
+    "total_bef": 47337,
+    "antal_tatorter": 18
+  },
+  {
+    "kommun": "Laholm",
+    "tatortsgrad": 74.3,
+    "landsbygd_bef": 6840,
+    "total_bef": 26595,
+    "antal_tatorter": 14
+  },
+  {
+    "kommun": "Hylte",
+    "tatortsgrad": 67,
+    "landsbygd_bef": 3368,
+    "total_bef": 10196,
+    "antal_tatorter": 6
+  }
+]

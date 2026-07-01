@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>readme-r5r-infrastruktur – Kapitelrapport Halland</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../data/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-ef1505cedaabdda5d1165613ba7a8468.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="r5r-infrastruktur-service-och-tillgänglighet" class="level1">
+<h1>r5r-infrastruktur — Service och tillgänglighet</h1>
+<p>Uppsättning av tillgänglighetsanalysen (restider till arbete/service) med R-paketet <strong>r5r</strong> (Rapid Realistic Routing, R5-motorn från Conveyal via rJava). Nätverket <strong>byggdes och verifierades 2026-07-01</strong> och är körklart: walk/bike/car (OSM) + kollektivtrafik (GTFS) för fem sydsvenska län.</p>
+<section id="status-klart" class="level2">
+<h2 class="anchored" data-anchor-id="status-klart">Status: KLART ✔</h2>
+<p><code>r5r-natverk/network.dat</code> är byggd och testad. Verifierat: gatunät 3,67 milj. kanter / 1,46 milj. noder, transit 12 470 linjer / 45 383 hållplatser, trafik aktiv (t.ex. 2026-09-16: 1 163 aktiva turer), och ett restidstest WALK vs WALK+TRANSIT från Halmstad når Göteborg (230 min), Malmö (190), Växjö (337), Jönköping (395) med kollektivtrafik medan gång inte når dem, dvs. kollektivtrafik-routingen fungerar.</p>
+</section>
+<section id="studieområde" class="level2">
+<h2 class="anchored" data-anchor-id="studieområde">Studieområde</h2>
+<p>Fem län, sammanslagna till en polygon med 7,5 km buffert:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Län</th>
+<th>NUTS3-kod</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Halland</td>
+<td>SE231</td>
+</tr>
+<tr class="even">
+<td>Skåne</td>
+<td>SE224</td>
+</tr>
+<tr class="odd">
+<td>Västra Götaland</td>
+<td>SE232</td>
+</tr>
+<tr class="even">
+<td>Kronoberg</td>
+<td>SE212</td>
+</tr>
+<tr class="odd">
+<td>Jönköping</td>
+<td>SE211</td>
+</tr>
+</tbody>
+</table>
+<p>Källa för länsgränser: <strong>giscoR</strong> (<code>gisco_get_nuts(country = "Sweden", nuts_level = 3)</code>), Eurostat GISCO, upplösning 1:1 miljon. NUTS3 för Sverige ger exakt de 21 länen.</p>
+</section>
+<section id="paket-och-versioner-2026-07-01" class="level2">
+<h2 class="anchored" data-anchor-id="paket-och-versioner-2026-07-01">Paket och versioner (2026-07-01)</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Paket</th>
+<th>Version</th>
+<th>Användning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>r5r</code></td>
+<td>2.4.0</td>
+<td>R5-routingmotor (R5 v7.5.1, kräver Java 21)</td>
+</tr>
+<tr class="even">
+<td><code>rJava</code></td>
+<td>1.0-18</td>
+<td>R↔︎Java-brygga</td>
+</tr>
+<tr class="odd">
+<td><code>rJavaEnv</code></td>
+<td>0.3.0</td>
+<td>Java-installation utan adminrättigheter</td>
+</tr>
+<tr class="even">
+<td><code>osmextract</code></td>
+<td>0.6.0</td>
+<td>Hämta OSM-extrakt (Geofabrik)</td>
+</tr>
+<tr class="odd">
+<td><code>giscoR</code></td>
+<td>1.1.1</td>
+<td>Eurostat GISCO — länsgränser</td>
+</tr>
+<tr class="even">
+<td><code>gtfstools</code></td>
+<td>1.4.0</td>
+<td>Läsa/filtrera/skriva GTFS-flöden</td>
+</tr>
+<tr class="odd">
+<td><code>sf</code></td>
+<td>1.1.1</td>
+<td>Geometri/projektion/buffring</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="java" class="level2">
+<h2 class="anchored" data-anchor-id="java">Java</h2>
+<p>r5r 2.4.0 bygger på <strong>R5 v7.5.1</strong> och kräver <strong>JDK 21</strong>. Systemets Java var 1.8 (för gammalt). <code>rJavaEnv::java_quick_install(version = 21)</code> installerade <strong>Amazon Corretto 21</strong> (utan adminrättigheter) i:</p>
+<pre><code>C:\Users\rrn508\AppData\Local\R\cache\R\rJavaEnv\installed\windows\x64\21</code></pre>
+<p>rJavaEnv skrev en projektlokal <strong><code>.Rprofile</code></strong> (i projektroten) som automatiskt sätter <code>JAVA_HOME</code>/<code>PATH</code> till Java 21 när R startas från projektet. Verifierat: <code>Java 21.0.11</code>, <code>r5r 2.4.0</code>. Kör därför alltid R <strong>från projektroten</strong>.</p>
+<p>R5-motorns jar (<code>r5-v7.5-1-...-all.jar</code>, 61,5 MB) laddas ner automatiskt av <code>r5r::build_network()</code> vid första bygget och cachas i:</p>
+<pre><code>C:\Users\rrn508\AppData\Local\R\cache\R\r5r\r5_jar_v7.5.1\</code></pre>
+</section>
+<section id="osm-vägnät" class="level2">
+<h2 class="anchored" data-anchor-id="osm-vägnät">OSM-vägnät</h2>
+<p><strong>Källa:</strong> Geofabrik, hela Sverige (<code>sweden-latest.osm.pbf</code>, 771 MB), i lokal cache utanför OneDrive-synken:</p>
+<pre><code>%LOCALAPPDATA%\kapitelrapport-cache\osm\sweden-latest.osm.pbf</code></pre>
+<p><strong>Beskärning till studieområdet:</strong> <code>osmium-tool</code> gick inte att installera i uppsättningsmiljön. Istället användes <strong>Osmosis 0.49.2</strong> (OSM Foundations Java-verktyg, kräver ingen installation utöver Java som vi redan har), nedladdat till:</p>
+<pre><code>%LOCALAPPDATA%\kapitelrapport-cache\tools\osmosis-0.49.2\</code></pre>
+<p>Sverige-filen klipptes mot en till 284 hörn förenklad polygon (Douglas-Peucker 500 m i SWEREF99 TM) med <code>completeWays=yes</code> och <code>JAVACMD_OPTIONS=-Xmx6G</code>. Resultat: <strong><code>r5r-natverk/studieomrade-5lan.osm.pbf</code> (238,7 MB)</strong>. Se <code>bearbetning_data/klipp_osm_osmosis.R</code> för det reproducerbara steget.</p>
+<p>Varför klippa (inte köra hela Sverige): R5 har en hårdkodad gräns på 975 000 km² bounding-box-utbredning; Sveriges avlånga bbox riskerar slå i taket. De fem sydliga länen ligger med god marginal under.</p>
+</section>
+<section id="gtfs-kollektivtrafik" class="level2">
+<h2 class="anchored" data-anchor-id="gtfs-kollektivtrafik">GTFS-kollektivtrafik</h2>
+<p><strong>Källa:</strong> GTFS Sverige 2 (Samtrafiken), keyless spegling via <strong>Mobility Database (mdb-2661)</strong>, licens <strong>CC0 1.0</strong>. Ett nationellt flöde täcker alla fem länens trafikbolag (Hallandstrafiken, Skånetrafiken, Västtrafik, Länstrafiken Kronoberg, Jönköpings Länstrafik). Ingen API-nyckel behövs.</p>
+<p><strong>Rensning (viktig):</strong> feeden använder utökade GTFS-route_types. R5 v7.5.1 stödjer dem UTOM Taxi-familjen (1500-serien) — <code>route_type = 1501</code> (anropsstyrd närtrafik) får routingen att krascha (<code>Taxi route_type code not supported</code>). Dessa 488 rutter tas bort med korrekt kaskad via <code>gtfstools</code> (de är demand-responsive och hör inte hemma i en fast-schema-analys). Se <code>bearbetning_data/hamta_gtfs.R</code>. Resultat: <strong><code>r5r-natverk/gtfs_sverige.zip</code> (55 MB)</strong>, 8 479 kvarvarande rutter (typerna 700/106/102/702/101/1000/900/401).</p>
+</section>
+<section id="bygga-nätverket" class="level2">
+<h2 class="anchored" data-anchor-id="bygga-nätverket">Bygga nätverket</h2>
+<p><code>bearbetning_data/bygg_r5r_natverk.R</code> sätter <code>options(java.parameters="-Xmx8G")</code> FÖRE <code>library(r5r)</code>, kör <code>build_network()</code> (ej det deprecerade <code>setup_r5()</code>) med <code>elevation="NONE"</code>, <code>overwrite=TRUE</code>, och verifierar bygget. Byggtid ~2 min. Skapar <code>network.dat</code> (~342 MB) m.fl. artefakter i <code>r5r-natverk/</code>.</p>
+<p><code>bearbetning_data/verifiera_transit.R</code> laddar det byggda nätverket och kör <code>check_transit_availability()</code> + ett WALK vs WALK+TRANSIT-restidstest.</p>
+</section>
+<section id="mappstruktur" class="level2">
+<h2 class="anchored" data-anchor-id="mappstruktur">Mappstruktur</h2>
+<pre><code>service-och-tillganglighet/
+├── README-r5r-infrastruktur.md
+├── paket.R
+├── r5r-natverk/                         # r5r:s indatamapp (BYGGD)
+│   ├── studieomrade-5lan.osm.pbf        # klippt vägnät, 238,7 MB
+│   ├── gtfs_sverige.zip                 # rensad GTFS, 55 MB
+│   ├── network.dat                      # byggt R5-nätverk, ~342 MB
+│   ├── *.mapdb, network_settings.json, r5r-log.log, gtfs_errors.csv
+│   └── README.md
+├── inhamtning_data/
+│   ├── granser/studieomrade-5lan.{gpkg,geojson}   # 5-läns unionpolygon + buffert
+│   └── gtfs/gtfs_sverige2_raw.zip                  # rå GTFS före rensning
+├── bearbetning_data/
+│   ├── hamta_granser.R                  # STEG 1a: länsgränser → polygon
+│   ├── hamta_osm.R                      # STEG 1b: ladda ner Sverige-OSM
+│   ├── klipp_osm_osmosis.R             # STEG 1c: klipp OSM till 5 län (Osmosis)
+│   ├── hamta_gtfs.R                     # STEG 1d: hämta + rensa GTFS
+│   ├── bygg_r5r_natverk.R              # STEG 2: build_network() + verifiering
+│   └── verifiera_transit.R             # STEG 3: transit-verifiering
+└── index.qmd, _om-tillganglighet.qmd, _arbete.qmd, _service.qmd</code></pre>
+<p>Lokal cache (utanför OneDrive): <code>%LOCALAPPDATA%\kapitelrapport-cache\</code> (<code>osm\sweden-latest.osm.pbf</code>, <code>tools\osmosis-0.49.2\</code>).</p>
+</section>
+<section id="att-tänka-på" class="level2">
+<h2 class="anchored" data-anchor-id="att-tänka-på">Att tänka på</h2>
+<ul>
+<li><strong>OneDrive-synk:</strong> <code>r5r-natverk/</code> är nu ~1,1 GB (pbf + network.dat + .mapdb). OneDrive försöker synka detta. Överväg att exkludera mappen från synk (eller flytta hela <code>r5r-natverk/</code> till den lokala cachen och peka <code>data_path</code> dit) om synken blir tung. De stora filerna kan alltid återskapas av skripten.</li>
+<li><strong>GTFS-datum:</strong> kalendern täcker 2026-06-15 t.o.m. 2027-05-31. Sätt analysdatumet (avgångstid) till en vanlig vardag i det intervallet, annars hittas inga turer. <code>check_transit_availability()</code> visar aktiva datum.</li>
+<li><strong>Restidstestets råa testpunkter:</strong> smoke-testet använder grova stadskoordinater; ett par värden (t.ex. Varberg, Falkenberg) blev udda pga snapping/avgångstid. Riktig analys bör snappa origin/destination till vettiga punkter (befolkningsgrid, arbetsställen).</li>
+<li><strong>GTFS-varningar:</strong> ~2 100 icke-fatala GTFS-fel (mest saknade shapes) vid bygget; <code>r5r::get_gtfs_errors()</code> listar dem. De hindrar inte routing.</li>
+</ul>
+</section>
+<section id="nästa-steg" class="level2">
+<h2 class="anchored" data-anchor-id="nästa-steg">Nästa steg</h2>
+<ol type="1">
+<li>Bygg analysskripten (restidsmatriser, tillgänglighetsindex) i <code>bearbetning_data/</code> med det byggda nätverket.</li>
+<li>Valfritt: skaffa gratis Trafiklab-nyckel (developer.trafiklab.se/register) för GTFS Regional per operatör om linjegeometri (shapes) eller enskilda län behövs — behövs INTE för restidsanalysen.</li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
