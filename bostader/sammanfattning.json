@@ -1,0 +1,36 @@
+{
+  "slides": [
+    {
+      "id": "s1",
+      "kicker": "Hushåll",
+      "rubrik": "Hushållen växer snabbare än befolkningen",
+      "ingang": "Bostadsbehovet styrs av hushållen, inte invånarna, och hushållen blir fler och mindre.",
+      "text": "Mellan 2011 och 2025 växte Hallands folkmängd med 14,7 procent men antalet hushåll med 18,5 procent. Genomsnittshushållet krympte från 2,29 till 2,21 personer. Även kommuner med stillastående folkmängd, som Hylte, får fler hushåll och därmed ett stigande räknat bostadsbehov.",
+      "graf": "bostader-hushall"
+    },
+    {
+      "id": "s2",
+      "kicker": "Bestånd",
+      "rubrik": "Ett län där småhuset dominerar",
+      "ingang": "Utanför de större tätorterna bor de flesta hallänningar i eget hus.",
+      "text": "Flerbostadshusen koncentreras till Halmstad, Varberg och Kungsbacka, medan resten av länet präglas av småhus. Beståndet ägs till stor del av fysiska personer, och den ensidiga sammansättningen gör det svårare för unga och äldre att hitta rätt bostad i rätt skede av livet.",
+      "graf": "bostader-bestand"
+    },
+    {
+      "id": "s3",
+      "kicker": "Byggande",
+      "rubrik": "Stark småhusmarknad, ojämnt lägenhetsbyggande",
+      "ingang": "Halland bygger förhållandevis mycket, men fördelningen mellan kommuner och hustyper är ojämn.",
+      "text": "Varberg sticker ut med rekordhögt lägenhetsbyggande de senaste åren, drivet av Västerport, medan Laholm och Hylte nästan uteslutande bygger småhus. Vilka bostäder som byggs, inte bara hur många, avgör om behovet möts.",
+      "graf": "bostader-byggande"
+    },
+    {
+      "id": "s4",
+      "kicker": "Priser",
+      "rubrik": "Prisbågen: lång uppgång, sedan korrigering",
+      "ingang": "Bostadspriserna steg kraftigt fram till 2021–2022 och föll därefter tillbaka.",
+      "text": "Småhuspriserna i Halland steg realt med drygt 175 procent mellan 2000 och 2022 innan en korrigering på 10 till 15 procent. Geografiskt är mönstret konsekvent: Kungsbacka dyrast, Hylte billigast, med mer än fyrdubbel spridning för småhus.",
+      "graf": "bostader-priser"
+    }
+  ]
+}

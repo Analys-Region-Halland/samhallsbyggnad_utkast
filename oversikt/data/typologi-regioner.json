@@ -1,0 +1,1059 @@
+{
+  "version": "10.0",
+  "kalla": "Befolkning per 1 km-ruta 31 dec 2025 (SCB:s befolkningsrutnät); v10, gränsöverskridande buffert (45 km) — varje region klassas med sina verkliga grannstäder",
+  "klassordning": ["Stadskärna", "Yttre stadsområde", "Peri-urbant", "Lokalt centrum nära stad", "Lokalt centrum på landsbygd", "Stadsnära landsbygd", "Landsbygd"],
+  "fordelning": [
+    {
+      "region": "Stockholm",
+      "typologi": "Stadskärna",
+      "befolkning": 1692252,
+      "andel": 68.3
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 530035,
+      "andel": 21.4
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Peri-urbant",
+      "befolkning": 93323,
+      "andel": 3.8
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 104951,
+      "andel": 4.2
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 3149,
+      "andel": 0.1
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 48878,
+      "andel": 2
+    },
+    {
+      "region": "Stockholm",
+      "typologi": "Landsbygd",
+      "befolkning": 5808,
+      "andel": 0.2
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Stadskärna",
+      "befolkning": 197932,
+      "andel": 48.4
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 20565,
+      "andel": 5
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Peri-urbant",
+      "befolkning": 41615,
+      "andel": 10.2
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 49604,
+      "andel": 12.1
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 10538,
+      "andel": 2.6
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 53350,
+      "andel": 13
+    },
+    {
+      "region": "Uppsala",
+      "typologi": "Landsbygd",
+      "befolkning": 35804,
+      "andel": 8.7
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Stadskärna",
+      "befolkning": 102357,
+      "andel": 34.2
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 43946,
+      "andel": 14.7
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Peri-urbant",
+      "befolkning": 32762,
+      "andel": 10.9
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 61227,
+      "andel": 20.5
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 0,
+      "andel": 0
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 54958,
+      "andel": 18.4
+    },
+    {
+      "region": "Södermanland",
+      "typologi": "Landsbygd",
+      "befolkning": 4053,
+      "andel": 1.3
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Stadskärna",
+      "befolkning": 219276,
+      "andel": 46.5
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 25585,
+      "andel": 5.4
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Peri-urbant",
+      "befolkning": 44852,
+      "andel": 9.5
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 93907,
+      "andel": 19.9
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 3619,
+      "andel": 0.8
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 55503,
+      "andel": 11.8
+    },
+    {
+      "region": "Östergötland",
+      "typologi": "Landsbygd",
+      "befolkning": 28822,
+      "andel": 6.1
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Stadskärna",
+      "befolkning": 76424,
+      "andel": 20.7
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 34251,
+      "andel": 9.3
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Peri-urbant",
+      "befolkning": 19071,
+      "andel": 5.2
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 51661,
+      "andel": 14
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 84627,
+      "andel": 22.9
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 31485,
+      "andel": 8.5
+    },
+    {
+      "region": "Jönköping",
+      "typologi": "Landsbygd",
+      "befolkning": 71412,
+      "andel": 19.4
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Stadskärna",
+      "befolkning": 41451,
+      "andel": 20.4
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 24741,
+      "andel": 12.2
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Peri-urbant",
+      "befolkning": 12736,
+      "andel": 6.3
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 13046,
+      "andel": 6.4
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 26258,
+      "andel": 13
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 40941,
+      "andel": 20.2
+    },
+    {
+      "region": "Kronoberg",
+      "typologi": "Landsbygd",
+      "befolkning": 43543,
+      "andel": 21.5
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Stadskärna",
+      "befolkning": 55006,
+      "andel": 22.5
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 17120,
+      "andel": 7
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Peri-urbant",
+      "befolkning": 16906,
+      "andel": 6.9
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 24765,
+      "andel": 10.1
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 38085,
+      "andel": 15.5
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 21517,
+      "andel": 8.8
+    },
+    {
+      "region": "Kalmar",
+      "typologi": "Landsbygd",
+      "befolkning": 71567,
+      "andel": 29.2
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Stadskärna",
+      "befolkning": 19736,
+      "andel": 32.6
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 5591,
+      "andel": 9.2
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Peri-urbant",
+      "befolkning": 8393,
+      "andel": 13.8
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 0,
+      "andel": 0
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 0,
+      "andel": 0
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 9773,
+      "andel": 16.1
+    },
+    {
+      "region": "Gotland",
+      "typologi": "Landsbygd",
+      "befolkning": 17149,
+      "andel": 28.3
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Stadskärna",
+      "befolkning": 16090,
+      "andel": 10.3
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 19567,
+      "andel": 12.5
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Peri-urbant",
+      "befolkning": 21467,
+      "andel": 13.7
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 16111,
+      "andel": 10.3
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 37243,
+      "andel": 23.8
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 13660,
+      "andel": 8.8
+    },
+    {
+      "region": "Blekinge",
+      "typologi": "Landsbygd",
+      "befolkning": 32150,
+      "andel": 20.6
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Stadskärna",
+      "befolkning": 693020,
+      "andel": 48.5
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 96480,
+      "andel": 6.7
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Peri-urbant",
+      "befolkning": 126027,
+      "andel": 8.8
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 324390,
+      "andel": 22.7
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 12890,
+      "andel": 0.9
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 141155,
+      "andel": 9.9
+    },
+    {
+      "region": "Skåne",
+      "typologi": "Landsbygd",
+      "befolkning": 35231,
+      "andel": 2.5
+    },
+    {
+      "region": "Halland",
+      "typologi": "Stadskärna",
+      "befolkning": 111004,
+      "andel": 32.2
+    },
+    {
+      "region": "Halland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 57256,
+      "andel": 16.6
+    },
+    {
+      "region": "Halland",
+      "typologi": "Peri-urbant",
+      "befolkning": 85492,
+      "andel": 24.8
+    },
+    {
+      "region": "Halland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 26372,
+      "andel": 7.6
+    },
+    {
+      "region": "Halland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 3470,
+      "andel": 1
+    },
+    {
+      "region": "Halland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 50640,
+      "andel": 14.7
+    },
+    {
+      "region": "Halland",
+      "typologi": "Landsbygd",
+      "befolkning": 10636,
+      "andel": 3.1
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Stadskärna",
+      "befolkning": 832399,
+      "andel": 46.9
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 179821,
+      "andel": 10.2
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Peri-urbant",
+      "befolkning": 127329,
+      "andel": 7.2
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 223560,
+      "andel": 12.6
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 87395,
+      "andel": 4.9
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 184219,
+      "andel": 10.4
+    },
+    {
+      "region": "Västra Götaland",
+      "typologi": "Landsbygd",
+      "befolkning": 138605,
+      "andel": 7.8
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Stadskärna",
+      "befolkning": 50760,
+      "andel": 18
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 29076,
+      "andel": 10.3
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Peri-urbant",
+      "befolkning": 11865,
+      "andel": 4.2
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 49143,
+      "andel": 17.4
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 38844,
+      "andel": 13.7
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 30996,
+      "andel": 11
+    },
+    {
+      "region": "Värmland",
+      "typologi": "Landsbygd",
+      "befolkning": 71901,
+      "andel": 25.4
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Stadskärna",
+      "befolkning": 118384,
+      "andel": 38.5
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 36578,
+      "andel": 11.9
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Peri-urbant",
+      "befolkning": 25654,
+      "andel": 8.3
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 45135,
+      "andel": 14.7
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 7325,
+      "andel": 2.4
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 49625,
+      "andel": 16.1
+    },
+    {
+      "region": "Örebro",
+      "typologi": "Landsbygd",
+      "befolkning": 24797,
+      "andel": 8.1
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Stadskärna",
+      "befolkning": 117129,
+      "andel": 41.9
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 12183,
+      "andel": 4.3
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Peri-urbant",
+      "befolkning": 29398,
+      "andel": 10.5
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 63393,
+      "andel": 22.6
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 14462,
+      "andel": 5.2
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 25958,
+      "andel": 9.3
+    },
+    {
+      "region": "Västmanland",
+      "typologi": "Landsbygd",
+      "befolkning": 17307,
+      "andel": 6.2
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Stadskärna",
+      "befolkning": 51836,
+      "andel": 18.1
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 30444,
+      "andel": 10.7
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Peri-urbant",
+      "befolkning": 21878,
+      "andel": 7.7
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 4212,
+      "andel": 1.5
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 58765,
+      "andel": 20.6
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 19004,
+      "andel": 6.6
+    },
+    {
+      "region": "Dalarna",
+      "typologi": "Landsbygd",
+      "befolkning": 99443,
+      "andel": 34.8
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Stadskärna",
+      "befolkning": 47995,
+      "andel": 17
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 61117,
+      "andel": 21.6
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Peri-urbant",
+      "befolkning": 19691,
+      "andel": 6.9
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 0,
+      "andel": 0
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 53403,
+      "andel": 18.9
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 18076,
+      "andel": 6.4
+    },
+    {
+      "region": "Gävleborg",
+      "typologi": "Landsbygd",
+      "befolkning": 82615,
+      "andel": 29.2
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Stadskärna",
+      "befolkning": 45531,
+      "andel": 19
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 43230,
+      "andel": 18
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Peri-urbant",
+      "befolkning": 31445,
+      "andel": 13.1
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 18226,
+      "andel": 7.6
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 30600,
+      "andel": 12.7
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 25130,
+      "andel": 10.5
+    },
+    {
+      "region": "Västernorrland",
+      "typologi": "Landsbygd",
+      "befolkning": 46002,
+      "andel": 19.1
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Stadskärna",
+      "befolkning": 28123,
+      "andel": 21.2
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 17208,
+      "andel": 13
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Peri-urbant",
+      "befolkning": 8932,
+      "andel": 6.7
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 7723,
+      "andel": 5.8
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 0,
+      "andel": 0
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 11073,
+      "andel": 8.4
+    },
+    {
+      "region": "Jämtland",
+      "typologi": "Landsbygd",
+      "befolkning": 59585,
+      "andel": 44.9
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Stadskärna",
+      "befolkning": 104202,
+      "andel": 37.4
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 30712,
+      "andel": 11
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Peri-urbant",
+      "befolkning": 24723,
+      "andel": 8.9
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 16517,
+      "andel": 5.9
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 7868,
+      "andel": 2.8
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 32269,
+      "andel": 11.6
+    },
+    {
+      "region": "Västerbotten",
+      "typologi": "Landsbygd",
+      "befolkning": 62355,
+      "andel": 22.4
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Stadskärna",
+      "befolkning": 35279,
+      "andel": 14.2
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Yttre stadsområde",
+      "befolkning": 44544,
+      "andel": 17.9
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Peri-urbant",
+      "befolkning": 18349,
+      "andel": 7.4
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Lokalt centrum nära stad",
+      "befolkning": 24275,
+      "andel": 9.7
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Lokalt centrum på landsbygd",
+      "befolkning": 49723,
+      "andel": 20
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Stadsnära landsbygd",
+      "befolkning": 22547,
+      "andel": 9.1
+    },
+    {
+      "region": "Norrbotten",
+      "typologi": "Landsbygd",
+      "befolkning": 53879,
+      "andel": 21.7
+    }
+  ],
+  "regioner": [
+    {
+      "region": "Stockholm",
+      "befolkning": 2478396,
+      "rutor": 16807,
+      "stader": 7,
+      "stader_tier1": 2,
+      "lokala_centra": 12
+    },
+    {
+      "region": "Uppsala",
+      "befolkning": 409408,
+      "rutor": 12249,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 7
+    },
+    {
+      "region": "Södermanland",
+      "befolkning": 299303,
+      "rutor": 8744,
+      "stader": 3,
+      "stader_tier1": 1,
+      "lokala_centra": 8
+    },
+    {
+      "region": "Östergötland",
+      "befolkning": 471564,
+      "rutor": 14645,
+      "stader": 3,
+      "stader_tier1": 2,
+      "lokala_centra": 16
+    },
+    {
+      "region": "Jönköping",
+      "befolkning": 368931,
+      "rutor": 11757,
+      "stader": 1,
+      "stader_tier1": 1,
+      "lokala_centra": 15
+    },
+    {
+      "region": "Kronoberg",
+      "befolkning": 202716,
+      "rutor": 9414,
+      "stader": 1,
+      "stader_tier1": 1,
+      "lokala_centra": 4
+    },
+    {
+      "region": "Kalmar",
+      "befolkning": 244966,
+      "rutor": 20580,
+      "stader": 2,
+      "stader_tier1": 0,
+      "lokala_centra": 8
+    },
+    {
+      "region": "Gotland",
+      "befolkning": 60642,
+      "rutor": 15262,
+      "stader": 1,
+      "stader_tier1": 0,
+      "lokala_centra": 0
+    },
+    {
+      "region": "Blekinge",
+      "befolkning": 156288,
+      "rutor": 6971,
+      "stader": 1,
+      "stader_tier1": 0,
+      "lokala_centra": 6
+    },
+    {
+      "region": "Skåne",
+      "befolkning": 1429193,
+      "rutor": 17112,
+      "stader": 9,
+      "stader_tier1": 3,
+      "lokala_centra": 42
+    },
+    {
+      "region": "Halland",
+      "befolkning": 344941,
+      "rutor": 8742,
+      "stader": 4,
+      "stader_tier1": 1,
+      "lokala_centra": 5
+    },
+    {
+      "region": "Västra Götaland",
+      "befolkning": 1773328,
+      "rutor": 34504,
+      "stader": 10,
+      "stader_tier1": 2,
+      "lokala_centra": 42
+    },
+    {
+      "region": "Värmland",
+      "befolkning": 282585,
+      "rutor": 21911,
+      "stader": 1,
+      "stader_tier1": 1,
+      "lokala_centra": 11
+    },
+    {
+      "region": "Örebro",
+      "befolkning": 307498,
+      "rutor": 9675,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 7
+    },
+    {
+      "region": "Västmanland",
+      "befolkning": 279830,
+      "rutor": 5686,
+      "stader": 1,
+      "stader_tier1": 1,
+      "lokala_centra": 8
+    },
+    {
+      "region": "Dalarna",
+      "befolkning": 285582,
+      "rutor": 30374,
+      "stader": 2,
+      "stader_tier1": 0,
+      "lokala_centra": 8
+    },
+    {
+      "region": "Gävleborg",
+      "befolkning": 282897,
+      "rutor": 25128,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 6
+    },
+    {
+      "region": "Västernorrland",
+      "befolkning": 240164,
+      "rutor": 28157,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 5
+    },
+    {
+      "region": "Jämtland",
+      "befolkning": 132644,
+      "rutor": 54061,
+      "stader": 1,
+      "stader_tier1": 0,
+      "lokala_centra": 2
+    },
+    {
+      "region": "Västerbotten",
+      "befolkning": 278646,
+      "rutor": 67251,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 4
+    },
+    {
+      "region": "Norrbotten",
+      "befolkning": 248596,
+      "rutor": 112896,
+      "stader": 2,
+      "stader_tier1": 1,
+      "lokala_centra": 8
+    }
+  ]
+}

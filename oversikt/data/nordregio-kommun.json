@@ -1,0 +1,254 @@
+[
+  {
+    "kommun": "Halmstad",
+    "typologi": "Inner urban area",
+    "befolkning": 47750,
+    "andel": 45.8
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Outer urban area",
+    "befolkning": 21468,
+    "andel": 20.6
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Peri-urban area",
+    "befolkning": 22134,
+    "andel": 21.2
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Rural area close to urban",
+    "befolkning": 12694,
+    "andel": 12.2
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Local centre in rural area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Rural heartland",
+    "befolkning": 90,
+    "andel": 0.1
+  },
+  {
+    "kommun": "Halmstad",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 111,
+    "andel": 0.1
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Inner urban area",
+    "befolkning": 15184,
+    "andel": 17.9
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Outer urban area",
+    "befolkning": 19326,
+    "andel": 22.8
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Peri-urban area",
+    "befolkning": 35859,
+    "andel": 42.2
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Rural area close to urban",
+    "befolkning": 5451,
+    "andel": 6.4
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Local centre in rural area",
+    "befolkning": 9054,
+    "andel": 10.7
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Rural heartland",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Kungsbacka",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Inner urban area",
+    "befolkning": 14875,
+    "andel": 31.8
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Outer urban area",
+    "befolkning": 13730,
+    "andel": 29.3
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Peri-urban area",
+    "befolkning": 7492,
+    "andel": 16
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Rural area close to urban",
+    "befolkning": 6650,
+    "andel": 14.2
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Local centre in rural area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Rural heartland",
+    "befolkning": 3977,
+    "andel": 8.5
+  },
+  {
+    "kommun": "Falkenberg",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 118,
+    "andel": 0.3
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Inner urban area",
+    "befolkning": 26221,
+    "andel": 39.4
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Outer urban area",
+    "befolkning": 10531,
+    "andel": 15.8
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Peri-urban area",
+    "befolkning": 12729,
+    "andel": 19.1
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Rural area close to urban",
+    "befolkning": 14915,
+    "andel": 22.4
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Local centre in rural area",
+    "befolkning": 802,
+    "andel": 1.2
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Rural heartland",
+    "befolkning": 1426,
+    "andel": 2.1
+  },
+  {
+    "kommun": "Varberg",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Inner urban area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Outer urban area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Peri-urban area",
+    "befolkning": 997,
+    "andel": 3.8
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Rural area close to urban",
+    "befolkning": 15502,
+    "andel": 59.2
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Local centre in rural area",
+    "befolkning": 7897,
+    "andel": 30.1
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Rural heartland",
+    "befolkning": 1751,
+    "andel": 6.7
+  },
+  {
+    "kommun": "Laholm",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 46,
+    "andel": 0.2
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Inner urban area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Outer urban area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Peri-urban area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Rural area close to urban",
+    "befolkning": 187,
+    "andel": 1.8
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Local centre in rural area",
+    "befolkning": 0,
+    "andel": 0
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Rural heartland",
+    "befolkning": 9755,
+    "andel": 92.1
+  },
+  {
+    "kommun": "Hylte",
+    "typologi": "Sparsely populated rural area",
+    "befolkning": 650,
+    "andel": 6.1
+  }
+]

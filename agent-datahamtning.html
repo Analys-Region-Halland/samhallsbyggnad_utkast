@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>agent-datahamtning – Kapitelrapport Halland</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./data/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-726bb6a1bea53253a550d0a9404a4e64.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="agent-datainhämtning" class="level1">
+<h1>Agent: Datainhämtning</h1>
+<p><em>Aktiveras när: data ska hämtas från API (SCB, Kolada, FoHM, Tillväxtverket, Trafikanalys) eller importeras från fil.</em></p>
+<section id="paket-som-krävs" class="level2">
+<h2 class="anchored" data-anchor-id="paket-som-krävs">Paket som krävs</h2>
+<p>Dessa paket ska finnas i projektets <code>paket.R</code> och laddas innan hämtning:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paket</th>
+<th>Källa</th>
+<th>Används till</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rKolada</code></td>
+<td>CRAN</td>
+<td>Kolada API (get_values, get_kpi, get_municipality)</td>
+</tr>
+<tr class="even">
+<td><code>pxweb</code></td>
+<td>CRAN</td>
+<td>SCB API och FoHM API (pxweb_get, pxweb_query)</td>
+</tr>
+<tr class="odd">
+<td><code>httr</code> / <code>httr2</code></td>
+<td>CRAN</td>
+<td>REST-anrop (Trafikanalys, manuella API:er)</td>
+</tr>
+<tr class="even">
+<td><code>jsonlite</code></td>
+<td>CRAN</td>
+<td>JSON-parsning och export (fromJSON, write_json)</td>
+</tr>
+<tr class="odd">
+<td><code>readxl</code></td>
+<td>CRAN</td>
+<td>Excel-inläsning (read_excel)</td>
+</tr>
+<tr class="even">
+<td><code>dplyr</code></td>
+<td>CRAN</td>
+<td>All datatransformation (filter, mutate, select, join)</td>
+</tr>
+<tr class="odd">
+<td><code>tidyr</code></td>
+<td>CRAN</td>
+<td>Pivot (pivot_longer, pivot_wider)</td>
+</tr>
+<tr class="even">
+<td><code>stringr</code></td>
+<td>CRAN</td>
+<td>Textrensning (str_remove, str_extract, str_pad)</td>
+</tr>
+<tr class="odd">
+<td><code>purrr</code></td>
+<td>CRAN</td>
+<td>Iterering (map_dfr för grupperade hämtningar)</td>
+</tr>
+<tr class="even">
+<td><code>glue</code></td>
+<td>CRAN</td>
+<td>Stränginterpolering i meddelanden</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="grundprincip-eliminera-till-total" class="level2">
+<h2 class="anchored" data-anchor-id="grundprincip-eliminera-till-total">Grundprincip: Eliminera till total</h2>
+<p>Varje API-anrop ska reducera dimensioner till totalnivå. Behåll BARA geografi + tid. Allt annat elimineras om det inte uttryckligen efterfrågas:</p>
+<ul>
+<li>Kön → <code>"T"</code> (Kolada) eller <code>"1+2"</code> (SCB). Aldrig <code>"1"</code> och <code>"2"</code> separat om det inte uttryckligen begärts.</li>
+<li>Ålder → Fördefinierad grupp (t.ex. <code>"20-64 år"</code>), aldrig ettårsklasser.</li>
+<li>Bransch/sektor → <code>"Samtliga branscher"</code> eller totalkod.</li>
+<li>Utbildningsnivå → Total om inte ämnet kräver uppdelning.</li>
+</ul>
+<p>Varför: SCB returnerar korsningar av ALLA dimensioner. Frågar du om 290 kommuner × 5 åldersgrupper × 2 kön × 10 år = 29 000 rader istället för 2 900. Det ger datablåsa, långsamma hämtningar och 100 000-cellsgränsen nås snabbt.</p>
+<p>I pxweb (SCB/FoHM) implementeras detta genom att <strong>utelämna dimensionen ur queryn</strong>. Inkludera BARA de dimensioner du vill behålla i resultatet — utelämnade dimensioner summeras automatiskt av API:t. Ange aldrig en “totalkod” (t.ex. “1+2”) utan att först verifiera i metadata att koden faktiskt finns i tabellen.</p>
+</section>
+<section id="steg-för-steg-arbetsordning" class="level2">
+<h2 class="anchored" data-anchor-id="steg-för-steg-arbetsordning">Steg-för-steg-arbetsordning</h2>
+<p><strong>1. Identifiera rätt KPI/tabell INNAN du skriver kod.</strong></p>
+<ul>
+<li>Kolada: Sök i lokalt KPI-register (<code>data/kolada-kpi-register.rds</code>) med <code>rKolada::get_kpi()</code> eller grep. Registret har 6 200+ indikatorer. Kontrollera att KPI:n har data för önskade år och kommuner.</li>
+<li>SCB: Navigera tabellträdet via <code>pxweb::pxweb_get("https://api.scb.se/OV0104/v1/doris/sv/ssd/{ämne}/")</code>. Inspektera ALLTID tabellens metadata (variabelkoder, tillgängliga perioder, regionkoder) innan du bygger en query.</li>
+</ul>
+<p><strong>2. Inspektera metadata FÖRST — skriv query SEDAN.</strong></p>
+<p>SCB-tabeller har variabelkoder som inte alltid är uppenbara. Gör detta innan varje ny tabell:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hämta tabellens metadata</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> pxweb<span class="sc">::</span><span class="fu">pxweb_get</span>(<span class="st">"https://api.scb.se/OV0104/v1/doris/sv/ssd/AM/AM0210/AM0210B/ArbStatusAr"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Skriv ut varje variabel med sina kodvärden</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (var <span class="cf">in</span> meta<span class="sc">$</span>variables) {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">==="</span>, var<span class="sc">$</span>code, <span class="st">"("</span>, var<span class="sc">$</span>text, <span class="st">") ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">min</span>(<span class="dv">10</span>, <span class="fu">length</span>(var<span class="sc">$</span>values)))) {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"  "</span>, var<span class="sc">$</span>values[i], <span class="st">" = "</span>, var<span class="sc">$</span>valueTexts[i], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(var<span class="sc">$</span>values) <span class="sc">&gt;</span> <span class="dv">10</span>) <span class="fu">cat</span>(<span class="st">"  ... ("</span>, <span class="fu">length</span>(var<span class="sc">$</span>values), <span class="st">"värden totalt)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Kontrollera: - Vilken kod har Region-variabeln? (Ofta <code>"Region"</code>, ibland <code>"Kommun"</code> eller <code>"Lan"</code>) - Vilken kod har tidsvariabeln? (Ofta <code>"Tid"</code>, ibland <code>"År"</code>) - Vilka ContentsCodes finns? (Mätvärdet — t.ex. <code>"AM0401I1"</code> = antal sysselsatta) - Finns kön som dimension? Om ja, vilken kod har total? (<code>"1+2"</code>, <code>"T"</code>, <code>"samtliga"</code>) - Vilka perioder finns? Matcha mot vad du vill hämta.</p>
+<p><strong>3. Bygg queryn med explicita värden — och ELIMINERA onödiga dimensioner.</strong></p>
+<p>pxweb har ett inbyggt mönster: <strong>utelämna en dimension från queryn</strong> så summerar API:t automatiskt över den dimensionen. Det kallas “eliminate” och är det korrekta sättet att hämta totaler — INTE att ange en totalkod som “1+2” (som ofta inte finns).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># RÄTT — eliminera kön och ålder genom att UTELÄMNA dem ur queryn</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pxweb summerar automatiskt: alla kön, alla åldrar, alla civilstånd → total</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region       =</span> <span class="fu">c</span>(<span class="st">"1315"</span>, <span class="st">"1380"</span>, <span class="st">"1381"</span>, <span class="st">"1382"</span>, <span class="st">"1383"</span>, <span class="st">"1384"</span>, <span class="st">"13"</span>, <span class="st">"00"</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ContentsCode =</span> <span class="fu">c</span>(<span class="st">"BE0101N1"</span>),     <span class="co"># Bara det mätvärde vi vill ha</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tid          =</span> <span class="fu">as.character</span>(<span class="dv">2015</span><span class="sc">:</span><span class="dv">2024</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Kön, Ålder, Civilstand → UTELÄMNADE = automatiskt eliminerade (summerade)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># FEL — ange totalkod som kanske inte finns</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region =</span> <span class="fu">c</span>(<span class="st">"1380"</span>), <span class="at">Kon =</span> <span class="fu">c</span>(<span class="st">"1+2"</span>),   <span class="co"># "1+2" finns inte i alla tabeller!</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">ContentsCode =</span> <span class="fu">c</span>(<span class="st">"BE0101N1"</span>), <span class="at">Tid =</span> <span class="fu">c</span>(<span class="st">"2024"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># FEL — wildcard ("*") ger ALL data, alla regioner, alla kön</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Region =</span> <span class="fu">c</span>(<span class="st">"*"</span>), <span class="at">Kon =</span> <span class="fu">c</span>(<span class="st">"*"</span>), <span class="at">Tid =</span> <span class="fu">c</span>(<span class="st">"*"</span>))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># FEL — hämta alla delgrupper och summera i R (onödigt, spränger cellgränsen)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region =</span> <span class="fu">c</span>(<span class="st">"1380"</span>), <span class="at">Kon =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>), <span class="at">Alder =</span> <span class="fu">as.character</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">100</span>), ...</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Tumregel:</strong> Inkludera BARA de dimensioner du vill ha kvar i resultatet. Allt du utelämnar summeras automatiskt av API:t. Det ger: - Färre celler → håller dig under 100 000-gränsen - Korrekt aggregering (SCB:s egen summering, inte din) - Enklare kod</p>
+<p><strong>När ska du INTE eliminera?</strong> När du uttryckligen behöver delgrupper:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Behöver kön-uppdelning → inkludera Kon i queryn</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Region       =</span> <span class="fu">c</span>(<span class="st">"1380"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Kon          =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>),        <span class="co"># Vill ha män och kvinnor separat</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ContentsCode =</span> <span class="fu">c</span>(<span class="st">"BE0101N1"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tid          =</span> <span class="fu">as.character</span>(<span class="dv">2015</span><span class="sc">:</span><span class="dv">2024</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>4. Hämta med kodformat — ALDRIG textformat.</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>px_data <span class="ot">&lt;-</span> pxweb<span class="sc">::</span><span class="fu">pxweb_get</span>(<span class="at">url =</span> tabell_url, <span class="at">query =</span> pxweb<span class="sc">::</span><span class="fu">pxweb_query</span>(query))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(px_data,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">column.name.type    =</span> <span class="st">"code"</span>,    <span class="co"># "Region" inte "region"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable.value.type =</span> <span class="st">"code"</span>,    <span class="co"># "1380" inte "Halmstad"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stringsAsFactors    =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Varför <code>"code"</code>: Koder är stabila. Textlabels ändras mellan SCB-uppdateringar. Koder möjliggör tillförlitliga joins.</p>
+<p><strong>5. Transformera regionkoder till Kolada-format.</strong></p>
+<p>SCB och Kolada använder olika kodlängder. Standardisera ALLTID till 4-siffriga koder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">kommun_kod =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    Region <span class="sc">==</span> <span class="st">"00"</span>        <span class="sc">~</span> <span class="st">"0000"</span>,                    <span class="co"># Riket</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nchar</span>(Region) <span class="sc">==</span> <span class="dv">2</span>    <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">"00"</span>, Region),      <span class="co"># Län → 4 siffror (t.ex. "13" → "0013")</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>                  <span class="sc">~</span> Region                      <span class="co"># Kommuner redan 4 siffror</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>6. Filtrera till kända kommuner.</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>HALLAND_KODER <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"1380"</span>, <span class="st">"1381"</span>, <span class="st">"1382"</span>, <span class="st">"1383"</span>, <span class="st">"1384"</span>, <span class="st">"1315"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>REGION_KODER  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0013"</span>)   <span class="co"># Region Halland</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>RIKET_KOD     <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0000"</span>)   <span class="co"># Nationellt</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>kanda_koder <span class="ot">&lt;-</span> <span class="fu">c</span>(HALLAND_KODER, REGION_KODER, RIKET_KOD)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(kommun_kod <span class="sc">%in%</span> kanda_koder)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>7. Spara som RDS — rör aldrig rådatan igen.</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(df, <span class="st">"data/radata-{tema_id}.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="kolada-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="kolada-specifika-regler">Kolada — specifika regler</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rKolada)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hämta data</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>radata <span class="ot">&lt;-</span> rKolada<span class="sc">::</span><span class="fu">get_values</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpi          =</span> <span class="fu">c</span>(<span class="st">"N01951"</span>, <span class="st">"N02267"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">municipality =</span> <span class="fu">c</span>(<span class="st">"1380"</span>, <span class="st">"1381"</span>, <span class="st">"1382"</span>, <span class="st">"1383"</span>, <span class="st">"1384"</span>, <span class="st">"1315"</span>, <span class="st">"0013"</span>, <span class="st">"0000"</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">period       =</span> <span class="dv">2015</span><span class="sc">:</span><span class="dv">2024</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">simplify     =</span> <span class="cn">TRUE</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrera OMEDELBART till total kön</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>radata <span class="ot">&lt;-</span> radata <span class="sc">|&gt;</span> <span class="fu">filter</span>(gender <span class="sc">==</span> <span class="st">"T"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Regler: - Specificera ALLTID <code>municipality</code>-parametern. Utan den returnerar Kolada ~3 900 enheter (stadsdelar, historiska koder, samverkansområden). - Filtrera <code>gender == "T"</code> direkt efter hämtning. - Kön-uppdelning (K/M): Behåll BARA om det uttryckligen begärts i temakonfigurationen (<code>konuppdelning</code>). Då skapas separata KPI-varianter (<code>{kpi_id}_KV</code>, <code>{kpi_id}_MAN</code>) i bearbetningssteget, inte i hämtningssteget. - KPI-register: Sök lokalt först. Registret uppdateras automatiskt var 90:e dag.</p>
+</section>
+<section id="scb-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="scb-specifika-regler">SCB — specifika regler</h2>
+<p><strong>Viktiga tabellreferenser:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Ämne</th>
+<th>Tabell</th>
+<th>Sökväg</th>
+<th>Anmärkning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Befolkning (31 dec)</td>
+<td>BefolkningNy</td>
+<td><code>BE/BE0101/BE0101A/</code></td>
+<td>Använd ALLTID BefolkningNy, inte FolkmangdNov (1 nov)</td>
+</tr>
+<tr class="even">
+<td>Sysselsättning (årsregister)</td>
+<td>ArbStatusAr</td>
+<td><code>AM/AM0210/AM0210B/</code></td>
+<td>BAS-register, 20-64 år</td>
+</tr>
+<tr class="odd">
+<td>Sysselsättning (månadsdata)</td>
+<td>ArbStatusM</td>
+<td><code>AM/AM0210/AM0210A/</code></td>
+<td>Preliminär månadsstatistik</td>
+</tr>
+<tr class="even">
+<td>Utbildningsnivå</td>
+<td>Utbildning</td>
+<td><code>UF/UF0506/</code></td>
+<td>25-64 år</td>
+</tr>
+<tr class="odd">
+<td>Inkomst</td>
+<td>HushijKommunN</td>
+<td><code>HE/HE0110/HE0110A/</code></td>
+<td>Disponibel inkomst</td>
+</tr>
+<tr class="even">
+<td>Bostäder (bestånd)</td>
+<td>BostadBestworKN</td>
+<td><code>BO/BO0104/BO0104D/</code></td>
+<td>Lägenheter per upplåtelseform</td>
+</tr>
+<tr class="odd">
+<td>Bostäder (byggande)</td>
+<td>LagenhetNyworKN</td>
+<td><code>BO/BO0101/BO0101C/</code></td>
+<td>Färdigställda lägenheter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Hantera stora tabeller (&gt;100 000 celler):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>alla_kommuner <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0114"</span>, <span class="st">"0115"</span>, ...)  <span class="co"># 290 kommuner</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>grupper <span class="ot">&lt;-</span> <span class="fu">split</span>(alla_kommuner, <span class="fu">ceiling</span>(<span class="fu">seq_along</span>(alla_kommuner) <span class="sc">/</span> <span class="dv">50</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>resultat <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(grupper, <span class="cf">function</span>(grupp) {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">1</span>)  <span class="co"># Respektera rate limit: max 10 anrop / 10 sek</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  query<span class="sc">$</span>Region <span class="ot">&lt;-</span> grupp</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  px <span class="ot">&lt;-</span> pxweb<span class="sc">::</span><span class="fu">pxweb_get</span>(<span class="at">url =</span> tabell_url, <span class="at">query =</span> pxweb<span class="sc">::</span><span class="fu">pxweb_query</span>(query))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(px, <span class="at">column.name.type =</span> <span class="st">"code"</span>, <span class="at">variable.value.type =</span> <span class="st">"code"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Verifiera efter hämtning:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kontrollera att alla begärda kommuner finns i resultatet</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>saknade <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(begarda_koder, <span class="fu">unique</span>(df<span class="sc">$</span>Region))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(saknade) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Saknade kommuner i SCB-svar: "</span>, <span class="fu">paste</span>(saknade, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Kontrollera att alla begärda år finns</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>saknade_ar <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">as.character</span>(begarda_ar), <span class="fu">unique</span>(df<span class="sc">$</span>Tid))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(saknade_ar) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Saknade år i SCB-svar: "</span>, <span class="fu">paste</span>(saknade_ar, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Kontrollera rimligt antal rader</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>forvantade_rader <span class="ot">&lt;-</span> <span class="fu">length</span>(begarda_koder) <span class="sc">*</span> <span class="fu">length</span>(begarda_ar)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Hämtade"</span>, <span class="fu">nrow</span>(df), <span class="st">"rader (förväntat ~"</span>, forvantade_rader, <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="fohm-folkhälsomyndigheten-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="fohm-folkhälsomyndigheten-specifika-regler">FoHM (Folkhälsomyndigheten) — specifika regler</h2>
+<p><strong>Endpoint:</strong> <code>https://fohm-app.folkhalsomyndigheten.se/Folkhalsodata/api/v1/sv</code> Använder PxWeb-format (samma mönster som SCB), men med skillnader:</p>
+<ul>
+<li><strong>Rullande perioder:</strong> Data rapporteras ofta som <code>"2021-2024"</code> (4-årsmedelvärde). Konvertera till slutår: <code>as.integer(sub(".*-", "", period_str))</code>.</li>
+<li><strong>Konfidensintervall:</strong> Många tabeller har en KI-variabel med tre nivåer (andel, lower, upper). Pivota till separata kolumner:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id_cols    =</span> <span class="fu">c</span>(region, gender, year),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_from =</span> ki_typ,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_from =</span> varde</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ger kolumner: varde, ki_lower, ki_upper</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Rate limit:</strong> Lägg in <code>Sys.sleep(0.5)</code> mellan anrop.</li>
+<li><strong>Könskoder varierar per tabell:</strong> <code>"00"</code> = total i vissa, <code>"1+2"</code> i andra. Kontrollera metadata.</li>
+<li><strong>Felhantering:</strong> Wrappa varje tabell i <code>tryCatch()</code> — FoHM-API:t är mindre stabilt.</li>
+</ul>
+</section>
+<section id="tillväxtverket-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="tillväxtverket-specifika-regler">Tillväxtverket — specifika regler</h2>
+<p><strong>Data:</strong> Tab-separerade textfiler (TSV), Latin-1-kodning, CC0-licens. <strong>Källa:</strong> <code>https://oppnadata.tillvaxtverket.se/data/inkvartering/</code></p>
+<ul>
+<li>Geografinivåer: Kommun (4-siffrigt), Län (2-siffrigt → padda till 4), Riket (0000).</li>
+<li>Härledda KPI:er beräknas i R (beläggningsgrad, intäkt per gästnatt etc.).</li>
+<li><strong>Kräver att befolkningstemat körts först</strong> — kommun-register.rds måste finnas.</li>
+</ul>
+</section>
+<section id="trafikanalys-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="trafikanalys-specifika-regler">Trafikanalys — specifika regler</h2>
+<p><strong>Endpoint:</strong> <code>https://api.trafa.se/api/data</code> Icke-PxWeb REST API. Query-format: pipe-separerade parametrar.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>query_str <span class="ot">&lt;-</span> <span class="st">"T10026|itrfslut|ar:2023|reglan:13|regkom"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(base_url, <span class="st">"?query="</span>, utils<span class="sc">::</span><span class="fu">URLencode</span>(query_str, <span class="at">reserved =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> httr<span class="sc">::</span><span class="fu">GET</span>(url, httr<span class="sc">::</span><span class="fu">timeout</span>(<span class="dv">60</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Kontrollera HTTP-status (<code>status_code != 200</code> → stoppa).</li>
+<li>Kontrollera <code>parsed$Errors</code>-fältet (API returnerar ibland 200 med felmeddelande i body).</li>
+<li>Trafikanalys returnerar kommunnamn, inte koder. Mappa via kommun-register.</li>
+<li>Rensa numeriska värden: <code>as.numeric(gsub("[^0-9.,-]", "", gsub(",", ".", value_str)))</code> — hanterar nbsp, tusentalsseparatorer.</li>
+</ul>
+</section>
+<section id="lokala-filer-excel-csv-tsv-specifika-regler" class="level2">
+<h2 class="anchored" data-anchor-id="lokala-filer-excel-csv-tsv-specifika-regler">Lokala filer (Excel, CSV, TSV) — specifika regler</h2>
+<p>Lokala filer är en fullvärdig alternativ väg till API:er. Samma pipeline gäller: läs in → standardisera → validera → spara som <code>radata-{tema}.rds</code>.</p>
+<p><strong>Mappstruktur:</strong></p>
+<pre><code>data/
+├── excel/              # Originalkällor (gitignore:at, rör aldrig)
+│   ├── pendling-2024.xlsx
+│   └── scb_export_befolkning.csv
+├── radata-{tema}.rds   # Standardiserat (genererat av kap01-hamta.R)
+└── bearbetad-{tema}.rds</code></pre>
+<p>Originalfilerna i <code>data/excel/</code> behandlas som rådata — ändra aldrig i dem. De checkas INTE in i git (stor filstorlek, känsligt innehåll ibland).</p>
+<p><strong>Läsa Excel:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Kontrollera att filen finns INNAN du försöker läsa</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>fil <span class="ot">&lt;-</span> <span class="st">"data/excel/pendling-2024.xlsx"</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(fil)) <span class="fu">stop</span>(<span class="st">"Saknar fil: "</span>, fil)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Ange blad och cellintervall explicit</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(fil, <span class="at">sheet =</span> <span class="dv">1</span>, <span class="at">skip =</span> <span class="dv">2</span>)  <span class="co"># Hoppa över rubrikrader</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspektera omedelbart — Excel-kolumner har ofta oväntade typer</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Läsa CSV:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Svensk CSV (semikolon-separerad, decimalkomma)</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"data/excel/scb_export.csv"</span>, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">"latin1"</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Internationell CSV (komma-separerad, decimalpunkt)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/excel/data.csv"</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># TSV (tab-separerad, vanligt från Tillväxtverket)</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/excel/turism.txt"</span>, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">"latin1"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Standardisera till samma format som API-data:</strong></p>
+<p>Oavsett filformat, omvandla ALLTID till output-kontraktet innan du sparar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Excel/CSV har ofta egna kolumnnamn — mappa explicit</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>radata <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">kpi_id     =</span> <span class="st">"E_PENDLING"</span>,                          <span class="co"># Tilldela KPI-ID</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">kommun_kod =</span> <span class="fu">as.character</span>(Kommunkod),                <span class="co"># Alltid character</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">kommun_namn =</span> Kommun,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">kommun_typ =</span> <span class="fu">if_else</span>(<span class="fu">nchar</span>(kommun_kod) <span class="sc">&lt;=</span> <span class="dv">2</span>, <span class="st">"L"</span>, <span class="st">"K"</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ar         =</span> <span class="fu">as.integer</span>(År),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">kon        =</span> <span class="st">"T"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">varde      =</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">"."</span>, Antal)),      <span class="co"># Hantera decimalkomma</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ki_lower   =</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ki_upper   =</span> <span class="cn">NA_real_</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Standardisera regionkoder till 4-siffrig</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">kommun_kod =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    kommun_kod <span class="sc">==</span> <span class="st">"00"</span>     <span class="sc">~</span> <span class="st">"0000"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nchar</span>(kommun_kod) <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">"00"</span>, kommun_kod),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> kommun_kod</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Vanliga problem med lokala filer:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Problem</th>
+<th>Symptom</th>
+<th>Lösning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Kodning (encoding)</td>
+<td>Å, Ä, Ö visas som felaktiga tecken</td>
+<td><code>locale = locale(encoding = "latin1")</code> eller <code>"UTF-8"</code></td>
+</tr>
+<tr class="even">
+<td>Rubrikrader</td>
+<td>Första raderna är metadata, inte data</td>
+<td><code>skip = N</code> i read_excel/read_csv</td>
+</tr>
+<tr class="odd">
+<td>Blandade typer i kolumn</td>
+<td>Kolumn med “1380” och “Saknas” → allt text</td>
+<td><code>mutate(varde = as.numeric(varde))</code>, hantera NA</td>
+</tr>
+<tr class="even">
+<td>Decimalkomma</td>
+<td>12,5 istället för 12.5</td>
+<td><code>read_csv2()</code> eller <code>gsub(",", ".", x)</code></td>
+</tr>
+<tr class="odd">
+<td>Tusentalspunkt</td>
+<td>1.234 menar etttusen</td>
+<td><code>gsub("\\.", "", x)</code> före <code>as.numeric()</code></td>
+</tr>
+<tr class="even">
+<td>Merged cells (Excel)</td>
+<td>Tomma rader, NA i nycklar</td>
+<td><code>tidyr::fill(kommun_namn, .direction = "down")</code></td>
+</tr>
+<tr class="odd">
+<td>Flera blad</td>
+<td>Data spridd över blad</td>
+<td><code>excel_sheets(fil)</code> lista, loopa med <code>map_dfr()</code></td>
+</tr>
+<tr class="even">
+<td>Datum som heltal</td>
+<td>Excel lagrar datum som dagnummer</td>
+<td><code>as.Date(x, origin = "1899-12-30")</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Flera filer av samma typ:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>filer <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"data/excel"</span>, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.csv$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>radata <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(filer, <span class="cf">function</span>(f) {</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv2</span>(f, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">"latin1"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">kalla_fil =</span> <span class="fu">basename</span>(f))  <span class="co"># Spåra källfil</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Validera PRECIS som API-data:</strong></p>
+<p>Kör samma kvalitetskontroller som efter API-hämtning. Lokala filer är ofta sämre kvalitet — saknade värden, inkonsistenta kodformat, blandade enheter. Kontrollera extra noga:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Kontrollera kommun_kod-format</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>felformat <span class="ot">&lt;-</span> radata <span class="sc">|&gt;</span> <span class="fu">filter_out</span>(<span class="fu">grepl</span>(<span class="st">"^</span><span class="sc">\\</span><span class="st">d{4}$"</span>, kommun_kod))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(felformat) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Felaktiga kommun_koder: "</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(<span class="fu">unique</span>(felformat<span class="sc">$</span>kommun_kod), <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="cachestrategi" class="level2">
+<h2 class="anchored" data-anchor-id="cachestrategi">Cachestrategi</h2>
+<p>All cachning styrs av <code>R/gemensam/cache.R</code>. Metadatafil per tema: <code>data/hamtning-meta-{tema_id}.rds</code>.</p>
+<pre><code>Beslutsträd:
+├── tvinga = TRUE           → Full hämtning, ignorera cache
+├── Ingen cachefil finns    → Full hämtning
+├── KPI-lista ändrad        → Full hämtning (setequal-check)
+├── Nya perioder finns      → Inkrementell hämtning (bara nya år)
+├── Cache &lt; 30 dagar        → Hoppa över (använd befintlig)
+├── Cache ≥ 30 dagar        → Kontroll-hämtning (1 KPI, 1 år, riket)
+│   ├── Nya data finns      → Inkrementell hämtning
+│   └── Inga nya data       → Uppdatera tidsstämpel, hoppa över</code></pre>
+<p>Metadata som sparas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidsstampel   =</span> <span class="fu">Sys.time</span>(),</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpi_ids       =</span> <span class="fu">c</span>(<span class="st">"N01951"</span>, <span class="st">"N02267"</span>),</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">perioder      =</span> <span class="fu">c</span>(<span class="st">"2015"</span>, <span class="st">"2016"</span>, ..., <span class="st">"2024"</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">senaste_period =</span> <span class="dv">2024</span>L,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">antal_rader   =</span> <span class="dv">4800</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="kvalitetssäkring-efter-hämtning" class="level2">
+<h2 class="anchored" data-anchor-id="kvalitetssäkring-efter-hämtning">Kvalitetssäkring efter hämtning</h2>
+<p>Kör ALLTID efter en hämtning innan du går vidare till bearbetning:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Dimensionskontroll — har vi rätt antal rader?</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>forvantade <span class="ot">&lt;-</span> <span class="fu">length</span>(kpi_ids) <span class="sc">*</span> <span class="fu">length</span>(kommun_koder) <span class="sc">*</span> <span class="fu">length</span>(perioder)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Hämtade:"</span>, <span class="fu">nrow</span>(df), <span class="st">"rader. Förväntat:"</span>, forvantade, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(df) <span class="sc">&lt;</span> forvantade <span class="sc">*</span> <span class="fl">0.8</span>) <span class="fu">warning</span>(<span class="st">"Fick &lt;80% av förväntade rader"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Saknade kommuner</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>saknade_kommuner <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(kommun_koder, <span class="fu">unique</span>(df<span class="sc">$</span>kommun_kod))</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(saknade_kommuner) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Saknade kommuner: "</span>, <span class="fu">paste</span>(saknade_kommuner, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Saknade KPI:er</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>saknade_kpi <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(kpi_ids, <span class="fu">unique</span>(df<span class="sc">$</span>kpi_id))</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(saknade_kpi) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Saknade KPI:er: "</span>, <span class="fu">paste</span>(saknade_kpi, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Saknade år</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>saknade_ar <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">as.character</span>(perioder), <span class="fu">as.character</span>(<span class="fu">unique</span>(df<span class="sc">$</span>ar)))</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(saknade_ar) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">"Saknade år: "</span>, <span class="fu">paste</span>(saknade_ar, <span class="at">collapse =</span> <span class="st">", "</span>))</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. NA-kontroll</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>na_andel <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(df<span class="sc">$</span>varde))</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (na_andel <span class="sc">&gt;</span> <span class="fl">0.1</span>) <span class="fu">warning</span>(<span class="st">"Hög andel saknade värden: "</span>, <span class="fu">round</span>(na_andel <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>)</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Dubbletter</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>dubb <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">group_by</span>(kpi_id, kommun_kod, ar) <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (dubb <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">warning</span>(<span class="st">"Dubbletter funna: "</span>, dubb, <span class="st">" rader"</span>)</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. Rimlighetsintervall (procent-KPI:er ska vara 0–100)</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>procent_kpier <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(enhet <span class="sc">==</span> <span class="st">"procent"</span> <span class="sc">&amp;</span> (varde <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">|</span> varde <span class="sc">&gt;</span> <span class="dv">100</span>))</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(procent_kpier) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="fu">warning</span>(<span class="st">"Procentvärden utanför 0-100: "</span>, <span class="fu">nrow</span>(procent_kpier), <span class="st">" rader"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="standardformat-efter-hämtning-output-kontrakt" class="level2">
+<h2 class="anchored" data-anchor-id="standardformat-efter-hämtning-output-kontrakt">Standardformat efter hämtning (output-kontrakt)</h2>
+<p>Oavsett källa ska data ha dessa kolumner efter steg 1:</p>
+<pre><code>kpi_id            character   KPI-identifierare (N01951, S_SYSS_TOT, F_HALSA_GOD)
+kommun_kod        character   4-siffrig kod ("1380", "0013", "0000")
+kommun_namn       character   Namn ("Halmstad", "Region Halland", "Riket")
+kommun_typ        character   "K" = kommun, "L" = län/region, "R" = riket
+ar                integer     År (2024) eller YYYYMM (202412) för månadsdata
+kon               character   "T" (alltid, om inte konuppdelning begärts)
+varde             numeric     Mätvärdet
+ki_lower          numeric     Undre konfidensintervall (bara FoHM, annars NA)
+ki_upper          numeric     Övre konfidensintervall (bara FoHM, annars NA)</code></pre>
+</section>
+<section id="vanliga-fel-och-hur-de-undviks" class="level2">
+<h2 class="anchored" data-anchor-id="vanliga-fel-och-hur-de-undviks">Vanliga fel och hur de undviks</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 33%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Fel</th>
+<th>Orsak</th>
+<th>Lösning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3 900 enheter från Kolada</td>
+<td>Glömde <code>municipality</code>-parameter</td>
+<td>Specificera ALLTID municipality</td>
+</tr>
+<tr class="even">
+<td>100 000-cellsgräns i SCB</td>
+<td>Wildcard på region eller kön</td>
+<td>Specificera exakt, dela i grupper</td>
+</tr>
+<tr class="odd">
+<td>Fel befolkningstal (1 nov vs 31 dec)</td>
+<td>Använde FolkmangdNov istället för BefolkningNy</td>
+<td>Kontrollera tabellnamn</td>
+</tr>
+<tr class="even">
+<td>Blandade kodformat (“13” + “1380”)</td>
+<td>Glömde transformera regionkoder</td>
+<td>Standardisera till 4-siffrig kod</td>
+</tr>
+<tr class="odd">
+<td>Textetiketter som bryts vid uppdatering</td>
+<td>Använde <code>variable.value.type = "text"</code></td>
+<td>Använd ALLTID <code>"code"</code></td>
+</tr>
+<tr class="even">
+<td>Dubblerade rader efter join</td>
+<td>Kolumner med kön K + M + T i samma dataset</td>
+<td>Filtrera <code>kon == "T"</code> FÖRE join</td>
+</tr>
+<tr class="odd">
+<td>Tom data trots korrekt query</td>
+<td>Tabellen har inga data för begärd period</td>
+<td>Inspektera metadata först</td>
+</tr>
+<tr class="even">
+<td>Felaktiga procenttal (0.79 istället för 79)</td>
+<td>Kolada levererar ibland andelar som decimaltal</td>
+<td>Kontrollera enhet och skala i metadata</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
