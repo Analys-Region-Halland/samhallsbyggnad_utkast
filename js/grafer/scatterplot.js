@@ -12,8 +12,7 @@ import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK,
-  stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos, valPill
-} from "../lib/grafRam.js";
+  stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos, valPill, tooltipHtml, axelFmt, ritbredd } from "../lib/grafRam.js";
 
 // Snyggt intervall och max för axlar
 function niceScale(dataMin, dataMax, targetTicks = 5) {
@@ -65,7 +64,7 @@ export function scatterplot(data, {
 } = {}) {
 
   // ── Layout ──
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   const marginTop = 36;                       // plats för y-titel / zoomhint
   const marginRight = (interactive || highlight || color) ? 140 : 50;
   const marginBottom = xLabel ? 50 : 36;
@@ -143,9 +142,9 @@ export function scatterplot(data, {
   const xAxisGroup = svg.append("g").attr("class", "x-axis").attr("transform", `translate(0,${height - marginBottom})`);
   const yAxisGroup = svg.append("g").attr("class", "y-axis").attr("transform", `translate(${axisLeft},0)`);
   function renderAxes(xTicks, yTicks) {
-    xAxisGroup.call(d3.axisBottom(xScale).tickFormat(formatX).tickValues(xTicks).tickSize(5));
+    xAxisGroup.call(d3.axisBottom(xScale).tickFormat(axelFmt(formatX)).tickValues(xTicks).tickSize(5));
     stilXAxel(xAxisGroup);
-    yAxisGroup.call(d3.axisLeft(yScale).tickFormat(formatY).tickValues(yTicks));
+    yAxisGroup.call(d3.axisLeft(yScale).tickFormat(axelFmt(formatY)).tickValues(yTicks));
     stilYAxel(yAxisGroup);
   }
   renderGrid(thin(xNice.ticks), thin(yNice.ticks));
@@ -440,16 +439,11 @@ export function scatterplot(data, {
         labelsGroup.select(`.label-connector[data-label="${lbl}"]`).attr("stroke-width", 2).attr("stroke-opacity", 0.7);
       }
 
-      const sep = `<span style="opacity:0.25;margin:0 8px">│</span>`;
-      const colorDot = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ptColor};margin-right:6px;vertical-align:middle"></span>`;
-      const labelText = lbl ? `<b style="margin-right:6px">${lbl}</b>` : "";
-      const groupText = color && d[color] ? `<span style="color:${FARG.mjuk};margin-right:6px">(${d[color]})</span>` : "";
-      const xChip = `<span style="color:${FARG.mjuk};margin-right:4px">${xLabel || "X"}:</span><b>${formatX(d[x])}</b>`;
-      const yChip = `<span style="color:${FARG.mjuk};margin-right:4px">${yLabel || "Y"}:</span><b>${formatY(d[y])}</b>`;
-      const timeChip = time ? `${sep}<span style="color:${FARG.mjuk}">${d[time]}</span>` : "";
-      const pinHint = isPinned ? `<span style="opacity:0.45;margin-left:8px;font-size:10px">klicka för att ta bort spåret</span>`
-        : (time ? `<span style="opacity:0.45;margin-left:8px;font-size:10px">klicka för att låsa spåret</span>` : "");
-      avlasning.visa(`${colorDot}${labelText}${groupText}${sep}${xChip}${sep}${yChip}${timeChip}${pinHint}`);
+      const rubrik = `${lbl || ""}${color && d[color] ? ` <span style="font-weight:400;color:${FARG.mjuk}">${d[color]}</span>` : ""}${time ? ` <span style="font-weight:400;color:${FARG.mjuk}">· ${d[time]}</span>` : ""}`;
+      avlasning.visa(tooltipHtml(rubrik, [
+        { namn: yLabel || "Y", varde: formatY(d[y]), farg: ptColor },
+        { namn: xLabel || "X", varde: formatX(d[x]), farg: "transparent" }
+      ], { extra: time ? (isPinned ? "Klicka för att ta bort spåret" : "Klicka för att låsa spåret") : null }));
     } else {
       hideHoverTrace();
       pointsGroup.selectAll("circle").each(function () {

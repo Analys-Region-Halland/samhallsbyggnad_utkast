@@ -4,7 +4,7 @@
 // =============================================================================
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
-import { skapaRam, TYP, FARG, STORLEK, xTitel } from "../lib/grafRam.js";
+import { skapaRam, TYP, FARG, STORLEK, xTitel, axelFmt, autoFmt, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function facetStaplar(data, {
   facet = "facet",
@@ -19,14 +19,15 @@ export function facetStaplar(data, {
   caption = null,
   xLabel = null,
   columns = 3,
-  width = 860,
+  width = null,
   rowH = 22,
-  formatY = d => d.toLocaleString("sv-SE"),
+  formatY = null,           // null = autoFmt (samma antal decimaler på alla värden)
   formatLabel = null,
   logo = null,
   altText = null,
   info = null
 } = {}) {
+  if (!formatY) formatY = autoFmt(data.map(d => d[y]));
   const facets = facetOrder || [...new Set(data.map(d => d[facet]))];
   const cats   = kategoriOrder || [...new Set(data.map(d => d[x]))];
   const fmtL   = formatLabel || (d => (d >= 0 ? "+" : "") + formatY(d));
@@ -36,6 +37,8 @@ export function facetStaplar(data, {
   const vmin = Math.min(0, d3.min(vals));
   const vmax = Math.max(0, d3.max(vals));
 
+  if (!width) width = ritbredd(860);
+  if (arSmal(width, 860)) columns = 1;   // smal skärm: panelerna under varandra
   const rows = Math.ceil(facets.length / columns);
   const labelW = 166;                 // gemensam etikettpelare (vänster i varje rad)
   const gap = 26;
@@ -128,7 +131,7 @@ export function facetStaplar(data, {
         tv = [...new Set([tv.includes(0) ? 0 : tv[0], yttre[yttre.length - 1]])].sort((p, q) => p - q);
         if (tv.length > 1 && Math.abs(xScale(tv[1]) - xScale(tv[0])) < etikW) tv = [tv.includes(0) ? 0 : tv[0]];
       }
-      ax.call(d3.axisBottom(xScale).tickValues(tv).tickFormat(formatY).tickSize(0))
+      ax.call(d3.axisBottom(xScale).tickValues(tv).tickFormat(axelFmt(formatY)).tickSize(0))
         .call(s => s.select(".domain").remove())
         .call(s => s.selectAll(".tick text")
           .attr("fill", FARG.text).attr("font-size", 10.5).attr("font-family", TYP.ui)

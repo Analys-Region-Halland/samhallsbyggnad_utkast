@@ -15,8 +15,7 @@ import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
   stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
-  valPill, skapaTooltip, tooltipHtml
-} from "../lib/grafRam.js";
+  valPill, skapaTooltip, tooltipHtml, matText, axelFmt, autoFmt, ritbredd, arSmal, glesaTicks } from "../lib/grafRam.js";
 
 // Snyggt intervall och max för värdeaxeln
 function niceScale(dataMax, targetTicks = 5) {
@@ -50,7 +49,7 @@ export function stapeldiagram(data, {
   xLabel = null,
   yLabel = null,
   colors = SERIEFARGER,
-  formatY = d => d.toLocaleString("sv-SE"),
+  formatY = null,           // null = autoFmt (samma antal decimaler på alla värden)
   horizontal = false,
   grouped = false,
   showGrid = true,
@@ -65,6 +64,13 @@ export function stapeldiagram(data, {
   valueMax = null,        // fast övre gräns för värdeaxeln (t.ex. 100 för staplade andelar)
   showLegend = true       // false = dölj separat legendruta (färgade namn i undertiteln räcker)
 } = {}) {
+  if (!formatY) formatY = autoFmt(data.map(d => d[y]));
+
+  // Smal skärm: färre ticks, och stående staplar med fler än tre kategorier
+  // ritas liggande så att kategorinamnen ryms vågrätt (ordningen behålls)
+  const smalBredd = arSmal(width || ritbredd(780));
+  const vandTillLiggande = smalBredd && !horizontal && [...new Set(data.map(d => d[x]))].length > 3;
+  if (vandTillLiggande) { horizontal = true; [xLabel, yLabel] = [yLabel, xLabel]; }
 
   const filterByColor = filterBy === "color" && color;
 
@@ -90,7 +96,7 @@ export function stapeldiagram(data, {
         d => `${d[x]}|${time ? d[time] : ""}`), d => d[1])
     : d3.max(data, d => d[y]);
   const dataMin = d3.min(data, d => d[y]);
-  const valueNice = valueMax != null ? niceScale(valueMax, 4) : niceScale(dataMax, 5);
+  const valueNice = valueMax != null ? niceScale(valueMax, smalBredd ? 3 : 4) : niceScale(dataMax, smalBredd ? 3 : 5);
 
   if (dataMin < 0) {
     const negMin = Math.floor(dataMin / valueNice.interval) * valueNice.interval;
@@ -103,24 +109,48 @@ export function stapeldiagram(data, {
   }
 
   // ── Layout ──
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   // Måttets namn: yLabel (stående) resp. xLabel (liggande) står horisontellt ovanför plotytan
   const mattTitel = horizontal ? xLabel : yLabel;
   const marginTop = mattTitel ? 36 : 20;
-  const marginRight = (color && !(interactive && filterByColor)) ? 105 : 40;
-  // Stående staplar med många kategorier får vinklade etiketter och mer luft nedtill
-  const rotera = !horizontal && categories.length > 6;
-  const marginBottom = horizontal ? 40 : (xLabel ? 58 : 48) + (rotera ? 26 : 0);
+  // Legenden ligger som chips ovanför plotytan (aldrig i högermarginalen, där
+  // långa gruppnamn klipptes), så marginalen behöver bara rymma värdeetiketter.
+  const marginRight = horizontal ? 48 : 24;
+  // Stående staplar: kategorietiketterna radbryts så att de ryms i stapelns
+  // bredd (högst tre rader). Bara om ett enskilt ord ändå inte får plats
+  // vinklas etiketterna, som sista utväg.
+  const autoWidth0 = width || ritbredd(780);
+  const ungefarBand = (autoWidth0 - 90) / Math.max(1, categories.length) * 0.92;
+  const radbryt = (txt, maxW) => {
+    const ord = String(txt).split(" "), rader = [];
+    let rad = "";
+    for (const o of ord) {
+      const prov = rad ? rad + " " + o : o;
+      if (!rad || matText(prov, { size: STORLEK.tickX }) <= maxW) rad = prov;
+      else { rader.push(rad); rad = o; }
+    }
+    if (rad) rader.push(rad);
+    return rader;
+  };
+  const kategoriRader = new Map(horizontal ? [] : categories.map(c => [c, radbryt(c, ungefarBand)]));
+  const rotera = !horizontal && categories.some(c =>
+    kategoriRader.get(c).length > 3 || kategoriRader.get(c).some(r => matText(r, { size: STORLEK.tickX }) > ungefarBand + 4));
+  const maxRader = horizontal || rotera ? 1 : Math.max(1, ...categories.map(c => kategoriRader.get(c).length));
+  const marginBottom = horizontal ? 40 : (xLabel ? 58 : 48) + (rotera ? 26 : (maxRader - 1) * 15);
 
-  const pixelsPerCategory = 48;
+  // Grupperade liggande staplar: varje delstapel behöver ~15 px för att
+  // värdeetiketterna (11 px) inte ska krocka
+  const grupperadH = horizontal && grouped && color;
+  const nGrupper = color ? (groupOrder || [...new Set(data.map(d => d[color]))]).length : 1;
+  const pixelsPerCategory = grupperadH ? Math.max(48, nGrupper * 16 + 14) : 48;
   const dynamicHeight = horizontal
-    ? Math.min(600, Math.max(240, marginTop + marginBottom + categories.length * pixelsPerCategory))
+    ? Math.min(grupperadH ? 1400 : 600, Math.max(240, marginTop + marginBottom + categories.length * pixelsPerCategory))
     : height;
 
   let marginLeft = 18;
   if (horizontal) {
-    const maxLabelLength = Math.max(...categories.map(c => String(c).length));
-    marginLeft = 16 + maxLabelLength * 7.2 + 10;
+    const maxLabelW = Math.max(...categories.map(c => matText(String(c), { size: STORLEK.tickX, weight: 500 })));
+    marginLeft = 16 + maxLabelW + 10;
   }
 
   const maxTickWidth = Math.max(...valueNice.ticks.map(t => String(formatY(t)).length)) * 6.6 + 8;
@@ -215,11 +245,10 @@ export function stapeldiagram(data, {
 
   // Avläsning vid hover
   const showValue = (category, values) => {
-    const chips = values.map(v => {
-      const label = v.label || "";
-      return `<span style="display:inline-flex;align-items:center;margin-right:14px"><span style="width:7px;height:7px;border-radius:50%;background:${v.color};margin-right:5px;flex-shrink:0"></span>${label ? `<span style="margin-right:4px">${label}</span>` : ""}<b>${formatY(v.value)}</b></span>`;
-    }).join("");
-    avlasning.visa(`<b style="margin-right:10px">${category}</b>${chips}`);
+    const rader = values.map(v => ({
+      namn: v.label || mattTitel || "", varde: formatY(v.value), farg: v.color, fokus: values.length > 1 && v.fokus
+    }));
+    avlasning.visa(tooltipHtml(category, rader));
   };
   const hideValue = () => avlasning.rensa();
 
@@ -234,7 +263,7 @@ export function stapeldiagram(data, {
     // HORISONTELLT STAPELDIAGRAM (med valfri ranking-animation)
     // =======================================================================
     let currentData = getDataForTime(currentTime);
-    let sortedData = [...currentData].sort((a, b) => b[y] - a[y]);
+    let sortedData = vandTillLiggande ? [...currentData] : [...currentData].sort((a, b) => b[y] - a[y]);
     let sortedCategories = sortedData.map(d => d[x]);
     const allCategories = categories;
 
@@ -261,13 +290,14 @@ export function stapeldiagram(data, {
     // Värdeaxel nederst: bara etiketter
     svg.append("g")
       .attr("transform", `translate(0,${chartHeight - marginBottom})`)
-      .call(d3.axisBottom(xScale).tickFormat(formatY).tickValues(valueNice.ticks).tickSize(0))
+      .call(d3.axisBottom(xScale).tickFormat(axelFmt(formatY)).tickValues(valueNice.ticks).tickSize(0))
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick text")
         .attr("fill", FARG.text)
         .attr("font-size", STORLEK.tick)
         .attr("font-family", TYP.ui)
-        .style("font-variant-numeric", "tabular-nums"));
+        .style("font-variant-numeric", "tabular-nums"))
+      .call(g => glesaTicks(g));
 
     const barsGroup = svg.append("g").attr("class", "bars-group");
 
@@ -427,7 +457,7 @@ export function stapeldiagram(data, {
 
       } else {
         // ── Horisontell enkel (rankad) ──
-        sortedData = [...currentData].sort((a, b) => b[y] - a[y]);
+        sortedData = vandTillLiggande ? [...currentData] : [...currentData].sort((a, b) => b[y] - a[y]);
         sortedCategories = sortedData.map(d => d[x]);
         yScale.domain(sortedCategories);
 
@@ -751,13 +781,21 @@ export function stapeldiagram(data, {
       .attr("transform", rotera ? "rotate(-35)" : null)
       .attr("text-anchor", rotera ? "end" : "middle")
       .attr("dy", rotera ? "0.5em" : "0.9em");
+    if (!rotera) {
+      xAxisG.selectAll(".tick text").each(function (c) {
+        const rader = kategoriRader.get(c) || [String(c)];
+        if (rader.length < 2) return;
+        const t = d3.select(this).text(null).attr("dy", null);
+        rader.forEach((r, i) => t.append("tspan").attr("x", 0).attr("dy", i ? "1.2em" : "0.9em").text(r));
+      });
+    }
 
     if (xLabel) xTitel(svg, { x: axisLeft + innerWidth / 2, y: height - 6, text: xLabel });
 
     // Värdeaxel: bara etiketter
     const yAxisG = svg.append("g")
       .attr("transform", `translate(${axisLeft},0)`)
-      .call(d3.axisLeft(yScale).tickFormat(formatY).tickValues(valueNice.ticks));
+      .call(d3.axisLeft(yScale).tickFormat(axelFmt(formatY)).tickValues(valueNice.ticks));
     stilYAxel(yAxisG);
 
     const barsGroup = svg.append("g").attr("class", "bars-group");
@@ -1016,40 +1054,14 @@ export function stapeldiagram(data, {
     });
   }
 
-  // ── Legend ──
+  // ── Legend: chips ovanför plotytan, vänsterställda, radbryts (ONS/Datawrapper) ──
   if (showLegend && color && groups.length > 1 && groups[0] !== "_all" && !(interactive && filterByColor)) {
-    if (isStacked && horizontal) {
-      // HTML-legend ovanför diagrammet
-      const legendDiv = container.insert("div", ".graf-body")
-        .attr("class", "graf-legend")
-        .style("display", "flex")
-        .style("flex-wrap", "wrap")
-        .style("gap", "4px 16px")
-        .style("padding", "0.2rem 1.4rem 0.4rem")
-        .style("font-size", "12px")
-        .style("color", FARG.text);
-      groups.forEach(group => {
-        const item = legendDiv.append("span")
-          .style("display", "inline-flex").style("align-items", "center").style("gap", "6px");
-        item.append("span")
-          .style("width", "10px").style("height", "10px").style("border-radius", "50%")
-          .style("background", colorScale(group)).style("flex-shrink", "0");
-        item.append("span").text(group);
-      });
-    } else {
-      const legend = svg.append("g")
-        .attr("transform", `translate(${plotRight + 20}, ${marginTop + 6})`);
-      groups.forEach((group, i) => {
-        const g = legend.append("g").attr("transform", `translate(0, ${i * 22})`);
-        g.append("rect").attr("width", 12).attr("height", 12).attr("y", 1).attr("fill", colorScale(group)).attr("rx", 2);
-        g.append("text")
-          .attr("x", 18).attr("y", 11)
-          .attr("font-size", STORLEK.etikett)
-          .attr("font-family", TYP.ui)
-          .attr("fill", FARG.ink)
-          .text(group);
-      });
-    }
+    const legend = container.insert("div", ".graf-body").attr("class", "graf-legend-chips");
+    groups.forEach(group => {
+      const item = legend.append("span").attr("class", "graf-legend-chip");
+      item.append("span").attr("class", "graf-legend-prick").style("background", colorScale(group));
+      item.append("span").text(group);
+    });
   }
 
   addExportButton(container, svg.node(), {

@@ -16,8 +16,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import {
   skapaRam, TYP, FARG, STORLEK, matText,
-  stilYAxel, stilXAxel, xTitel, yTitel, skapaTooltip, tooltipHtml
-} from "../lib/grafRam.js";
+  stilYAxel, stilXAxel, xTitel, yTitel, skapaTooltip, tooltipHtml, axelFmt, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function linjediagramFacet(data, {
   x = "ar",
@@ -49,7 +48,8 @@ export function linjediagramFacet(data, {
   logo = null
 } = {}) {
 
-  const autoWidth = width || 820;
+  const autoWidth = width || ritbredd(820);
+  if (arSmal(autoWidth, 820)) ncol = Math.min(ncol, 2);
 
   // ── Facet-ordning ──
   const facetGroups = d3.group(data, d => d[facet]);
@@ -209,7 +209,7 @@ export function linjediagramFacet(data, {
 
     if (isLeftCol) {
       const yAxisG = bgGroup.append("g").attr("transform", `translate(${plotX0}, 0)`);
-      yAxisG.call(d3.axisLeft(ys).ticks(4).tickFormat(formatY));
+      yAxisG.call(d3.axisLeft(ys).ticks(4).tickFormat(axelFmt(formatY)));
       stilYAxel(yAxisG, { dx: -6 });
       yAxisG.selectAll(".tick text").attr("font-size", 11);
     }

@@ -39,6 +39,14 @@ html.kr-kartsida .html-widget { width: 100% !important; height: 100% !important;
 .kr-tip .maplibregl-popup-content { padding: 6px 10px; border-radius: 6px; font-size: 12.5px; line-height: 1.35; color: var(--kr-ink); pointer-events: none; }
 .kr-tip .maplibregl-popup-tip { display: none; }
 
+/* Hover-tooltips (popup utan stängknapp, se formaTip i kartsystem.js):
+   rubrik + värde, radbryts i stället för att spilla över kartan. */
+.kr-kartan .kr-hovertip { max-width: min(280px, calc(100% - 24px)) !important; }
+.kr-kartan .kr-hovertip .maplibregl-popup-content { white-space: normal; overflow-wrap: anywhere; font-size: 12.5px; line-height: 1.35; }
+.kr-kartan .maplibregl-popup:not(.kr-hovertip) { max-width: min(360px, calc(100% - 24px)) !important; }
+.kr-tip-rubrik { display: block; font-weight: 600; color: var(--kr-ink); }
+.kr-tip-varde { display: block; margin-top: 1px; color: #39495a; font-weight: 400; font-variant-numeric: tabular-nums; }
+
 /* mapgl-legendernas rubrik är <h2>; får inte ärva rapportens sektionsnummer */
 .kr-kd h2::before, .mapboxgl-legend h2::before { content: none !important; }
 

@@ -10,8 +10,7 @@ import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
-  stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos, matText
-} from "../lib/grafRam.js";
+  stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos, matText, tooltipHtml, axelFmt, autoFmt, ritbredd, glesaTicks } from "../lib/grafRam.js";
 
 // Snyggt intervall och max för värdeaxeln
 function niceScale(dataMax, targetTicks = 5) {
@@ -39,7 +38,7 @@ export function lollipop(data, {
   xLabel = null,
   yLabel = null,
   colors = SERIEFARGER,
-  formatY = d => d.toLocaleString("sv-SE"),
+  formatY = null,           // null = autoFmt (samma antal decimaler på alla värden)
   horizontal = false,
   pointRadius = 6,
   lineWidth = 2,
@@ -53,6 +52,7 @@ export function lollipop(data, {
   vline = null,           // { value, label? } — vertikal referenslinje (horisontell lollipop)
   valueMax = null         // fast övre gräns för värdeaxeln (t.ex. 6 för en skala 1–6)
 } = {}) {
+  if (!formatY) formatY = autoFmt(data.map(d => d[y]));
 
   const filterState = createFilterState(data, { itemField: x, groupField: color, filter, highlight });
 
@@ -65,7 +65,7 @@ export function lollipop(data, {
   // ── Layout ──
   // Måttnamn (horisontellt uppe till vänster): yLabel för vertikal, xLabel för horisontell
   const mattNamn = horizontal ? xLabel : yLabel;
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   const marginTop = (mattNamn || vline?.label) ? 36 : 20;
   const marginRight = (color && !interactive) ? 105 : 40;
   const marginBottom = horizontal ? 34 : (xLabel ? 62 : 52);
@@ -125,12 +125,10 @@ export function lollipop(data, {
 
   // Avläsning
   const showValue = (category, value, groupKey) => {
-    const groupLabel = groupKey !== "_all" ? `<span style="color:${FARG.mjuk};margin-right:4px">${groupKey}</span>` : "";
-    avlasning.visa(
-      `<span style="display:inline-flex;align-items:center;gap:8px">` +
-      `<b>${category}</b><span style="color:#d5d8d7">│</span>` +
-      `<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:${colorScale(groupKey)}"></span>${groupLabel}<b>${formatY(value)}</b></span></span>`
-    );
+    avlasning.visa(tooltipHtml(category, [{
+      namn: groupKey !== "_all" ? String(groupKey) : (mattNamn || ""),
+      varde: formatY(value), farg: colorScale(groupKey)
+    }]));
   };
   const hideValue = () => avlasning.rensa();
 
@@ -165,10 +163,11 @@ export function lollipop(data, {
     // Värdeaxel nederst: bara etiketter
     const xAxisG = svg.append("g").attr("class", "x-axis")
       .attr("transform", `translate(0,${chartHeight - marginBottom})`)
-      .call(d3.axisBottom(xScale).tickFormat(formatY).tickValues(valueNice.ticks).tickSize(0));
+      .call(d3.axisBottom(xScale).tickFormat(axelFmt(formatY)).tickValues(valueNice.ticks).tickSize(0));
     stilXAxel(xAxisG);
     xAxisG.select(".domain").remove();
     xAxisG.selectAll(".tick text").attr("fill", FARG.text).attr("font-size", STORLEK.tick);
+    glesaTicks(xAxisG);
 
     // Vertikal referenslinje (vline) — bakom lollipops
     if (vline) {
@@ -250,7 +249,7 @@ export function lollipop(data, {
 
     const yAxisG = svg.append("g").attr("class", "y-axis")
       .attr("transform", `translate(${axisLeft},0)`)
-      .call(d3.axisLeft(yScale).tickFormat(formatY).tickValues(valueNice.ticks));
+      .call(d3.axisLeft(yScale).tickFormat(axelFmt(formatY)).tickValues(valueNice.ticks));
     stilYAxel(yAxisG);
 
     updateLollipops = function () {

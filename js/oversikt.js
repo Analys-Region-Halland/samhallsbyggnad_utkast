@@ -9,12 +9,13 @@
 //              vad kapitlet innehåller (kapitel.json: beskrivning), kartminiatyr som öppnar kapitlets kartor i galleriet, och en
 //              utfällbar avsnittslista (step-by-step-mönstret). Skalar till
 //              godtyckligt många kapitel och avsnitt.
-//   GALLERI    js/kartgalleri.js (modal, djuplänkar #kartgalleri, #karta/<id>).
+//   GALLERI    js/kartgalleri.js: kartgalleriet (#kartgalleri, #karta/<id>) och
+//              grafgalleriet (#grafgalleri, #graf/<id>), samma modal.
 //
 // Data: data.kapitel[] = { id, nummer, kategori, titel, ingress, farg,
 //   beskrivning, avsnitt: [{ id, titel, beskrivning? }] }.
 import { hallandskarta } from "./kartor/halland.js";
-import { kartgalleri } from "./kartgalleri.js";
+import { kartgalleri, grafgalleri } from "./kartgalleri.js";
 
 const LOGO = "logo_vit.svg";
 
@@ -59,10 +60,11 @@ const SVG = {
   chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
   pil: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>',
   ned: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>',
+  staplar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5"/><path d="M12 16V6"/><path d="M17 16v-8"/></svg>',
   rutnat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/></svg>'
 };
 
-export function oversikt({ data, geo, orter = [], kartor = [] }) {
+export function oversikt({ data, geo, orter = [], kartor = [], grafer = [] }) {
   const r = data.rapport;
   const kapitel = data.kapitel || [];
   const stoppare = [];
@@ -70,6 +72,7 @@ export function oversikt({ data, geo, orter = [], kartor = [] }) {
   const galleri = kartgalleri({ kartor, kapitel, bas: "" });
   const kartorPer = new Map();
   galleri.lista.forEach((k) => { if (!kartorPer.has(k.kapitel)) kartorPer.set(k.kapitel, []); kartorPer.get(k.kapitel).push(k); });
+  const ggalleri = grafgalleri({ grafer, kapitel, bas: "" });
   const antalAvsnitt = kapitel.reduce((s, k) => s + (k.avsnitt || []).length, 0);
 
   // ── HJÄLTE ──
@@ -84,7 +87,10 @@ export function oversikt({ data, geo, orter = [], kartor = [] }) {
         h("a", { class: "kr-hero-lank", href: "#kapitel" }, "Kapitel"),
         h("a", { class: "kr-hero-lank kr-hero-lank--galleri", href: "#kartgalleri",
             onclick: (e) => { e.preventDefault(); galleri.oppna(); } },
-          h("span", { html: SVG.rutnat }), "Kartgalleri"))),
+          h("span", { html: SVG.rutnat }), "Kartgalleri"),
+        h("a", { class: "kr-hero-lank kr-hero-lank--galleri", href: "#grafgalleri",
+            onclick: (e) => { e.preventDefault(); ggalleri.oppna(); } },
+          h("span", { html: SVG.staplar }), "Grafgalleri"))),
     h("div", { class: "kr-hero-inner" },
       h("div", { class: "kr-hero-text" },
         h("p", { class: "kr-hero-kicker" }, `${r.avsandare} ${r.utgivare}`),
@@ -94,12 +100,15 @@ export function oversikt({ data, geo, orter = [], kartor = [] }) {
         h("div", { class: "kr-hero-cta" },
           h("a", { class: "kr-knapp kr-knapp--prim", href: "#kapitel" }, h("span", {}, "Läs rapporten"), h("span", { class: "kr-knapp-ikon", html: SVG.ned })),
           h("a", { class: "kr-knapp kr-knapp--sek", href: "#kartgalleri", onclick: (e) => { e.preventDefault(); galleri.oppna(); } },
-            h("span", { class: "kr-knapp-ikon", html: SVG.rutnat }), h("span", {}, "Kartgalleriet"))),
+            h("span", { class: "kr-knapp-ikon", html: SVG.rutnat }), h("span", {}, "Kartgalleriet")),
+          h("a", { class: "kr-knapp kr-knapp--sek", href: "#grafgalleri", onclick: (e) => { e.preventDefault(); ggalleri.oppna(); } },
+            h("span", { class: "kr-knapp-ikon", html: SVG.staplar }), h("span", {}, "Grafgalleriet"))),
         h("dl", { class: "kr-hero-siffror" },
           siffra(String(kapitel.length), "Kapitel"),
           siffra(String(antalAvsnitt), "Avsnitt"),
           siffra(String(galleri.antal), "Interaktiva kartor"),
-          siffra(r.uppdaterad, "Uppdaterad"))),
+          siffra(String(ggalleri.antal), "Grafer"),
+          siffra(r.uppdaterad_kort || r.uppdaterad, "Uppdaterad"))),
       h("figure", { class: "kr-hero-figur" },
         kartEl,
         h("figcaption", { class: "kr-hero-figurtext" },
@@ -129,6 +138,7 @@ export function oversikt({ data, geo, orter = [], kartor = [] }) {
     const beskrivning = h("p", { class: "kr-rad-beskrivning" }, k.beskrivning || k.ingress);
 
     const kk = kartorPer.get(k.id) || [];
+    const gg = ggalleri.antalPer.get(k.id) || 0;
     const kartknapp = kk.length
       ? h("button", { type: "button", class: "kr-rad-kartor", onclick: () => galleri.oppna(k.id),
           "aria-label": `Visa kapitlets ${kk.length} ${kk.length === 1 ? "karta" : "kartor"} i kartgalleriet` },
@@ -144,7 +154,10 @@ export function oversikt({ data, geo, orter = [], kartor = [] }) {
         beskrivning,
         h("div", { class: "kr-rad-meta" },
           avsnitt.length ? vaxla : null,
-          h("a", { class: "kr-rad-las", href: `${k.id}/` }, h("span", {}, "Läs kapitlet"), h("span", { class: "kr-rad-las-pil", html: SVG.pil })))),
+          h("a", { class: "kr-rad-las", href: `${k.id}/` }, h("span", {}, "Läs kapitlet"), h("span", { class: "kr-rad-las-pil", html: SVG.pil })),
+          gg ? h("button", { type: "button", class: "kr-rad-grafer", onclick: () => ggalleri.oppna(k.id),
+              "aria-label": `Visa kapitlets ${gg} grafer i grafgalleriet` },
+            h("span", { html: SVG.staplar }), `${gg} ${gg === 1 ? "graf" : "grafer"}`) : null)),
       kartknapp,
       panel);
 

@@ -11,7 +11,7 @@
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
-import { skapaRam, TYP, FARG, STORLEK, xTitel, skapaTooltip, tooltipHtml } from "../lib/grafRam.js";
+import { skapaRam, TYP, FARG, STORLEK, xTitel, skapaTooltip, tooltipHtml, autoFmt, ritbredd } from "../lib/grafRam.js";
 
 export function dotplot(data, {
   value = "värde",
@@ -32,15 +32,16 @@ export function dotplot(data, {
   radius = 3.5,
   highlightRadius = 6,
   sort = null,
-  formatValue = d => d.toLocaleString("sv-SE"),
+  formatValue = null,           // null = autoFmt (samma antal decimaler på alla värden)
   domain = null,
   ticks = 5,
   altText = null,
   info = null,
   logo = null
 } = {}) {
+  if (!formatValue) formatValue = autoFmt(data.map(d => d[value]));
 
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   const marginRight = 40;
   const marginTop = 10;
   const xAxisHeight = 30;

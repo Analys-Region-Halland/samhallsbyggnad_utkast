@@ -6,7 +6,7 @@
 //
 //   .graf-container
 //     .graf-header      titel (Source Serif 4), undertitel, verktyg uppe till höger
-//     .graf-avlasning   (valfri) en rad för hover-avläsning
+//     (avlasning()      valfri tooltip vid pekaren för hover-värden)
 //     .graf-body        svg + tooltip + rullgardinsmenyer
 //     .graf-footer      .graf-controls (väljare: region, år …) + källrad
 //
@@ -69,6 +69,61 @@ export function matText(text, { size = 12, weight = 400, family = TYP.ui } = {})
   return _ctx.measureText(String(text)).width;
 }
 
+// ── Ritbredd: graferna ritas i en viewBox som skalas till rutans bredd. På
+// smala skärmar ritas de i stället nära den verkliga bredden, så att text och
+// axlar behåller läsbar storlek (annars krymper 12 px till ~5 px på mobil).
+// Beräknas när grafen skapas (fönstrets bredd), standardbredden på desktop.
+export function ritbredd(standard = 780) {
+  if (typeof document === "undefined") return standard;
+  const vw = document.documentElement.clientWidth || window.innerWidth || standard;
+  const tillg = vw - 58;                       // sidomarginaler + rutans padding
+  if (tillg >= standard * 0.92) return standard;
+  return Math.round(Math.min(standard, Math.max(standard * 0.5, tillg / 0.86)));
+}
+// Smal grafyta: färre ticks, legend/paneler byter läge
+export const arSmal = (W, standard = 780) => W < standard * 0.75;
+
+// Axeletiketter för stora tal på svenska: 2 500, 10 000, 250 000, 1 milj.
+export const fmtAxelTal = (v) => {
+  const a = Math.abs(+v);
+  if (a >= 1e6) return (v / 1e6).toLocaleString("sv-SE", { maximumFractionDigits: 1 }) + " milj.";
+  return (+v).toLocaleString("sv-SE", { maximumFractionDigits: 2 });
+};
+
+// Axeltick: heltal skrivs utan nolldecimaler ("25 %", inte "25,0 %"), även
+// när grafens formatterare annars visar decimaler (värden, tooltips).
+export const axelFmt = (fmt) => (t) => {
+  const s = String(fmt(t));
+  return Number.isInteger(+t) ? s.replace(/,0+(?![0-9])/, "") : s;
+};
+
+// Standardformatterare när grafen inte fått någon: samma antal decimaler på
+// alla värden (0, 1 eller 2 efter vad datan kräver), så att "80" och "80,7"
+// inte blandas i samma figur.
+export function autoFmt(varden) {
+  const v = varden.filter(x => x != null && !Number.isNaN(+x)).map(Number);
+  let dec = 0;
+  if (v.some(x => Math.abs(x * 1) % 1 > 1e-9)) dec = 1;
+  if (dec && v.every(x => Math.abs(x) < 10) && v.some(x => Math.abs(x * 10) % 1 > 1e-6)) dec = 2;
+  return (x) => x == null || Number.isNaN(+x) ? "" : (+x).toLocaleString("sv-SE", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+}
+
+// Undertitel med enhet för grafer med Andel/Antal-växel: enheten skrivs in
+// efter första satsen ("Hushållen efter antal personer, andel i procent, 2025")
+// och byts när läsaren växlar. Instruktioner och gamla enhetsfraser rensas bort.
+export function medEnhet(text, andel, { antal = "antal", procent = "andel i procent" } = {}) {
+  if (!text) return text;
+  let s = String(text)
+    .replace(/\s*\((?:växla|byt|välj)[^)]*\)/gi, "")
+    .replace(/\.?\s*Andel (?:eller|och) [^.]+\./, ".")
+    .replace(/,?\s*andel (?:eller|och) [^,.]+/i, "")
+    .replace(/,?\s*andel i procent/i, "")
+    .replace(/^Andel av (\S)/, (m, c) => c.toUpperCase());
+  const enhet = andel ? procent : antal;
+  const i = s.search(/[,.]/);
+  return i < 0 ? `${s}, ${enhet}` : `${s.slice(0, i)}, ${enhet}${s.slice(i)}`;
+}
+
 export const fmtTal = (v, dec = 0) =>
   v == null || Number.isNaN(+v) ? "" :
   (+v).toLocaleString("sv-SE", { minimumFractionDigits: dec, maximumFractionDigits: dec });
@@ -107,7 +162,7 @@ export function skapaRam({ title = null, subtitle = null, caption = null } = {})
   const captionEl = footer.append("div").attr("class", "graf-caption").text(caption || "")
     .style("display", caption ? null : "none");
 
-  let avlasningEl = null;
+  let avlasningObj = null;
 
   return {
     container, header, tools, body, svgWrap, footer, controls, controlsLeft, controlsRight,
@@ -116,18 +171,24 @@ export function skapaRam({ title = null, subtitle = null, caption = null } = {})
     setTitle(t) { titleEl.text(t || "").style("display", t ? null : "none"); },
     setSubtitle(t) { subtitleEl.text(t || "").style("display", t ? null : "none"); },
     setCaption(t) { captionEl.text(t || "").style("display", t ? null : "none"); },
-    // Avläsningsrad under rubriken (används av staplar, lollipop, kartor …)
-    avlasning(hint = "Peka för värden") {
-      if (!avlasningEl) {
-        avlasningEl = container.insert("div", ".graf-body")
-          .attr("class", "graf-avlasning")
-          .attr("data-hint", hint);
+    // Avläsning vid hover (staplar, lollipop, beeswarm, scatter …). Visas som
+    // en tooltip vid pekaren; utan position följer den senaste pekarläget i
+    // grafen. Tidigare en rad under rubriken, därav namnet.
+    avlasning() {
+      if (!avlasningObj) {
+        const tt = skapaTooltip(body);
+        tt.el.classed("graf-tooltip--avlasning", true);
+        let senast = { x: 0, y: 0 };
+        const spara = (event) => { senast = pekarPos(event, body); tt.flytta(senast); };
+        body.on("pointermove.avlasning", spara).on("pointerdown.avlasning", spara);
+        body.on("pointerleave.avlasning", (event) => { if (event.pointerType === "mouse") tt.dolj(); });
+        avlasningObj = {
+          el: tt.el,
+          visa(html, pos = null) { tt.visa(html, pos || senast); },
+          rensa() { tt.dolj(); }
+        };
       }
-      return {
-        el: avlasningEl,
-        visa(html) { avlasningEl.html(html); },
-        rensa() { avlasningEl.html(""); }
-      };
+      return avlasningObj;
     },
     // Lägg en SVG i kroppen med rätt klass och viewBox
     svg(width, height) {
@@ -167,7 +228,28 @@ export function stilXAxel(g, { anchor = "middle" } = {}) {
     .attr("font-family", TYP.ui)
     .attr("text-anchor", anchor)
     .style("font-variant-numeric", "tabular-nums");
+  glesaTicks(g);
   return g;
+}
+
+// Döljer x-etiketter som skulle överlappa föregående synliga etikett (smala
+// grafer, täta skalor). Mäter med canvas eftersom grafen inte är monterad än.
+export function glesaTicks(g, { luft = 8 } = {}) {
+  let sistaHoger = -Infinity;
+  g.selectAll(".tick").each(function () {
+    const tick = d3.select(this);
+    const t = tick.select("text");
+    if (t.empty() || !t.text() || t.attr("transform")) return;   // vinklade etiketter hanteras inte
+    const m = /translate\(([-\d.e]+)/.exec(tick.attr("transform") || "");
+    if (!m) return;
+    const x = +m[1];
+    const w = matText(t.text(), { size: +t.attr("font-size") || STORLEK.tickX });
+    const anchor = t.attr("text-anchor") || "middle";
+    const v = anchor === "start" ? x : anchor === "end" ? x - w : x - w / 2;
+    const synlig = v >= sistaHoger + luft;
+    t.attr("opacity", synlig ? null : 0);
+    if (synlig) sistaHoger = v + w;
+  });
 }
 
 // Horisontella gridlinjer: streckade, nollinjen (eller ett referensvärde) heldragen
@@ -381,25 +463,76 @@ export function segment(parent, { options, activeIndex = 0, onSelect } = {}) {
 // TOOLTIP — en per graf, ligger i .graf-body
 //   const tt = skapaTooltip(ram.body);
 //   tt.visa(html, { x, y })   // x,y i CSS-pixlar relativt svg-container
+//   tt.flytta({ x, y })       // följ pekaren utan att byta innehåll
 //   tt.dolj()
+//
+// Placeringen hålls alltid inom BÅDE grafrutan (.graf-container) och
+// fönstret: tooltipen byter sida vid kanten och skjuts in, aldrig ut.
+// Vid tryck (touch) läggs den ovanför fingret så att den inte döljs.
+// Esc stänger alla tooltips (WCAG 1.4.13), liksom tryck utanför grafen.
 // =============================================================================
+let _senastPekare = "mouse";
+if (typeof document !== "undefined" && !document.__grafTooltipLyssnare) {
+  document.__grafTooltipLyssnare = true;
+  const doljAlla = () => document.querySelectorAll(".graf-tooltip").forEach(t => { t.style.display = "none"; });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") doljAlla(); });
+  document.addEventListener("pointerdown", (e) => {
+    _senastPekare = e.pointerType || "mouse";
+    if (_senastPekare !== "mouse" && !(e.target.closest && e.target.closest(".graf-body"))) doljAlla();
+  }, true);
+  document.addEventListener("pointermove", (e) => { if (e.pointerType) _senastPekare = e.pointerType; }, { capture: true, passive: true });
+}
+
+export function placeraTooltip(el, body, { x, y, sida = "auto", offset = 14 } = {}) {
+  const node = el.node ? el.node() : el;
+  const bodyNode = body.node ? body.node() : body;
+  const b = bodyNode.getBoundingClientRect();
+  const ram = (bodyNode.closest(".graf-container") || bodyNode).getBoundingClientRect();
+  const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  const w = node.offsetWidth, h = node.offsetHeight;
+  // Tillåtet område i body-koordinater: grafrutan ∩ fönstret
+  const minX = Math.max(ram.left, 0) - b.left + 6;
+  const maxX = Math.min(ram.right, vw) - b.left - 6;
+  const minY = Math.max(ram.top, 0) - b.top + 6;
+  const maxY = Math.min(ram.bottom, vh) - b.top - 6;
+  let left, top;
+  if (_senastPekare === "touch" || sida === "ovan") {
+    // Ovanför fingret, centrerad; under om det inte får plats ovanför
+    left = x - w / 2;
+    top = y - h - 22;
+    if (top < minY) top = y + 26;
+  } else {
+    left = x + offset;
+    if (sida === "vanster" || (sida === "auto" && left + w > maxX)) left = x - w - offset;
+    top = y - h / 2;
+  }
+  left = Math.max(minX, Math.min(maxX - w, left));
+  top = Math.max(minY, Math.min(maxY - h, top));
+  node.style.left = `${Math.round(left)}px`;
+  node.style.top = `${Math.round(top)}px`;
+}
+
 export function skapaTooltip(body) {
-  const el = body.append("div").attr("class", "graf-tooltip").style("display", "none");
+  const el = body.append("div").attr("class", "graf-tooltip").attr("role", "tooltip").style("display", "none");
   return {
     el,
-    visa(html, { x, y, sida = "auto", offset = 14 } = {}) {
+    visa(html, pos = {}) {
       el.html(html).style("display", "block");
-      const b = body.node().getBoundingClientRect();
-      const w = el.node().offsetWidth, h = el.node().offsetHeight;
-      let left = x + offset;
-      if (sida === "vanster" || (sida === "auto" && left + w > b.width - 6)) left = x - w - offset;
-      if (left < 4) left = 4;
-      let top = y - h / 2;
-      top = Math.max(4, Math.min(b.height - h - 4, top));
-      el.style("left", `${left}px`).style("top", `${top}px`);
+      placeraTooltip(el, body, pos);
+    },
+    flytta(pos) {
+      if (el.style("display") === "none") return;
+      placeraTooltip(el, body, pos);
     },
     dolj() { el.style("display", "none"); }
   };
+}
+
+// Pekarens position i .graf-body-koordinater (för tooltip-placering)
+export function pekarPos(event, body) {
+  const b = (body.node ? body.node() : body).getBoundingClientRect();
+  const e = event.touches && event.touches[0] ? event.touches[0] : event;
+  return { x: e.clientX - b.left, y: e.clientY - b.top };
 }
 
 // Bygger standard-tooltiphtml: rubrik (t.ex. år) + rader [{namn, varde, farg, fokus}]

@@ -9,8 +9,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import {
   skapaRam, TYP, FARG, STORLEK, matText,
-  yTitel, skapaTooltip, tooltipHtml
-} from "../lib/grafRam.js";
+  yTitel, skapaTooltip, tooltipHtml, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function facetLinjer(initialData, {
   facet = "facet",
@@ -21,7 +20,7 @@ export function facetLinjer(initialData, {
   seriesOrder = null,
   colors = ["#00664D", "#0C8C7E", "#FF7E00", "#1A7BB0", "#433C9D", "#A51300"],
   columns = 3,
-  width = 880,
+  width = null,
   plotH = 120,
   shareY = false,
   title = null,
@@ -55,6 +54,8 @@ export function facetLinjer(initialData, {
   const xMinV = xs[0], xMaxV = xs[xs.length - 1];
 
   // ── Layout ──
+  if (!width) width = ritbredd(880);
+  if (arSmal(width, 880)) columns = Math.min(columns, 2);   // smal skärm: högst två panelkolumner
   const cols = Math.min(columns, facets.length);
   const rows = Math.ceil(facets.length / cols);
   const topRowH = 34;              // y-titel + legend

@@ -40,10 +40,17 @@ function kapitelId() {
   return delar[delar.length - 1] || "";
 }
 
+// Figurens stabila id (grafgalleriet och djuplänkar): "graf-" + titelns slug.
+const slugga = (t) => t.toLowerCase()
+  .replace(/[åä]/g, "a").replace(/ö/g, "o").replace(/é/g, "e")
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60).replace(/-+$/, "");
+const arKarta = (el) => !!el.querySelector("iframe, .kr-karta-ram, .maplibregl-map, .mapboxgl-map, .kr-zonkarta, .tk-karta");
+
 // Flyttar ut figurtitel/undertitel/källa till en rapport-bildtext UNDER rutan
 // ("Figur N. …") och numrerar löpande per kapitel (steppern = en figur). Körs
-// om via en observer eftersom OJS monterar figurerna asynkront.
-function numreraFigurer(root) {
+// om via en observer eftersom OJS monterar figurerna asynkront. Varje figur
+// får ett id (graf-<slug>) och data-figur/data-figtyp för grafgalleriet.
+function numreraFigurer(root, { vidFlush = null } = {}) {
   const sattText = (el, txt) => { if (el && el.textContent !== txt) el.textContent = txt; };
   let obs = null;
 
@@ -67,7 +74,17 @@ function numreraFigurer(root) {
       const titelP = titel && !/[.!?:]$/.test(titel) ? titel + "." : titel;
       sattText(cap.querySelector(".kr-figurtext-num"), `Figur ${i + 1}.`);
       sattText(cap.querySelector(".kr-figurtext-titel"), titelP);
+      if (enhet.dataset.figur !== String(i + 1)) enhet.dataset.figur = String(i + 1);
+      if (!enhet.id && titel) {
+        let id = "graf-" + slugga(titel), n = 2;
+        while (document.getElementById(id)) id = "graf-" + slugga(titel) + "-" + n++;
+        enhet.id = id;
+        enhet.style.scrollMarginTop = "90px";
+      }
+      const typ = arKarta(enhet) ? "karta" : "graf";
+      if (enhet.dataset.figtyp !== typ) enhet.dataset.figtyp = typ;
     });
+    if (vidFlush) vidFlush(enheter);
     if (obs) obs.observe(root, { childList: true, subtree: true });
   };
 
@@ -79,6 +96,44 @@ function numreraFigurer(root) {
     requestAnimationFrame(() => { vantar = false; flush(); });
   });
   obs.observe(root, { childList: true, subtree: true });
+}
+
+// ── Figurlänkar och grafvy ──
+// Figurernas id sätts först när OJS har ritat dem, så webbläsarens egen
+// ankarhoppning (#graf-…) missar. Hoppa dit när figuren dyker upp och
+// markera den kort. ?grafvy=<id> (grafgalleriets visare) visar BARA den
+// figuren: allt annat döljs med CSS (html.kr-grafvy) och föräldrakedjan
+// nollställs, så att figuren behåller kapitlets accent och stil.
+function figurLankar() {
+  const grafvyId = new URLSearchParams(location.search).get("grafvy");
+  if (grafvyId) document.documentElement.classList.add("kr-grafvy");
+  let hoppat = false, klar = false;
+  return (enheter) => {
+    if (grafvyId && !klar) {
+      const mal = enheter.find((e) => e.id === grafvyId);
+      if (!mal) return;
+      klar = true;
+      mal.classList.add("kr-grafvy-mal");
+      const cap = mal.nextElementSibling;
+      if (cap && cap.classList.contains("kr-figurtext")) cap.classList.add("kr-grafvy-cap");
+      for (let el = mal.parentElement; el && el !== document.documentElement; el = el.parentElement) el.classList.add("kr-grafvy-kedja");
+      window.scrollTo(0, 0);
+      // vänta en bildruta så att grafen hunnit rita klart innan visaren tonar in
+      requestAnimationFrame(() => setTimeout(() => {
+        try { parent.postMessage({ kr: "graf-klar", id: grafvyId }, "*"); } catch (_) { /* */ }
+      }, 250));
+      return;
+    }
+    if (hoppat || grafvyId || !/^#graf-/.test(location.hash)) return;
+    const mal = enheter.find((e) => "#" + e.id === decodeURIComponent(location.hash));
+    if (!mal) return;
+    hoppat = true;
+    setTimeout(() => {
+      mal.scrollIntoView({ block: "center", behavior: "smooth" });
+      mal.classList.add("kr-figur-markerad");
+      setTimeout(() => mal.classList.remove("kr-figur-markerad"), 2400);
+    }, 300);
+  };
 }
 
 // ── Sidomeny (vänster) ──
@@ -118,6 +173,8 @@ function byggSidnav(data, kapitel, aktuelltId) {
   });
 
   nav.appendChild(h("a", { class: "kr-sidnav-rapport", href: "../" }, "Kapitelrapport Halland"));
+  nav.appendChild(h("a", { class: "kr-sidnav-galleri", href: `../#grafgalleri/${aktuelltId}` },
+    h("span", { class: "kr-sidnav-galleri-ikon kr-sidnav-galleri-ikon--graf", "aria-hidden": "true" }), "Kapitlets grafer i grafgalleriet"));
   nav.appendChild(h("a", { class: "kr-sidnav-galleri", href: "../#kartgalleri" },
     h("span", { class: "kr-sidnav-galleri-ikon", "aria-hidden": "true" }), "Alla kartor i kartgalleriet"));
 
@@ -376,6 +433,6 @@ export function byggToc() {
   spy();
   fyllSeg();
 
-  numreraFigurer(rapport);
+  numreraFigurer(rapport, { vidFlush: figurLankar() });
   initSynpunkter(rapport);
 }

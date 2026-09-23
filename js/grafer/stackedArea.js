@@ -14,8 +14,7 @@ import { addExportButton } from "../lib/exportSvg.js";
 import {
   skapaRam, TYP, FARG, STORLEK,
   stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
-  valPill, skapaTooltip, tooltipHtml
-} from "../lib/grafRam.js";
+  valPill, skapaTooltip, tooltipHtml, axelFmt, medEnhet, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function stackedArea(initialData, {
   x = "x",
@@ -76,10 +75,11 @@ export function stackedArea(initialData, {
   // ==========================================================================
   // LAYOUT
   // ==========================================================================
-  const autoWidth = width || 820;
+  const autoWidth = width || ritbredd(820);
   const harYTitel = !!(yLabel || (toggle && toggle.length > 0));
   const marginTop = harYTitel ? 36 : 18;
-  const marginRight = 240;
+  const smal = arSmal(autoWidth, 820);   // smal skärm: legenden som chips ovanför i stället för i högermarginalen
+  const marginRight = smal ? 20 : 240;
   const marginBottom = (rotateX ? 74 : 40) + (xLabel ? 14 : 0);
   const marginLeft = 18;
   const tickWidth = () => {
@@ -98,6 +98,8 @@ export function stackedArea(initialData, {
     let s = (m && m.subtitle) ? m.subtitle : subtitle;
     if (time && currentYear != null && s && !String(s).includes(String(currentYear))) s = `${s}, ${currentYear}`;
     else if (time && currentYear != null && !s) s = String(currentYear);
+    // Med Andel/Antal-växel står enheten i undertiteln och byts vid växling
+    if (toggle && toggle.length > 1 && s) s = medEnhet(s, !!currentNormalize, { antal: (toggle.find(t => !t.normalize) || {}).enhet || "antal" });
     return s;
   };
   const ram = skapaRam({ title, subtitle: subtitleText(), caption });
@@ -112,6 +114,7 @@ export function stackedArea(initialData, {
   const yAxisGroup = svg.append("g").attr("class", "y-axis");
   const overlayGroup = svg.append("g").attr("class", "overlay");
   const legendGroup = svg.append("g").attr("class", "legend");
+
 
   if (xLabel) xTitel(svg, { x: (axisLeft + plotRight) / 2, y: height - 8, text: xLabel });
 
@@ -198,7 +201,7 @@ export function stackedArea(initialData, {
     yAxisGroup
       .attr("transform", `translate(${axisLeft}, 0)`)
       .transition().duration(500)
-      .call(d3.axisLeft(yScale).tickValues(yTicks).tickFormat(fmt))
+      .call(d3.axisLeft(yScale).tickValues(yTicks).tickFormat(axelFmt(fmt)))
       .on("end", () => stilYAxel(yAxisGroup));
     stilYAxel(yAxisGroup);
 
@@ -208,7 +211,17 @@ export function stackedArea(initialData, {
     // Legend (höger, i stackordning uppifrån)
     legendGroup.selectAll("*").remove();
     legendGroup.attr("transform", `translate(${plotRight + 16}, ${marginTop})`);
-    [...categories].reverse().forEach((k, i) => {
+    if (smal) {
+      let chips = ram.container.select(".graf-legend-chips");
+      if (chips.empty()) chips = ram.container.insert("div", ".graf-body").attr("class", "graf-legend-chips");
+      chips.selectAll("*").remove();
+      [...categories].reverse().forEach(k => {
+        const it = chips.append("span").attr("class", "graf-legend-chip");
+        it.append("span").attr("class", "graf-legend-prick").style("background", colorScale(k));
+        it.append("span").text(k);
+      });
+    }
+    if (!smal) [...categories].reverse().forEach((k, i) => {
       const g = legendGroup.append("g").attr("transform", `translate(0, ${i * 21})`);
       g.append("rect").attr("width", 11).attr("height", 11).attr("rx", 2).attr("fill", colorScale(k));
       g.append("text")
@@ -260,6 +273,7 @@ export function stackedArea(initialData, {
     currentFormatY = typeof t.formatY === "function" ? t.formatY
       : (t.normalize ? d => (d * 100).toFixed(0) + " %" : d => d.toLocaleString("sv-SE"));
     if (yt) yt.set(yTitelText(), idx);
+    ram.setSubtitle(subtitleText());
     render();
   }
 

@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-4cf6058bf85c57059078427eb5d4dcf1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6cf7ce2a1810826cc6e0f3a92d8d906c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -141,8 +141,10 @@ var s=document.createElement("script");s.src=o+"js/kartor/kartsystem.js";s.defer
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">FileAttachment</span>(<span class="st">"kartgalleri/kartor.json"</span>)<span class="op">.</span><span class="fu">json</span>()<span class="op">,</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">FileAttachment</span>(<span class="st">"kartgalleri/kartor-extra.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>])<span class="op">.</span><span class="fu">then</span>(([a<span class="op">,</span> b]) <span class="kw">=&gt;</span> [<span class="op">...</span>a<span class="op">,</span> <span class="op">...</span>b])</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">oversikt</span>({ <span class="dt">data</span><span class="op">:</span> kapitel<span class="op">,</span> geo<span class="op">,</span> orter<span class="op">,</span> kartor })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Grafgalleriet: grafgalleri/grafer.json (grafgalleri/bygg-grafgalleri.mjs)</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>grafer  <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"grafgalleri/grafer.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">oversikt</span>({ <span class="dt">data</span><span class="op">:</span> kapitel<span class="op">,</span> geo<span class="op">,</span> orter<span class="op">,</span> kartor<span class="op">,</span> grafer })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -180,7 +182,14 @@ var s=document.createElement("script");s.src=o+"js/kartor/kartsystem.js";s.defer
 </div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-1-6" data-nodetype="expression">
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="expression">
 
 </div>
 </div>
@@ -191,7 +200,7 @@ var s=document.createElement("script");s.src=o+"js/kartor/kartsystem.js";s.defer
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IG92ZXJzaWt0IH0gZnJvbSBcIi4vanMvb3ZlcnNpa3QuanNcIlxuXG5rYXBpdGVsID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhL2thcGl0ZWwuanNvblwiKS5qc29uKClcbmdlbyAgICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvaGFsbGFuZC1rb21tdW5lci5nZW9qc29uXCIpLmpzb24oKVxub3J0ZXIgICA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9oZXJvLW9ydGVyLmpzb25cIikuanNvbigpXG4vLyBLYXJ0Z2FsbGVyaWV0OiBtYXBnbC1rYXJ0b3JuYSAoUi9rYXJ0c3lzdGVtLlIpICsgSlMta2FydG9yIG9jaCB6b25rYXJ0YW5cbmthcnRvciAgPSBQcm9taXNlLmFsbChbXG4gIEZpbGVBdHRhY2htZW50KFwia2FydGdhbGxlcmkva2FydG9yLmpzb25cIikuanNvbigpLFxuICBGaWxlQXR0YWNobWVudChcImthcnRnYWxsZXJpL2thcnRvci1leHRyYS5qc29uXCIpLmpzb24oKVxuXSkudGhlbigoW2EsIGJdKSA9PiBbLi4uYSwgLi4uYl0pXG5cbm92ZXJzaWt0KHsgZGF0YToga2FwaXRlbCwgZ2VvLCBvcnRlciwga2FydG9yIH0pXG4ifV19
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IG92ZXJzaWt0IH0gZnJvbSBcIi4vanMvb3ZlcnNpa3QuanNcIlxuXG5rYXBpdGVsID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhL2thcGl0ZWwuanNvblwiKS5qc29uKClcbmdlbyAgICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvaGFsbGFuZC1rb21tdW5lci5nZW9qc29uXCIpLmpzb24oKVxub3J0ZXIgICA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9oZXJvLW9ydGVyLmpzb25cIikuanNvbigpXG4vLyBLYXJ0Z2FsbGVyaWV0OiBtYXBnbC1rYXJ0b3JuYSAoUi9rYXJ0c3lzdGVtLlIpICsgSlMta2FydG9yIG9jaCB6b25rYXJ0YW5cbmthcnRvciAgPSBQcm9taXNlLmFsbChbXG4gIEZpbGVBdHRhY2htZW50KFwia2FydGdhbGxlcmkva2FydG9yLmpzb25cIikuanNvbigpLFxuICBGaWxlQXR0YWNobWVudChcImthcnRnYWxsZXJpL2thcnRvci1leHRyYS5qc29uXCIpLmpzb24oKVxuXSkudGhlbigoW2EsIGJdKSA9PiBbLi4uYSwgLi4uYl0pXG4vLyBHcmFmZ2FsbGVyaWV0OiBncmFmZ2FsbGVyaS9ncmFmZXIuanNvbiAoZ3JhZmdhbGxlcmkvYnlnZy1ncmFmZ2FsbGVyaS5tanMpXG5ncmFmZXIgID0gRmlsZUF0dGFjaG1lbnQoXCJncmFmZ2FsbGVyaS9ncmFmZXIuanNvblwiKS5qc29uKClcblxub3ZlcnNpa3QoeyBkYXRhOiBrYXBpdGVsLCBnZW8sIG9ydGVyLCBrYXJ0b3IsIGdyYWZlciB9KVxuIn1dfQ==
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

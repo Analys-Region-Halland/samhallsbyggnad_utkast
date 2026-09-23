@@ -14,8 +14,23 @@ import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
   stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
-  skapaTooltip, tooltipHtml
-} from "../lib/grafRam.js";
+  skapaTooltip, tooltipHtml, matText, axelFmt, ritbredd, arSmal } from "../lib/grafRam.js";
+
+// Direktetiketter: längre namn än ETIKETT_MAX bryts på två rader
+let ETIKETT_MAX = 170;
+const etikettBredd = (t) => matText(String(t), { size: STORLEK.etikett, weight: 500 });
+function etikettRader(t) {
+  const txt = String(t);
+  if (etikettBredd(txt) <= ETIKETT_MAX) return [txt];
+  const ord = txt.split(" ");
+  let bast = [txt], bastW = Infinity;
+  for (let i = 1; i < ord.length; i++) {
+    const a = ord.slice(0, i).join(" "), b = ord.slice(i).join(" ");
+    const w = Math.max(etikettBredd(a), etikettBredd(b));
+    if (w < bastW) { bastW = w; bast = [a, b]; }
+  }
+  return bast;
+}
 
 // ── Skalhjälpare: jämna ticks (d3.ticks) som täcker datan ──
 // Returnerar { min, max, ticks }. Ticks omsluter alltid datan: en gridlinje
@@ -44,15 +59,17 @@ function placeLabels(endpoints, minSpacing, top, bottom) {
   const arr = endpoints
     .map(ep => ({ ...ep, idealY: ep.yPos, labelY: ep.yPos }))
     .sort((a, b) => a.idealY - b.idealY);
+  // avstånd mellan två etiketters mittpunkter (tvåradiga etiketter tar mer plats)
+  const avst = (a, b) => minSpacing * ((a.rader || 1) + (b.rader || 1)) / 2;
   for (let i = 0; i < arr.length; i++) {
     let y = arr[i].idealY;
-    if (i > 0) y = Math.max(y, arr[i - 1].labelY + minSpacing);
+    if (i > 0) y = Math.max(y, arr[i - 1].labelY + avst(arr[i - 1], arr[i]));
     arr[i].labelY = y;
   }
   if (arr.length && arr[arr.length - 1].labelY > bottom) {
     arr[arr.length - 1].labelY = bottom;
     for (let i = arr.length - 2; i >= 0; i--) {
-      if (arr[i].labelY > arr[i + 1].labelY - minSpacing) arr[i].labelY = arr[i + 1].labelY - minSpacing;
+      if (arr[i].labelY > arr[i + 1].labelY - avst(arr[i], arr[i + 1])) arr[i].labelY = arr[i + 1].labelY - avst(arr[i], arr[i + 1]);
     }
   }
   for (let i = 0; i < arr.length; i++) arr[i].labelY = Math.max(top, arr[i].labelY);
@@ -108,10 +125,20 @@ export function linjediagram(initialData, {
   const measureSubtitle = (m) => (m && m.subtitle) ? m.subtitle : subtitle;
 
   // ── Layout ──
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
+  if (arSmal(autoWidth)) ETIKETT_MAX = 110;   // smal skärm: kortare etikettkolumn, fler radbrytningar
   const harYTitel = !!(yLabel || (measures && measures.length > 1));
   const marginTop = harYTitel ? 36 : 18;
-  const marginRight = (labels === "end" && (interactive || highlight || color)) ? 130 : 28;
+  // Högermarginalen rymmer den bredaste direktetiketten som kan visas
+  // (alla serier om grafen är interaktiv, annars de markerade).
+  let marginRight = 28;
+  if (labels === "end" && color) {
+    const allaNycklar = [...new Set((measures ? measures.flatMap(m => m.data) : initialData).map(d => d[color]))];
+    const kandidater = interactive || !highlight ? allaNycklar
+      : allaNycklar.filter(k => [].concat(highlight).includes(k)).concat([].concat(highlight).filter(k => !allaNycklar.includes(k)).length ? allaNycklar : []);
+    const bredast = Math.max(40, ...kandidater.map(k => Math.max(...etikettRader(k).map(etikettBredd))));
+    marginRight = Math.round(Math.min(ETIKETT_MAX, bredast) + 26);
+  }
   const marginBottom = xLabel ? 46 : 30;
   const marginLeft = 18;
 
@@ -193,7 +220,7 @@ export function linjediagram(initialData, {
 
   // ── Axlar och grid ──
   function renderYAxis(animate = false) {
-    const axis = d3.axisLeft(yScale).tickFormat(formatY).tickValues(yNice.ticks);
+    const axis = d3.axisLeft(yScale).tickFormat(axelFmt(formatY)).tickValues(yNice.ticks);
     yAxisGroup.attr("transform", `translate(${axisLeft},0)`);
     if (animate) {
       yAxisGroup.transition().duration(400).call(axis).on("end", () => stilYAxel(yAxisGroup));
@@ -209,7 +236,7 @@ export function linjediagram(initialData, {
   function renderXAxis(animate = false) {
     const [d0, d1] = xScale.domain();
     const span = Math.max(1, d1 - d0);
-    const axis = d3.axisBottom(xScale).tickFormat(formatX || d3.format("d")).ticks(Math.min(10, span)).tickSize(5);
+    const axis = d3.axisBottom(xScale).tickFormat(formatX || d3.format("d")).ticks(Math.min(10, span, Math.max(3, Math.floor((plotRight - axisLeft) / 56)))).tickSize(5);
     const g = animate ? xAxisGroup.transition().duration(300) : xAxisGroup;
     g.call(axis);
     stilXAxel(xAxisGroup);
@@ -262,6 +289,8 @@ export function linjediagram(initialData, {
     .curve(curve);
 
   // Data för en serie inom aktuellt intervall
+  // Sista punkten med ett faktiskt värde (serier kan sluta med saknade år)
+  const sistaVarde = (rows) => { for (let i = rows.length - 1; i >= 0; i--) if (rows[i][y] != null && !Number.isNaN(+rows[i][y])) return rows[i]; return rows[rows.length - 1]; };
   const serieData = (values) => [...values]
     .filter(d => d[x] >= currentStartYear && d[x] <= currentEndYear)
     .sort((a, b) => a[x] - b[x]);
@@ -319,12 +348,12 @@ export function linjediagram(initialData, {
         .attr("fill", "none").attr("stroke", lineColor)
         .attr("stroke-width", 2.2).attr("stroke-linejoin", "round").attr("stroke-linecap", "round")
         .attr("d", line);
-      const last = rows[rows.length - 1];
+      const last = sistaVarde(rows);
       linesGroup.append("circle")
         .attr("class", "endpoint").attr("data-key", key)
         .attr("cx", xScale(last[x])).attr("cy", yScale(last[y]))
         .attr("r", 3.6).attr("fill", lineColor);
-      endpoints.push({ key, xPos: xScale(last[x]), yPos: yScale(last[y]), yVal: last[y], color: lineColor });
+      endpoints.push({ key, xPos: xScale(last[x]), yPos: yScale(last[y]), yVal: last[y], color: lineColor, rader: etikettRader(key).length });
     }
 
     // direktetiketter med kopplingslinjer (bara när serierna har namn).
@@ -368,11 +397,13 @@ export function linjediagram(initialData, {
             : `M${fromX},${lp.yPos} H${labelX - 3}`)
           .attr("fill", "none").attr("stroke", lp.color)
           .attr("stroke-width", 1).attr("stroke-opacity", 0.45);
-        labelsGroup.append("text")
-          .attr("x", labelX).attr("y", lp.labelY).attr("dy", "0.35em")
+        const rader = etikettRader(lp.key);
+        const t = labelsGroup.append("text")
+          .attr("x", labelX).attr("y", lp.labelY - (rader.length - 1) * 7).attr("dy", "0.35em")
           .attr("font-family", TYP.ui).attr("font-size", STORLEK.etikett)
-          .attr("font-weight", 500).attr("fill", lp.color)
-          .text(lp.key);
+          .attr("font-weight", 500).attr("fill", lp.color);
+        rader.forEach((r, i) => t.append("tspan").attr("x", labelX).attr("dy", i ? "1.15em" : "0.35em").text(r));
+        t.attr("dy", null);
       }
     }
 
@@ -446,7 +477,7 @@ export function linjediagram(initialData, {
         if (!isHighlighted(item)) {
           const rows = serieData(groups.get(item) || []);
           if (rows.length) {
-            const last = rows[rows.length - 1];
+            const last = sistaVarde(rows);
             labelsGroup.selectAll(".hover-label").remove();
             labelsGroup.append("circle").attr("class", "hover-label")
               .attr("cx", xScale(last[x])).attr("cy", yScale(last[y])).attr("r", 4).attr("fill", hoverColor);
@@ -584,7 +615,7 @@ export function linjediagram(initialData, {
           highlights.append("circle").attr("cx", xPos).attr("cy", g.yPos).attr("r", 4).attr("fill", "#555").style("pointer-events", "none");
           const rows = serieData(groups.get(focusedKey) || []);
           if (rows.length) {
-            const last = rows[rows.length - 1];
+            const last = sistaVarde(rows);
             highlights.append("circle").attr("cx", xScale(last[x])).attr("cy", yScale(last[y])).attr("r", 4).attr("fill", "#555").style("pointer-events", "none");
             highlights.append("text").attr("x", xScale(last[x]) + 8).attr("y", yScale(last[y])).attr("dy", "0.35em")
               .attr("font-family", TYP.ui).attr("font-size", 11).attr("font-weight", 600).attr("fill", "#555")

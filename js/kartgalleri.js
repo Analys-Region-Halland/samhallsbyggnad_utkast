@@ -1,7 +1,8 @@
 // =============================================================================
-// KARTGALLERI: alla rapportens kartor på ett ställe (förstasidan)
+// GALLERI: alla rapportens kartor, respektive grafer, på ett ställe (förstasidan)
 //
 //   const g = kartgalleri({ kartor, kapitel, bas })
+//   const gg = grafgalleri({ grafer, kapitel, bas })   // samma galleri för grafer
 //   g.oppna()            öppnar rutnätet (valfritt g.oppna("befolkning") = filter)
 //   g.visa("jarnvag")    öppnar en karta direkt i visaren
 //
@@ -9,7 +10,11 @@
 //         kartgalleri/kartor-extra.json (JS-kartor och zonkartan).
 // Rutnätet visar förrenderade miniatyrer (kartgalleri/tumnaglar/, ingen WebGL);
 // visaren laddar EN karta i taget i en iframe, med miniatyren som omedelbar
-// förhandsbild. Djuplänkar: #kartgalleri, #kartgalleri/<kapitel>, #karta/<id>.
+// förhandsbild. Djuplänkar: #kartgalleri, #kartgalleri/<kapitel>, #karta/<id>
+// resp. #grafgalleri, #grafgalleri/<kapitel>, #graf/<id>.
+// Grafgalleriet: grafgalleri/grafer.json + tumnaglar byggs av
+// grafgalleri/bygg-grafgalleri.mjs; visaren laddar kapitelsidan i grafvy
+// (<kapitel>/?grafvy=<id>, se js/toc.js) så att grafen är fullt interaktiv.
 // Tangentbord: ← → bläddrar, Esc backar (visare → rutnät → stängt).
 // =============================================================================
 
@@ -38,7 +43,24 @@ function h(tag, attrs = {}, ...barn) {
   return el;
 }
 
+const TEXT = {
+  karta: { en: "karta", fler: "kartor", best: "kartan", Fler: "Kartor", galleri: "kartgalleri", hash: "kartgalleri", post: "karta",
+           rubrik: "Rapportens kartor", alla: "Alla kartor", iframe: "Karta" },
+  graf:  { en: "graf", fler: "grafer", best: "grafen", Fler: "Grafer", galleri: "grafgalleri", hash: "grafgalleri", post: "graf",
+           rubrik: "Rapportens grafer", alla: "Alla grafer", iframe: "Graf" }
+};
+
 export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
+  return galleri({ poster: kartor, kapitel, bas, typ: "karta" });
+}
+
+export function grafgalleri({ grafer = [], kapitel = [], bas = "" } = {}) {
+  return galleri({ poster: grafer, kapitel, bas, typ: "graf" });
+}
+
+function galleri({ poster = [], kapitel = [], bas = "", typ = "karta" } = {}) {
+  const T = TEXT[typ];
+  const kartor = poster;
   const kap = new Map(kapitel.map((k) => [k.id, k]));
   const lista = kartor
     .filter((k) => kap.has(k.kapitel))
@@ -78,12 +100,12 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     const li = h("li", { class: "kr-gal-post", style: `--accent:${K.farg}`, "data-kapitel": k.kapitel },
       h("button", { type: "button", class: "kr-gal-kort", onclick: () => visa(i),
           onpointerenter: () => forhamta(k), onfocus: () => forhamta(k),
-          "aria-label": `${k.titel}. Kapitel ${tva(K.nummer)}, ${K.titel}. Öppna kartan.` },
+          "aria-label": `${k.titel}. Kapitel ${tva(K.nummer)}, ${K.titel}. Öppna ${T.best}.` },
         h("span", { class: "kr-gal-bild" },
           h("img", { src: bas + k.tumnagel, alt: "", loading: "lazy", decoding: "async", width: "480", height: "320" }),
           h("span", { class: "kr-gal-oppna", html: IKON.in })),
         h("span", { class: "kr-gal-text" },
-          h("span", { class: "kr-gal-kicker" }, `${tva(K.nummer)} · ${K.kategori}`),
+          h("span", { class: "kr-gal-kicker" }, `${tva(K.nummer)} · ${K.kategori}${k.figur ? ` · Figur ${k.figur}` : ""}`),
           h("span", { class: "kr-gal-titel" }, k.titel),
           k.beskrivning ? h("span", { class: "kr-gal-besk" }, k.beskrivning) : null)));
     rutnat.appendChild(li);
@@ -91,12 +113,12 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
   });
 
   const antalText = h("span", { class: "kr-gal-antal" });
-  const stang = h("button", { type: "button", class: "kr-gal-stang", "aria-label": "Stäng kartgalleriet", html: IKON.kryss, onclick: () => stangAllt() });
-  const vyRutnat = h("section", { class: "kr-gal-vy kr-gal-vy--rutnat", "aria-label": "Alla kartor" },
+  const stang = h("button", { type: "button", class: "kr-gal-stang", "aria-label": `Stäng ${T.galleri}et`, html: IKON.kryss, onclick: () => stangAllt() });
+  const vyRutnat = h("section", { class: "kr-gal-vy kr-gal-vy--rutnat", "aria-label": T.alla },
     h("header", { class: "kr-gal-huvud" },
       h("div", { class: "kr-gal-huvud-text" },
-        h("span", { class: "kr-gal-overrubrik" }, "Halland · kartgalleri"),
-        h("h2", { class: "kr-gal-rubrik", id: "kr-gal-rubrik" }, "Rapportens kartor"),
+        h("span", { class: "kr-gal-overrubrik" }, `Halland · ${T.galleri}`),
+        h("h2", { class: "kr-gal-rubrik", id: `kr-gal-rubrik-${typ}` }, T.rubrik),
         antalText),
       stang),
     chips,
@@ -105,30 +127,30 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
   // ── Visare ──
   const ram = h("div", { class: "kr-vis-ram" });
   const forhand = h("img", { class: "kr-vis-forhand", alt: "" });
-  const iframe = h("iframe", { class: "kr-vis-iframe", title: "Karta", allow: "fullscreen", allowfullscreen: true });
+  const iframe = h("iframe", { class: "kr-vis-iframe", title: T.iframe, allow: "fullscreen", allowfullscreen: true });
   ram.append(forhand, iframe);
   const visKicker = h("span", { class: "kr-vis-kicker" });
-  const visTitel = h("h2", { class: "kr-vis-titel", id: "kr-vis-titel" });
+  const visTitel = h("h2", { class: "kr-vis-titel", id: `kr-vis-titel-${typ}` });
   const visBesk = h("p", { class: "kr-vis-besk" });
   const raknare = h("span", { class: "kr-vis-raknare", "aria-live": "polite" });
   const lasLank = h("a", { class: "kr-vis-las" }, h("span", {}, "Läs i kapitlet"), h("span", { class: "kr-vis-las-pil", html: IKON.pil }));
   const knapp = (cls, ikon, etikett, fn) => h("button", { type: "button", class: "kr-vis-knapp " + cls, title: etikett, "aria-label": etikett, html: ikon, onclick: fn });
-  const fore = knapp("kr-vis-fore", IKON.vanster, "Föregående karta", () => steg(-1));
-  const nasta = knapp("kr-vis-nasta", IKON.hoger, "Nästa karta", () => steg(1));
+  const fore = knapp("kr-vis-fore", IKON.vanster, `Föregående ${T.en}`, () => steg(-1));
+  const nasta = knapp("kr-vis-nasta", IKON.hoger, `Nästa ${T.en}`, () => steg(1));
   const tillRutnat = h("button", { type: "button", class: "kr-vis-tillbaka", onclick: () => tillbaka() },
-    h("span", { html: IKON.rutnat }), h("span", { class: "kr-vis-tillbaka-text" }, "Alla kartor"));
+    h("span", { html: IKON.rutnat }), h("span", { class: "kr-vis-tillbaka-text" }, T.alla));
   const fsKnapp = knapp("kr-vis-fs", IKON.in, "Helskärm", () => vaxlaFs());
-  const vyVisare = h("section", { class: "kr-gal-vy kr-gal-vy--visare", "aria-labelledby": "kr-vis-titel", hidden: true },
+  const vyVisare = h("section", { class: "kr-gal-vy kr-gal-vy--visare", "aria-labelledby": `kr-vis-titel-${typ}`, hidden: true },
     h("header", { class: "kr-vis-huvud" },
       tillRutnat,
       h("div", { class: "kr-vis-mitt" }, visKicker, visTitel),
       h("div", { class: "kr-vis-verktyg" }, raknare, fore, nasta,
         document.fullscreenEnabled ? fsKnapp : null,
-        knapp("kr-vis-stang", IKON.kryss, "Stäng kartgalleriet", () => stangAllt()))),
+        knapp("kr-vis-stang", IKON.kryss, `Stäng ${T.galleri}et`, () => stangAllt()))),
     ram,
     h("footer", { class: "kr-vis-fot" }, visBesk, lasLank));
 
-  const dialog = h("dialog", { class: "kr-galleri", "aria-labelledby": "kr-gal-rubrik" }, vyRutnat, vyVisare);
+  const dialog = h("dialog", { class: `kr-galleri kr-galleri--${typ}`, "aria-labelledby": `kr-gal-rubrik-${typ}` }, vyRutnat, vyVisare);
   document.body.appendChild(dialog);
 
   // ── Tillstånd ──
@@ -139,7 +161,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     let n = 0;
     kortEl.forEach((li) => { const syns = !id || li.dataset.kapitel === id; li.hidden = !syns; if (syns) n++; });
     const K = id && kap.get(id);
-    antalText.textContent = K ? `${n} ${n === 1 ? "karta" : "kartor"} i kapitel ${tva(K.nummer)}, ${K.titel}` : `${n} kartor ur ${antalPer.size} kapitel`;
+    antalText.textContent = K ? `${n} ${n === 1 ? T.en : T.fler} i kapitel ${tva(K.nummer)}, ${K.titel}` : `${n} ${T.fler} ur ${antalPer.size} kapitel`;
     rutnat.scrollTop = 0;
   }
 
@@ -151,7 +173,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     const K = kap.get(k.kapitel);
     aktuell = i;
     dialog.style.setProperty("--accent", K.farg);
-    visKicker.textContent = `Kapitel ${tva(K.nummer)} · ${K.kategori}`;
+    visKicker.textContent = `Kapitel ${tva(K.nummer)} · ${K.kategori}${k.figur ? ` · Figur ${k.figur}` : ""}`;
     visTitel.textContent = k.titel;
     visBesk.textContent = k.beskrivning || "";
     lasLank.href = bas + k.ankare;
@@ -160,11 +182,11 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     raknare.textContent = `${pos + 1} av ${s.length}`;
     fore.disabled = pos <= 0;
     nasta.disabled = pos >= s.length - 1;
-    iframe.title = `Karta: ${k.titel}`;
+    iframe.title = `${T.iframe}: ${k.titel}`;
     // Förhandsbilden syns direkt; kartan tonar in när den är klar
     ram.classList.remove("kr-klar");
     forhand.src = bas + k.tumnagel;
-    const url = bas + k.src + (k.src.includes("?") ? "&" : "?") + "galleri";
+    const url = bas + k.src + (typ === "karta" ? (k.src.includes("?") ? "&" : "?") + "galleri" : "");
     iframe.src = url;
     clearTimeout(laddTimer);
     iframe.onload = () => { laddTimer = setTimeout(() => ram.classList.add("kr-klar"), 1400); };
@@ -178,7 +200,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     vyRutnat.hidden = true;
     vyVisare.hidden = false;
     laddaKarta(i);
-    if (historik) sattHash(`#karta/${lista[i].id}`);
+    if (historik) sattHash(`#${T.post}/${lista[i].id}`);
     tillRutnat.focus({ preventScroll: true });
   }
 
@@ -188,7 +210,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     if (pos < 0 || pos >= s.length) return;
     sistaFokus = kortEl[s[pos]].querySelector("button");
     laddaKarta(s[pos]);
-    sattHash(`#karta/${lista[s[pos]].id}`, true);
+    sattHash(`#${T.post}/${lista[s[pos]].id}`, true);
   }
 
   function tillbaka({ historik = true } = {}) {
@@ -197,7 +219,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     vyRutnat.hidden = false;
     iframe.removeAttribute("src");
     try { iframe.src = "about:blank"; } catch (_) { /* */ }
-    if (historik) sattHash(filter ? `#kartgalleri/${filter}` : "#kartgalleri", true);
+    if (historik) sattHash(filter ? `#${T.hash}/${filter}` : `#${T.hash}`, true);
     (sistaFokus || alla).focus({ preventScroll: true });
     sistaFokus?.scrollIntoView({ block: "nearest" });
   }
@@ -214,7 +236,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     if (!dialog.open) oppnaDialog();
     vyVisare.hidden = true;
     vyRutnat.hidden = false;
-    if (historik) sattHash(filter ? `#kartgalleri/${filter}` : "#kartgalleri");
+    if (historik) sattHash(filter ? `#${T.hash}/${filter}` : `#${T.hash}`);
     (filter ? chipEl.get(filter) : alla).focus({ preventScroll: true });
   }
 
@@ -223,7 +245,7 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     iframe.removeAttribute("src");
     if (dialog.open) dialog.close();
     document.documentElement.classList.remove("kr-gal-oppen");
-    if (historik && /^#(kartgalleri|karta\/)/.test(location.hash)) {
+    if (historik && hashRe.test(location.hash)) {
       history.pushState(null, "", location.pathname + location.search);
     }
     if (foreFokusSida && foreFokusSida.focus) foreFokusSida.focus({ preventScroll: true });
@@ -252,9 +274,9 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     window.KrKarta.helskarmHook = (f) => { if (f === iframe) { vaxlaFs(); return true; } return false; };
     return true;
   };
-  if (!koppla()) document.addEventListener("kr-kartsystem-redo", koppla, { once: true });
+  if (typ === "karta" && !koppla()) document.addEventListener("kr-kartsystem-redo", koppla, { once: true });
   window.addEventListener("message", (e) => {
-    if (e.source === iframe.contentWindow && e.data && e.data.kr === "karta-klar") {
+    if (e.source === iframe.contentWindow && e.data && (e.data.kr === "karta-klar" || e.data.kr === "graf-klar")) {
       clearTimeout(laddTimer);
       ram.classList.add("kr-klar");
     }
@@ -275,8 +297,8 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
 
   // ── Djuplänkar och bakåtknappen ──
   function franHash() {
-    const m = location.hash.match(/^#karta\/([\w-]+)/);
-    const g = location.hash.match(/^#kartgalleri(?:\/([\w-]+))?/);
+    const m = location.hash.match(new RegExp(`^#${T.post}/([A-Za-z0-9_-]+)`));
+    const g = location.hash.match(new RegExp(`^#${T.hash}(?:/([A-Za-z0-9_-]+))?`));
     if (m) {
       const i = lista.findIndex((k) => k.id === m[1]);
       if (i >= 0) { if (!dialog.open) sattFilter(null); visa(i, { historik: false }); return; }
@@ -284,10 +306,11 @@ export function kartgalleri({ kartor = [], kapitel = [], bas = "" } = {}) {
     if (g) { oppna(g[1] || null, { historik: false }); return; }
     if (dialog.open) stangAllt({ historik: false });
   }
+  const hashRe = new RegExp(`^#(${T.hash}|${T.post}/)`);
   window.addEventListener("popstate", franHash);
   window.addEventListener("hashchange", franHash);
   sattFilter(null);
-  if (/^#(kartgalleri|karta\/)/.test(location.hash)) setTimeout(franHash, 0);
+  if (hashRe.test(location.hash)) setTimeout(franHash, 0);
 
   return { oppna, visa: (id) => { const i = lista.findIndex((k) => k.id === id); if (i >= 0) visa(i); }, antal: lista.length, antalPer, lista };
 }

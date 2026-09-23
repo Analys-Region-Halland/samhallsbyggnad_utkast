@@ -8,7 +8,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
-import { skapaRam, TYP, FARG, STORLEK, SERIEFARGER, stilXAxel, xTitel } from "../lib/grafRam.js";
+import { skapaRam, TYP, FARG, STORLEK, SERIEFARGER, stilXAxel, xTitel, tooltipHtml, fmtAxelTal, autoFmt, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function beeswarm(data, {
   value = "värde",
@@ -21,7 +21,7 @@ export function beeswarm(data, {
   caption = null,
   xLabel = null,
   colors = SERIEFARGER,
-  formatValue = d => d.toLocaleString("sv-SE"),
+  formatValue = null,           // null = autoFmt (samma antal decimaler på alla värden)
   filter = null,
   highlight = null,
   highlightLabels = true,
@@ -38,8 +38,9 @@ export function beeswarm(data, {
   logo = null,
   interactive = false
 } = {}) {
+  if (!formatValue) formatValue = autoFmt(data.map(d => d[value]));
 
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   // Etikettzon: smalt band ovan/under svärmen för utplacerade highlight-etiketter,
   // skalad efter antal highlightade noder.
   const nHighlight = (highlight && group)
@@ -131,14 +132,15 @@ export function beeswarm(data, {
   svg.attr("viewBox", `0 0 ${autoWidth} ${height}`);
 
   // ── X-axel ──
-  const fmtTick = (d) => d >= 1000000 ? (d / 1000000) + " mn" : d >= 1000 ? (d / 1000) + " k" : d;
+  const fmtTick = fmtAxelTal;
   let xAxis;
   if (logScale) {
     const tickValues = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000]
-      .filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5);
+      .filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5)
+      .filter(v => !arSmal(autoWidth) || /^1/.test(String(v)));   // smal skärm: bara tiopotenser
     xAxis = d3.axisBottom(xScale).tickValues(tickValues).tickFormat(fmtTick).tickSize(0);
   } else {
-    xAxis = d3.axisBottom(xScale).ticks(8).tickFormat(tickFormat || (d => d >= 1000000 ? (d / 1e6).toFixed(0) + " mn" : d >= 1000 ? (d / 1000).toFixed(0) + " k" : d)).tickSize(0);
+    xAxis = d3.axisBottom(xScale).ticks(arSmal(autoWidth) ? 4 : 8).tickFormat(tickFormat || fmtAxelTal).tickSize(0);
   }
   const xAxisY = height - (xLabel ? 38 : 16);
 
@@ -199,11 +201,10 @@ export function beeswarm(data, {
   let currentLabelData = { top: [], bottom: [] };
 
   const visaVarde = (nodeData, dotColor) => {
-    avlasning.visa(
-      `<span style="display:inline-flex;align-items:center;gap:6px">` +
-      `<span style="width:8px;height:8px;border-radius:50%;background:${dotColor}"></span>` +
-      `<b>${nodeData[label]}</b><span style="color:#d5d8d7">│</span><b>${formatValue(nodeData[value])}</b></span>`
-    );
+    avlasning.visa(tooltipHtml(nodeData[label], [{
+      namn: (group && nodeData[group] != null ? String(nodeData[group]) : (xLabel || "")),
+      varde: formatValue(nodeData[value]), farg: dotColor
+    }]));
   };
 
   // ── Highlight-punkt vid hover ──

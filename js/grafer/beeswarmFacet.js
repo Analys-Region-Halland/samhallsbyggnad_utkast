@@ -6,7 +6,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
-import { skapaRam, TYP, FARG, STORLEK, matText } from "../lib/grafRam.js";
+import { skapaRam, TYP, FARG, STORLEK, matText, tooltipHtml, fmtAxelTal, ritbredd, arSmal, glesaTicks } from "../lib/grafRam.js";
 
 export function beeswarmFacet(data, {
   value = "värde",
@@ -39,7 +39,7 @@ export function beeswarmFacet(data, {
   logo = null
 } = {}) {
 
-  const autoWidth = width || 780;
+  const autoWidth = width || ritbredd(780);
   const marginRight = 45;
   const xAxisHeight = xLabel ? 46 : 30;   // plats för måttnamn ovanför axeln
   const bottomPadding = 10;
@@ -138,6 +138,7 @@ export function beeswarmFacet(data, {
   // ── Statiska element ──
   const axisTickValues = logScale
     ? [5000, 10000, 50000, 100000, 500000].filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5)
+        .filter(v => !arSmal(autoWidth) || /^1/.test(String(v)))
     : xScale.ticks(5);
 
   if (showGrid) {
@@ -163,7 +164,7 @@ export function beeswarmFacet(data, {
         .attr("stroke-dasharray", vc.dashed !== false ? "4,3" : "none").attr("stroke-opacity", 0.7);
       if (vc.label) {
         svg.append("text")
-          .attr("x", vlineX).attr("y", xAxisHeight - 22).attr("text-anchor", "middle")
+          .attr("x", vlineX).attr("y", xAxisHeight - 22 + (xLabel ? 0 : 4)).attr("text-anchor", "middle")
           .attr("font-family", TYP.ui).attr("font-size", 10.5).attr("font-weight", 500)
           .attr("fill", vlineColor).text(vc.label);
       }
@@ -178,7 +179,7 @@ export function beeswarmFacet(data, {
   });
 
   // X-axel överst
-  const tickFormat = d => d >= 1000000 ? (d / 1e6) + " mn" : d >= 1000 ? (d / 1000) + " k" : d;
+  const tickFormat = fmtAxelTal;
   const xAxis = logScale
     ? d3.axisTop(xScale).tickValues(axisTickValues).tickFormat(tickFormat).tickSize(4)
     : d3.axisTop(xScale).ticks(5).tickFormat(tickFormat).tickSize(4);
@@ -188,6 +189,7 @@ export function beeswarmFacet(data, {
   xAxisG.selectAll(".tick text")
     .attr("fill", FARG.text).attr("font-size", STORLEK.tick).attr("font-family", TYP.ui)
     .style("font-variant-numeric", "tabular-nums");
+  glesaTicks(xAxisG);
 
   // Måttnamn horisontellt uppe till vänster (ovanför axeln)
   if (xLabel) {
@@ -321,13 +323,9 @@ export function beeswarmFacet(data, {
         const dotColor = isHl ? highlightColor : "#666";
         const r = closest.r + (isHl ? highlightBoost : 0);
         highlightRing.attr("cx", closest.x).attr("cy", closest.y).attr("r", r + 3).attr("stroke", dotColor).style("opacity", 1);
-        avlasning.visa(
-          `<span style="display:inline-flex;align-items:center;gap:6px">` +
-          `<span style="width:8px;height:8px;border-radius:50%;background:${dotColor}"></span>` +
-          `<b>${closest[label]}</b><span style="color:#d5d8d7">│</span>` +
-          `<span style="color:${FARG.mjuk}">${closest[facet]}</span><span style="color:#d5d8d7">│</span>` +
-          `<b>${formatValue(closest[value], closest)}</b></span>`
-        );
+        avlasning.visa(tooltipHtml(closest[label], [{
+          namn: String(closest[facet]), varde: formatValue(closest[value], closest), farg: dotColor
+        }]));
       } else {
         highlightRing.style("opacity", 0);
         avlasning.rensa();

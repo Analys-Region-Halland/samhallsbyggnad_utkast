@@ -301,6 +301,28 @@
     mo.observe(c.querySelector(".maplibregl-control-container") || c, { childList: true, subtree: true });
     mo.observe(host, { childList: true });
 
+    // Hover-tooltips (popup utan stängknapp): samma form i alla kartor.
+    // Ren text "Område · värde" blir rubrik + värderad; bredden begränsas
+    // i CSS (.kr-hovertip) så att tooltipen aldrig spiller över kartan.
+    const esc = (t) => t.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const formaTip = (pop) => {
+      if (pop.querySelector(".maplibregl-popup-close-button")) return;
+      pop.classList.add("kr-hovertip");
+      let n = pop.querySelector(".maplibregl-popup-content");
+      while (n && n.children.length === 1 && !n.firstElementChild.matches("b, strong, br") &&
+             ![...n.childNodes].some((x) => x.nodeType === 3 && x.textContent.trim())) n = n.firstElementChild;
+      if (!n || n.children.length) return;
+      const t = n.textContent.trim(), i = t.indexOf(" · ");
+      if (i < 1) return;
+      n.innerHTML = `<strong class="kr-tip-rubrik">${esc(t.slice(0, i))}</strong><span class="kr-tip-varde">${esc(t.slice(i + 3))}</span>`;
+    };
+    let tipVantar = false;
+    new MutationObserver(() => {
+      if (tipVantar) return;
+      tipVantar = true;
+      queueMicrotask(() => { tipVantar = false; c.querySelectorAll(".maplibregl-popup").forEach(formaTip); });
+    }).observe(c, { childList: true, subtree: true, characterData: true });
+
     // Storlek (helskärm, CSS-helskärm, rotation av mobil)
     if (window.ResizeObserver) {
       let ko = false;
