@@ -254,7 +254,9 @@ export function stapeldiagram(data, {
 
   // Måttets namn uppe till vänster
   if (mattTitel) {
-    const pos = yTitelPos(horizontal ? axisLeft : marginLeft, marginTop);
+    // Långt måttnamn som inte ryms ovanför plotytan börjar i stället vid vänsterkanten
+    const ryms = matText(mattTitel, { size: STORLEK.yTitel, weight: 500 }) * 1.15 <= autoWidth - axisLeft - 8;
+    const pos = yTitelPos(horizontal ? (ryms ? axisLeft : 18) : marginLeft, marginTop);
     yTitel(svg, { x: pos.x, y: pos.y, text: mattTitel });
   }
 

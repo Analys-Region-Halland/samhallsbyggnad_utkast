@@ -135,7 +135,9 @@ export function lollipop(data, {
   // Måttnamn uppe till vänster
   if (mattNamn) {
     // Liggande: måttnamnet står ovanför staplarnas start (samma som stapeldiagram)
-    const pos = yTitelPos(horizontal ? axisLeft : marginLeft, marginTop);
+    // Långt måttnamn som inte ryms ovanför plotytan börjar i stället vid vänsterkanten
+    const ryms = matText(mattNamn, { size: STORLEK.yTitel, weight: 500 }) * 1.15 <= autoWidth - axisLeft - 8;
+    const pos = yTitelPos(horizontal ? (ryms ? axisLeft : 18) : marginLeft, marginTop);
     yTitel(svg, { x: pos.x, y: pos.y, text: mattNamn });
   }
 
@@ -176,8 +178,12 @@ export function lollipop(data, {
         .attr("x1", vx).attr("x2", vx).attr("y1", marginTop - 4).attr("y2", chartHeight - marginBottom)
         .attr("stroke", FARG.noll).attr("stroke-width", 1).attr("stroke-dasharray", "6,4");
       if (vline.label) {
+        // Krockar etiketten med måttnamnet (smal skärm) läggs den längst ner i stället
+        const lw = matText(vline.label, { size: 11, weight: 500 });
+        const titelHoger = mattNamn ? axisLeft + matText(mattNamn, { size: STORLEK.yTitel, weight: 500 }) : -Infinity;
+        const krock = vx - lw / 2 < titelHoger + 10;
         svg.append("text")
-          .attr("x", vx).attr("y", marginTop - 10).attr("text-anchor", "middle")
+          .attr("x", vx).attr("y", krock ? chartHeight - 4 : marginTop - 10).attr("text-anchor", "middle")
           .attr("font-size", 11).attr("font-weight", 500).attr("fill", FARG.text)
           .attr("font-family", TYP.ui).text(vline.label);
       }

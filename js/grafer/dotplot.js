@@ -11,7 +11,7 @@
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
-import { skapaRam, TYP, FARG, STORLEK, xTitel, skapaTooltip, tooltipHtml, autoFmt, ritbredd } from "../lib/grafRam.js";
+import { skapaRam, TYP, FARG, STORLEK, xTitel, skapaTooltip, tooltipHtml, autoFmt, ritbredd, arSmal } from "../lib/grafRam.js";
 
 export function dotplot(data, {
   value = "värde",
@@ -77,7 +77,10 @@ export function dotplot(data, {
   const xScale = d3.scaleLinear()
     .domain([rawExtent[0] - pad, rawExtent[1] + pad])
     .range([marginLeft, autoWidth - marginRight]);
-  const tickValues = xScale.ticks(ticks);
+  // Smal skärm: glesare ticks, minst ~56 px mellan etiketterna
+  let tickValues = xScale.ticks(arSmal(autoWidth) ? Math.min(ticks, 3) : ticks);
+  while (tickValues.length > 2 && Math.abs(xScale(tickValues[1]) - xScale(tickValues[0])) < 56)
+    tickValues = tickValues.filter((_, i) => i % 2 === 0);
 
   // ── Ram ──
   const ram = skapaRam({ title, subtitle, caption });
