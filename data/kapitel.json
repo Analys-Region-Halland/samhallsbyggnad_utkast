@@ -4,17 +4,41 @@
     "titel": "Halland",
     "titel_accent": "en hållbar och attraktiv region",
     "underrubrik": "Ett underlag om planeringsförutsättningarna i regionen",
-    "ingress": "Hur växer och förändras Halland? Underlaget belyser regionens förutsättningar i en rad fristående men sammanhängande områden — från regional översikt och befolkning till den funktionella geografin — som grund för en långsiktigt hållbar och attraktiv utveckling.",
+    "ingress": "Hur ser Halland ut, och hur förändras länet? Rapporten beskriver regionens förutsättningar i nio kapitel, från ortsstrukturen och befolkningen till pendlingen, bostäderna, tillgängligheten, markanvändningen, transporterna, levnadsvillkoren och energin. Varje kapitel går att läsa för sig och bygger på officiell statistik och egna beräkningar, med kartor och diagram som går att utforska.",
     "utgivare": "Region Halland",
     "uppdaterad": "juni 2026"
   },
   "kommuner": [
-    { "id": "1384", "namn": "Kungsbacka", "invanare": 85600 },
-    { "id": "1383", "namn": "Varberg", "invanare": 67200 },
-    { "id": "1382", "namn": "Falkenberg", "invanare": 47800 },
-    { "id": "1380", "namn": "Halmstad", "invanare": 105200 },
-    { "id": "1381", "namn": "Laholm", "invanare": 26300 },
-    { "id": "1315", "namn": "Hylte", "invanare": 10600 }
+    {
+      "id": "1384",
+      "namn": "Kungsbacka",
+      "invanare": 85600
+    },
+    {
+      "id": "1383",
+      "namn": "Varberg",
+      "invanare": 67200
+    },
+    {
+      "id": "1382",
+      "namn": "Falkenberg",
+      "invanare": 47800
+    },
+    {
+      "id": "1380",
+      "namn": "Halmstad",
+      "invanare": 105200
+    },
+    {
+      "id": "1381",
+      "namn": "Laholm",
+      "invanare": 26300
+    },
+    {
+      "id": "1315",
+      "namn": "Hylte",
+      "invanare": 10600
+    }
   ],
   "kapitel": [
     {
@@ -22,44 +46,117 @@
       "nummer": 1,
       "kategori": "Struktur",
       "titel": "Geografi och rumslig struktur",
-      "ingress": "Vad för slags region är Halland, rumsligt? Kapitlet tecknar regionens ekonomiska geografi — läget vid kustkorridoren, den höga tätheten, den flerkärniga ortsstrukturen och fördelningen mellan stad och land — och de förutsättningar för tillväxt och tillgänglighet som följer av den.",
+      "ingress": "Vad för slags region är Halland, rumsligt? Kapitlet tecknar regionens ekonomiska geografi: läget vid kustkorridoren, den höga tätheten, den flerkärniga ortsstrukturen och fördelningen mellan stad och land, och de förutsättningar för tillväxt och tillgänglighet som följer av den.",
       "farg": "#00664D",
       "avsnitt": [
-        { "id": "inramning", "titel": "En flerkärnig och tät region" },
-        { "id": "koncentration", "titel": "Befolkningsfördelning och koncentration" },
-        { "id": "stad-land", "titel": "Stad och land" },
-        { "id": "typologi", "titel": "Hallandstypologin: stad och land" },
-        { "id": "var-bor", "titel": "Var bor hallänningarna?" }
-      ]
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför spelar strukturen roll?"
+        },
+        {
+          "id": "inramning",
+          "titel": "En flerkärnig och tät region"
+        },
+        {
+          "id": "koncentration",
+          "titel": "Befolkningsfördelning och koncentration"
+        },
+        {
+          "id": "stad-land",
+          "titel": "Stad och land"
+        },
+        {
+          "id": "typologi",
+          "titel": "Hallandstypologin: stad och land"
+        },
+        {
+          "id": "var-bor",
+          "titel": "Var bor hallänningarna?"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur stort, tätt och flerkärnigt är Halland, och var går gränsen mellan stad och land? Kapitlet går från länet som helhet ner till den enskilda kvadratkilometern och introducerar Hallandstypologin, rapportens egen indelning i stad och land."
     },
     {
       "id": "befolkning",
       "nummer": 2,
       "kategori": "Tillväxt",
       "titel": "Befolkningsutvecklingens geografi",
-      "ingress": "Halland hör till landets snabbast växande län. En kartläggning av tillväxten sedan 1969 — var den sker, vilka kommuner och orter som driver den, och hur den koncentreras mot kusten och tätorterna.",
+      "ingress": "Halland hör till landets snabbast växande län. En kartläggning av tillväxten sedan 1969: var den sker, vilka kommuner och orter som driver den, och hur den koncentreras mot kusten och tätorterna.",
       "farg": "#0C8C7E",
       "avsnitt": [
-        { "id": "regional-utveckling", "titel": "Regional utveckling" },
-        { "id": "kommunerna", "titel": "Kommunerna i Halland" },
-        { "id": "tillvaxtens-geografi", "titel": "Tillväxtens geografi" },
-        { "id": "tatorter", "titel": "Tätorter och landsbygd" },
-        { "id": "prognos", "titel": "Befolkningsprognos" }
-      ]
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför växer regioner?"
+        },
+        {
+          "id": "regional-utveckling",
+          "titel": "Regional utveckling"
+        },
+        {
+          "id": "kommunerna",
+          "titel": "Kommunerna i Halland"
+        },
+        {
+          "id": "tillvaxtens-geografi",
+          "titel": "Tillväxtens geografi"
+        },
+        {
+          "id": "tatorter",
+          "titel": "Tätorter och landsbygd"
+        },
+        {
+          "id": "prognos",
+          "titel": "Befolkningsprognos"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur mycket har Halland vuxit, var har tillväxten hamnat och vart är den på väg? Kapitlet följer befolkningen från 1969 fram till prognosen för 2040, i länet, i kommunerna, i tätorterna och ruta för ruta."
     },
     {
       "id": "funktionell-geografi",
       "nummer": 3,
       "kategori": "Rörlighet",
       "titel": "Rörelsernas geografi",
-      "ingress": "Hallands sex kommuner är den administrativa indelningen — men arbetsmarknaden följer en annan geografi. Tio funktionella tätortsregioner växer fram, formade underifrån av pendlingen. Vid sidan av pendlingen tecknas också flyttningarna — hur hallänningarna byter bostadsort.",
+      "ingress": "Hallands sex kommuner är den administrativa indelningen, men arbetsmarknaden följer en annan geografi. Tio funktionella tätortsregioner växer fram, formade underifrån av pendlingen. Vid sidan av pendlingen tecknas också flyttningarna: hur hallänningarna byter bostadsort.",
       "farg": "#1A7BB0",
       "avsnitt": [
-        { "id": "drivkrafter", "titel": "Regionförstoring och drivkrafter" },
-        { "id": "granser", "titel": "Pendling över län och kommungräns" },
-        { "id": "metoden", "titel": "Att bygga den funktionella kartan" },
-        { "id": "flyttningar", "titel": "Flyttningar" }
-      ]
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför växer arbetsmarknaderna ihop?"
+        },
+        {
+          "id": "granser",
+          "titel": "Pendlingen i Halland idag"
+        },
+        {
+          "id": "metoden",
+          "titel": "Att bygga den funktionella kartan"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur rör sig hallänningarna mellan bostad och arbete? Kapitlet visar pendlingen mellan kommuner och län och bygger en funktionell karta med tätorten som byggsten, där tio tätortsregioner framträder."
     },
     {
       "id": "bostader",
@@ -69,28 +166,271 @@
       "ingress": "Bostadsmarknadens grundenhet är hushållet, inte invånaren. Kapitlet följer hur hushållen växer och krymper, hur bostadsbeståndet ser ut och vem som äger det, och går vidare genom byggande, priser och hyror till frågan om var behovet växer snabbast.",
       "farg": "#1E63A8",
       "avsnitt": [
-        { "id": "hushall", "titel": "Befolkning och hushåll" },
-        { "id": "hushallsstorlek", "titel": "Hushållsstorlek" },
-        { "id": "livscykel", "titel": "Hushållsformer över livscykeln" },
-        { "id": "bestand", "titel": "Bostadsbeståndet" },
-        { "id": "agande", "titel": "Vem äger bostäderna?" },
-        { "id": "storlek", "titel": "Bostädernas storlek och rumsantal" },
-        { "id": "byggande", "titel": "Bostadsbyggande och marknad" },
-        { "id": "syntes", "titel": "Syntes" }
-      ]
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Hur fungerar en bostadsmarknad?"
+        },
+        {
+          "id": "hushall",
+          "titel": "Fler och mindre hushåll"
+        },
+        {
+          "id": "hushallstyper",
+          "titel": "Hushållens storlek och typ"
+        },
+        {
+          "id": "livscykel",
+          "titel": "Hushållen över livet"
+        },
+        {
+          "id": "boende",
+          "titel": "Så bor hushållen"
+        },
+        {
+          "id": "bestand",
+          "titel": "Bostäderna vi redan har"
+        },
+        {
+          "id": "byggande",
+          "titel": "Femtio år av byggande"
+        },
+        {
+          "id": "marknad",
+          "titel": "Priser, hyror och brist"
+        },
+        {
+          "id": "behov",
+          "titel": "Behovet framåt och gapet"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur många hushåll finns det, hur bor de och räcker bostäderna? Kapitlet följer hushållen genom livet och vidare till bostadsbeståndet, femtio års byggande, priser och hyror och behovet framåt."
     },
     {
       "id": "service-och-tillganglighet",
       "nummer": 5,
       "kategori": "Tillgänglighet",
       "titel": "Service och tillgänglighet",
-      "ingress": "Kapitlet är under uppbyggnad. Det ska belysa hur tillgängligheten till arbete och service ser ut i Halland, och hur den skiljer sig mellan kommuner och orter.",
+      "ingress": "Hur mycket kan en hallänning nå inom rimlig restid, och hur nära ligger skolan, vårdcentralen och butiken? Kapitlet räknar tillgängligheten från varje bebodd 250-metersruta i Halland, med gång, cykel, kollektivtrafik och bil, i ett restidsnätverk som omfattar Halland och de fyra grannlänen.",
       "farg": "#2E4D96",
       "avsnitt": [
-        { "id": "om-tillganglighet", "titel": "Om tillgänglighet" },
-        { "id": "arbete", "titel": "Tillgänglighet till arbete" },
-        { "id": "service", "titel": "Service" }
-      ]
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "om-tillganglighet",
+          "titel": "Vad är tillgänglighet?"
+        },
+        {
+          "id": "rackvidd",
+          "titel": "Hur många kan man nå?"
+        },
+        {
+          "id": "arbete",
+          "titel": "Tillgången till arbetsplatser"
+        },
+        {
+          "id": "vardag",
+          "titel": "Vardagen inom en kvart"
+        },
+        {
+          "id": "service",
+          "titel": "Service: skola, vård och handel"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur mycket kan en hallänning nå inom rimlig restid? Kapitlet räknar från varje bebodd 250-metersruta hur många människor och arbetsplatser som nås och hur långt det är till skola, vård och butik, till fots, med cykel, med kollektivtrafik och med bil."
+    },
+    {
+      "id": "markanvandning-och-miljo",
+      "nummer": 6,
+      "kategori": "Miljö",
+      "titel": "Markanvändning och miljö",
+      "ingress": "Hur används marken i Halland, och vad betyder bebyggelsens utbredning för jordbruksmarken, grönskan, kusten och miljön där människor bor? Kapitlet samlar läget i regionen i en bred uppsättning indikatorer, från markslag och skyddad natur till transporternas utsläpp och upplevt buller.",
+      "farg": "#3A3F87",
+      "avsnitt": [
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför spelar markanvändningen roll?"
+        },
+        {
+          "id": "markanvandning",
+          "titel": "Hur marken används"
+        },
+        {
+          "id": "tatorter",
+          "titel": "Tätorternas utbredning och förtätning"
+        },
+        {
+          "id": "jordbruksmark",
+          "titel": "Jordbruksmarken"
+        },
+        {
+          "id": "gronska",
+          "titel": "Grönska och natur nära bostaden"
+        },
+        {
+          "id": "kust",
+          "titel": "Kusten och stränderna"
+        },
+        {
+          "id": "transporter",
+          "titel": "Transporterna och utsläppen"
+        },
+        {
+          "id": "miljohalsa",
+          "titel": "Buller, luft och grönska där människor bor"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur används marken i Halland, och vad betyder bebyggelsens utbredning för miljön? Kapitlet går från markslagen och tätorternas tillväxt till jordbruksmarken, grönskan, naturen och kusten, och avslutas med transporternas utsläpp och miljön där människor bor."
+    },
+    {
+      "id": "transporter",
+      "nummer": 7,
+      "kategori": "Infrastruktur",
+      "titel": "Transporter, vägnät och kollektivtrafik",
+      "ingress": "Vilka vägar, banor och linjer bär Halland, och hur används de? Kapitlet tecknar regionens hårda infrastrukturförutsättningar: vägnätets stora stråk och trafikflöden, järnvägen, kollektivtrafikens utbud och resande, restiderna med bil och kollektivtrafik samt godset och den tunga trafiken.",
+      "farg": "#46397A",
+      "avsnitt": [
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför ser transportsystemet ut som det gör?"
+        },
+        {
+          "id": "vagnat",
+          "titel": "Vägnätet och de stora stråken"
+        },
+        {
+          "id": "trafik",
+          "titel": "Trafiken på vägarna"
+        },
+        {
+          "id": "jarnvag",
+          "titel": "Järnvägen"
+        },
+        {
+          "id": "kollektivtrafik",
+          "titel": "Kollektivtrafikens utbud och resande"
+        },
+        {
+          "id": "restider",
+          "titel": "Bil eller kollektivtrafik"
+        },
+        {
+          "id": "gods",
+          "titel": "Gods och tung trafik"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur hänger Halland ihop med vägar, järnväg och kollektivtrafik? Kapitlet följer vägnätet och trafiken, tågen och bussarna, jämför restiderna med bil och kollektivtrafik och avslutas med godset och den tunga trafiken."
+    },
+    {
+      "id": "socioekonomi",
+      "nummer": 8,
+      "kategori": "Levnadsvillkor",
+      "titel": "Levnadsvillkorens geografi",
+      "ingress": "Hur skiljer sig inkomster, utbildning, arbete och trygghet mellan Hallands bostadsområden, och hur mycket bor olika grupper åtskilda? Kapitlet tecknar den socioekonomiska geografin område för område, med SCB:s 192 DeSO-områden som grund, från områdestyper och inkomster till boendesegregation, trygghet och delaktighet.",
+      "farg": "#57356F",
+      "avsnitt": [
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Varför spelar boendet och grannskapet roll?"
+        },
+        {
+          "id": "omradestyper",
+          "titel": "Bostadsområdenas socioekonomiska karta"
+        },
+        {
+          "id": "inkomster",
+          "titel": "Inkomster i bostadsområdena"
+        },
+        {
+          "id": "utbildning-arbete",
+          "titel": "Utbildning och arbete"
+        },
+        {
+          "id": "segregation",
+          "titel": "Boendesegregationen"
+        },
+        {
+          "id": "trygghet",
+          "titel": "Trygghet, tillit och delaktighet"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur skiljer sig levnadsvillkoren mellan Hallands bostadsområden? Kapitlet beskriver inkomster, utbildning, arbete, boendesegregation, trygghet och delaktighet område för område, med SCB:s 192 DeSO-områden som grund."
+    },
+    {
+      "id": "energi",
+      "nummer": 9,
+      "kategori": "Energi",
+      "titel": "Energi och elförsörjning",
+      "ingress": "Hur mycket energi använder Halland, var produceras elen och räcker nätet till det som ska byggas? Kapitlet följer energisystemet från användningen i industri, transporter och bostäder till elproduktionen, elnätet och elområdena, och vidare till elektrifieringen och framtidens elbehov.",
+      "farg": "#6A2E5E",
+      "avsnitt": [
+        {
+          "id": "sammanfattning",
+          "titel": "Sammanfattning"
+        },
+        {
+          "id": "drivkrafter",
+          "titel": "Hur fungerar energisystemet?"
+        },
+        {
+          "id": "anvandning",
+          "titel": "Energianvändningen"
+        },
+        {
+          "id": "produktion",
+          "titel": "Elproduktionen"
+        },
+        {
+          "id": "natet",
+          "titel": "Elnätet, elområdena och priserna"
+        },
+        {
+          "id": "omstallning",
+          "titel": "Elektrifieringen och framtidens elbehov"
+        },
+        {
+          "id": "kallor",
+          "titel": "Källor"
+        }
+      ],
+      "beskrivning": "Hur används energin i Halland, var produceras elen och hur förs den fram? Kapitlet följer energin från användning och produktion till elnätet, elområdena och priserna, och avslutas med elektrifieringen och framtidens elbehov."
     }
   ]
 }

@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ef1505cedaabdda5d1165613ba7a8468.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4cf6058bf85c57059078427eb5d4dcf1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -106,6 +106,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Kartsystemet (js/kartor/kartsystem.js): helskärm, panel och lat laddning för alla kartor
+(function(){var o=(document.querySelector('meta[name="quarto:offset"]')||{}).content||"./";
+var l=document.createElement("link");l.rel="stylesheet";l.href=o+"js/kartor/kartsystem.css";document.head.appendChild(l);
+var s=document.createElement("script");s.src=o+"js/kartor/kartsystem.js";s.defer=true;document.head.appendChild(s);})();
+</script>
 
 
 </head>
@@ -129,28 +135,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>kapitel <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/kapitel.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>geo     <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/halland-kommuner.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Sammanfattningarna lagras modulärt — en fil per kapitel i dess mapp.</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>sammanfattningar <span class="op">=</span> {</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> filer <span class="op">=</span> {</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">oversikt</span><span class="op">:</span>               <span class="fu">FileAttachment</span>(<span class="st">"oversikt/sammanfattning.json"</span>)<span class="op">,</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">befolkning</span><span class="op">:</span>             <span class="fu">FileAttachment</span>(<span class="st">"befolkning/sammanfattning.json"</span>)<span class="op">,</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"funktionell-geografi"</span><span class="op">:</span> <span class="fu">FileAttachment</span>(<span class="st">"funktionell-geografi/sammanfattning.json"</span>)<span class="op">,</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bostader</span><span class="op">:</span>               <span class="fu">FileAttachment</span>(<span class="st">"bostader/sammanfattning.json"</span>)<span class="op">,</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"service-och-tillganglighet"</span><span class="op">:</span> <span class="fu">FileAttachment</span>(<span class="st">"service-och-tillganglighet/sammanfattning.json"</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ut <span class="op">=</span> {}<span class="op">;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> [id<span class="op">,</span> fa] <span class="kw">of</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">entries</span>(filer)) ut[id] <span class="op">=</span> <span class="cf">await</span> fa<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ut<span class="op">;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">// Väv in varje kapitels sammanfattning i kortdatat innan översikten byggs.</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> ({</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span>kapitel<span class="op">,</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="dt">kapitel</span><span class="op">:</span> kapitel<span class="op">.</span><span class="at">kapitel</span><span class="op">.</span><span class="fu">map</span>((k) <span class="kw">=&gt;</span> ({ <span class="op">...</span>k<span class="op">,</span> <span class="dt">insikter</span><span class="op">:</span> sammanfattningar[k<span class="op">.</span><span class="at">id</span>] }))</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">oversikt</span>({ data<span class="op">,</span> geo })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>orter   <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/hero-orter.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Kartgalleriet: mapgl-kartorna (R/kartsystem.R) + JS-kartor och zonkartan</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>kartor  <span class="op">=</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>([</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">FileAttachment</span>(<span class="st">"kartgalleri/kartor.json"</span>)<span class="op">.</span><span class="fu">json</span>()<span class="op">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">FileAttachment</span>(<span class="st">"kartgalleri/kartor-extra.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>])<span class="op">.</span><span class="fu">then</span>(([a<span class="op">,</span> b]) <span class="kw">=&gt;</span> [<span class="op">...</span>a<span class="op">,</span> <span class="op">...</span>b])</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">oversikt</span>({ <span class="dt">data</span><span class="op">:</span> kapitel<span class="op">,</span> geo<span class="op">,</span> orter<span class="op">,</span> kartor })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -199,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IG92ZXJzaWt0IH0gZnJvbSBcIi4vanMvb3ZlcnNpa3QuanNcIlxuXG5rYXBpdGVsID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhL2thcGl0ZWwuanNvblwiKS5qc29uKClcbmdlbyAgICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvaGFsbGFuZC1rb21tdW5lci5nZW9qc29uXCIpLmpzb24oKVxuXG4vLyBTYW1tYW5mYXR0bmluZ2FybmEgbGFncmFzIG1vZHVsw6RydCDigJQgZW4gZmlsIHBlciBrYXBpdGVsIGkgZGVzcyBtYXBwLlxuc2FtbWFuZmF0dG5pbmdhciA9IHtcbiAgY29uc3QgZmlsZXIgPSB7XG4gICAgb3ZlcnNpa3Q6ICAgICAgICAgICAgICAgRmlsZUF0dGFjaG1lbnQoXCJvdmVyc2lrdC9zYW1tYW5mYXR0bmluZy5qc29uXCIpLFxuICAgIGJlZm9sa25pbmc6ICAgICAgICAgICAgIEZpbGVBdHRhY2htZW50KFwiYmVmb2xrbmluZy9zYW1tYW5mYXR0bmluZy5qc29uXCIpLFxuICAgIFwiZnVua3Rpb25lbGwtZ2VvZ3JhZmlcIjogRmlsZUF0dGFjaG1lbnQoXCJmdW5rdGlvbmVsbC1nZW9ncmFmaS9zYW1tYW5mYXR0bmluZy5qc29uXCIpLFxuICAgIGJvc3RhZGVyOiAgICAgICAgICAgICAgIEZpbGVBdHRhY2htZW50KFwiYm9zdGFkZXIvc2FtbWFuZmF0dG5pbmcuanNvblwiKSxcbiAgICBcInNlcnZpY2Utb2NoLXRpbGxnYW5nbGlnaGV0XCI6IEZpbGVBdHRhY2htZW50KFwic2VydmljZS1vY2gtdGlsbGdhbmdsaWdoZXQvc2FtbWFuZmF0dG5pbmcuanNvblwiKVxuICB9O1xuICBjb25zdCB1dCA9IHt9O1xuICBmb3IgKGNvbnN0IFtpZCwgZmFdIG9mIE9iamVjdC5lbnRyaWVzKGZpbGVyKSkgdXRbaWRdID0gYXdhaXQgZmEuanNvbigpO1xuICByZXR1cm4gdXQ7XG59XG5cbi8vIFbDpHYgaW4gdmFyamUga2FwaXRlbHMgc2FtbWFuZmF0dG5pbmcgaSBrb3J0ZGF0YXQgaW5uYW4gw7Z2ZXJzaWt0ZW4gYnlnZ3MuXG5kYXRhID0gKHtcbiAgLi4ua2FwaXRlbCxcbiAga2FwaXRlbDoga2FwaXRlbC5rYXBpdGVsLm1hcCgoaykgPT4gKHsgLi4uaywgaW5zaWt0ZXI6IHNhbW1hbmZhdHRuaW5nYXJbay5pZF0gfSkpXG59KVxuXG5vdmVyc2lrdCh7IGRhdGEsIGdlbyB9KVxuIn1dfQ==
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IG92ZXJzaWt0IH0gZnJvbSBcIi4vanMvb3ZlcnNpa3QuanNcIlxuXG5rYXBpdGVsID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhL2thcGl0ZWwuanNvblwiKS5qc29uKClcbmdlbyAgICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvaGFsbGFuZC1rb21tdW5lci5nZW9qc29uXCIpLmpzb24oKVxub3J0ZXIgICA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS9oZXJvLW9ydGVyLmpzb25cIikuanNvbigpXG4vLyBLYXJ0Z2FsbGVyaWV0OiBtYXBnbC1rYXJ0b3JuYSAoUi9rYXJ0c3lzdGVtLlIpICsgSlMta2FydG9yIG9jaCB6b25rYXJ0YW5cbmthcnRvciAgPSBQcm9taXNlLmFsbChbXG4gIEZpbGVBdHRhY2htZW50KFwia2FydGdhbGxlcmkva2FydG9yLmpzb25cIikuanNvbigpLFxuICBGaWxlQXR0YWNobWVudChcImthcnRnYWxsZXJpL2thcnRvci1leHRyYS5qc29uXCIpLmpzb24oKVxuXSkudGhlbigoW2EsIGJdKSA9PiBbLi4uYSwgLi4uYl0pXG5cbm92ZXJzaWt0KHsgZGF0YToga2FwaXRlbCwgZ2VvLCBvcnRlciwga2FydG9yIH0pXG4ifV19
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

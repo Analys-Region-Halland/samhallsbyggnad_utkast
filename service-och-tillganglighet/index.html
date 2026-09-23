@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Service och tillgänglighet — Halland – Kapitelrapport Halland</title>
+<title>Service och tillgänglighet: Halland – Kapitelrapport Halland</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-ef1505cedaabdda5d1165613ba7a8468.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-4cf6058bf85c57059078427eb5d4dcf1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -106,6 +106,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
 <link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Kartsystemet (js/kartor/kartsystem.js): helskärm, panel och lat laddning för alla kartor
+(function(){var o=(document.querySelector('meta[name="quarto:offset"]')||{}).content||"./";
+var l=document.createElement("link");l.rel="stylesheet";l.href=o+"js/kartor/kartsystem.css";document.head.appendChild(l);
+var s=document.createElement("script");s.src=o+"js/kartor/kartsystem.js";s.defer=true;document.head.appendChild(s);})();
+</script>
 
 
 </head>
@@ -124,6 +130,217 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="9" data-source-offset="-32"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 8;"><span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { linjediagram } <span class="im">from</span> <span class="st">"../js/grafer/linjediagram.js"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { stapeldiagram } <span class="im">from</span> <span class="st">"../js/grafer/stapeldiagram.js"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { stapladeStaplar } <span class="im">from</span> <span class="st">"../js/grafer/stapladeStaplar.js"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { dotplot } <span class="im">from</span> <span class="st">"../js/grafer/dotplot.js"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { grafStepper } <span class="im">from</span> <span class="st">"../js/grafer/grafStepper.js"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { tillganglighetskarta<span class="op">,</span> fmtSv } <span class="im">from</span> <span class="st">"../js/kartor/tillganglighetskarta.js"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">// ── Gemensamma hjälpare ──</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>fmt0 <span class="op">=</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span><span class="op">,</span> { <span class="dt">maximumFractionDigits</span><span class="op">:</span> <span class="dv">0</span> })</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>fmt1 <span class="op">=</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">toLocaleString</span>(<span class="st">"sv-SE"</span><span class="op">,</span> { <span class="dt">minimumFractionDigits</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">maximumFractionDigits</span><span class="op">:</span> <span class="dv">1</span> })</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>kommunOrdning <span class="op">=</span> [<span class="st">"Kungsbacka"</span><span class="op">,</span> <span class="st">"Varberg"</span><span class="op">,</span> <span class="st">"Falkenberg"</span><span class="op">,</span> <span class="st">"Halmstad"</span><span class="op">,</span> <span class="st">"Laholm"</span><span class="op">,</span> <span class="st">"Hylte"</span>]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>kommunFarger <span class="op">=</span> [<span class="st">"#0C8C7E"</span><span class="op">,</span> <span class="st">"#004990"</span><span class="op">,</span> <span class="st">"#FF7E00"</span><span class="op">,</span> <span class="st">"#A51300"</span><span class="op">,</span> <span class="st">"#8cd211"</span><span class="op">,</span> <span class="st">"#7b2d8e"</span>]</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>typKlasser <span class="op">=</span> [<span class="st">"Stadskärna"</span><span class="op">,</span> <span class="st">"Yttre stadsområde"</span><span class="op">,</span> <span class="st">"Peri-urbant"</span><span class="op">,</span> <span class="st">"Stadsnära landsbygd"</span><span class="op">,</span> <span class="st">"Lokalt centrum nära stad"</span><span class="op">,</span> <span class="st">"Landsbygd"</span><span class="op">,</span> <span class="st">"Lokalt centrum på landsbygd"</span>]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>typFarger  <span class="op">=</span> [<span class="st">"#1b0a3c"</span><span class="op">,</span> <span class="st">"#7b2d8e"</span><span class="op">,</span> <span class="st">"#0f7b3f"</span><span class="op">,</span> <span class="st">"#8cd211"</span><span class="op">,</span> <span class="st">"#ffc107"</span><span class="op">,</span> <span class="st">"#f0d9a0"</span><span class="op">,</span> <span class="st">"#e8491a"</span>]</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>fsNamn <span class="op">=</span> ({ <span class="dt">WALK</span><span class="op">:</span> <span class="st">"Gång"</span><span class="op">,</span> <span class="dt">BICYCLE</span><span class="op">:</span> <span class="st">"Cykel"</span><span class="op">,</span> <span class="dt">TRANSIT</span><span class="op">:</span> <span class="st">"Kollektivtrafik"</span><span class="op">,</span> <span class="dt">TRANSIT50</span><span class="op">:</span> <span class="st">"Kollektivtrafik, typisk avgång"</span><span class="op">,</span> <span class="dt">TRANSITB</span><span class="op">:</span> <span class="st">"Kollektivtrafik med cykel"</span><span class="op">,</span> <span class="dt">CAR</span><span class="op">:</span> <span class="st">"Bil"</span> })</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>fsFarg <span class="op">=</span> ({ <span class="dt">WALK</span><span class="op">:</span> <span class="st">"#00AB60"</span><span class="op">,</span> <span class="dt">BICYCLE</span><span class="op">:</span> <span class="st">"#8cd211"</span><span class="op">,</span> <span class="dt">TRANSIT</span><span class="op">:</span> <span class="st">"#2DB8F6"</span><span class="op">,</span> <span class="dt">TRANSIT50</span><span class="op">:</span> <span class="st">"#A2D9F8"</span><span class="op">,</span> <span class="dt">TRANSITB</span><span class="op">:</span> <span class="st">"#1E63A8"</span><span class="op">,</span> <span class="dt">CAR</span><span class="op">:</span> <span class="st">"#6A2E5E"</span> })</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">// ── Data: egna r5r-beräkningar (bearbetning_data/tg_*.R), OSM + GTFS Sverige 2 hösten 2026 ──</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>rutorRackvidd <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rutor-rackvidd.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>desoRackvidd  <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-deso-rackvidd.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>regsoRackvidd <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-regso-rackvidd.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>komRackvidd   <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-kom-rackvidd.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>rackviddSamman <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rackvidd-sammanfattning.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>rackviddKurvor <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rackvidd-kurvor.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>rutorService  <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rutor-service.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>desoService   <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-deso-service.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>regsoService  <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-regso-service.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>komService    <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-kom-service.geojson"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">// Kommunernas utbredning för kartornas zoom</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>kommunBbox <span class="op">=</span> komRackvidd<span class="op">.</span><span class="at">features</span><span class="op">.</span><span class="fu">map</span>(f <span class="kw">=&gt;</span> {</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> b <span class="op">=</span> d3<span class="op">.</span><span class="fu">geoBounds</span>(f)<span class="op">;</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> { <span class="dt">namn</span><span class="op">:</span> f<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">namn</span><span class="op">,</span> <span class="dt">kn</span><span class="op">:</span> f<span class="op">.</span><span class="at">properties</span><span class="op">.</span><span class="at">kn</span><span class="op">,</span> <span class="dt">bbox</span><span class="op">:</span> [b[<span class="dv">0</span>][<span class="dv">0</span>]<span class="op">,</span> b[<span class="dv">0</span>][<span class="dv">1</span>]<span class="op">,</span> b[<span class="dv">1</span>][<span class="dv">0</span>]<span class="op">,</span> b[<span class="dv">1</span>][<span class="dv">1</span>]] }<span class="op">;</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>})<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> kommunOrdning<span class="op">.</span><span class="fu">indexOf</span>(a<span class="op">.</span><span class="at">namn</span>) <span class="op">-</span> kommunOrdning<span class="op">.</span><span class="fu">indexOf</span>(b<span class="op">.</span><span class="at">namn</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-11" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-12" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-13" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-14" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-15" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-16" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-17" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-18" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-19" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-20" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-21" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-22" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-23" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-24" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-1-25" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
 <div class="kr-rapport" style="--accent:#2E4D96;">
 <div class="kr-rapport-hero">
 <div class="kr-rapport-kicker">
@@ -132,35 +349,662 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="service-och-tillgänglighet" class="level1">
 <h1>Service och tillgänglighet</h1>
 <div class="kr-rapport-ingress">
-<p>Kapitlet är under uppbyggnad. Det ska belysa hur tillgängligheten till arbete och service ser ut i Halland, och hur den skiljer sig mellan kommuner och orter.</p>
+<p>Hur mycket kan en hallänning nå inom rimlig restid, och hur nära ligger skolan, vårdcentralen och butiken? Kapitlet räknar tillgängligheten från varje bebodd 250-metersruta i Halland, med gång, cykel, kollektivtrafik och bil, i ett restidsnätverk som omfattar Halland och de fyra grannlänen.</p>
 </div>
 </section>
 </div>
+<div class="kr-rapport-lead">
+<p>Kapitlet handlar om tillgänglighet, alltså hur mycket människor kan nå inom rimlig tid, snarare än hur mycket de reser. Det börjar med vad tillgänglighet är och hur den mäts. Därefter följer fyra empiriska delar. Den första visar hur många människor som kan nås inom 15, 30, 45 och 60 minuter, och den andra hur många arbetsplatser. Den tredje mäter närheten till vardagens service i 15-minutersstadens anda, och den fjärde restiden till närmaste skola, vårdcentral, butik, apotek och sjukhus. Alla restider är egna beräkningar i ruttmotorn R5 på OpenStreetMaps vägnät och kollektivtrafikens tidtabeller för hösten 2026. Invånare, arbetsplatser och service i Västra Götaland, Skåne, Kronoberg och Jönköping räknas med, eftersom länsgränsen inte stoppar resorna. Exakt hur varje mått är beräknat står i utfällbara rutor vid figurerna.</p>
+</div>
+<div class="cell hidden">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="85" data-source-offset="-89"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 84;"><span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>svTyper <span class="op">=</span> [</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">v</span><span class="op">:</span> <span class="st">"dagligvaror"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Livsmedel"</span> }<span class="op">,</span> { <span class="dt">v</span><span class="op">:</span> <span class="st">"forskola"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Förskola"</span> }<span class="op">,</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">v</span><span class="op">:</span> <span class="st">"grundskola_f6"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Grundskola F–6"</span> }<span class="op">,</span> { <span class="dt">v</span><span class="op">:</span> <span class="st">"grundskola_79"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Grundskola 7–9"</span> }<span class="op">,</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">v</span><span class="op">:</span> <span class="st">"gymnasium"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Gymnasium"</span> }<span class="op">,</span> { <span class="dt">v</span><span class="op">:</span> <span class="st">"vardcentral"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Vårdcentral"</span> }<span class="op">,</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">v</span><span class="op">:</span> <span class="st">"akutsjukhus"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Akutsjukhus"</span> }<span class="op">,</span> { <span class="dt">v</span><span class="op">:</span> <span class="st">"apotek"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Apotek"</span> }<span class="op">,</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">v</span><span class="op">:</span> <span class="st">"bibliotek"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Bibliotek"</span> }<span class="op">,</span> { <span class="dt">v</span><span class="op">:</span> <span class="st">"hallplats"</span><span class="op">,</span> <span class="dt">t</span><span class="op">:</span> <span class="st">"Hållplats"</span> }</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>svNamn <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>(svTyper<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> [d<span class="op">.</span><span class="at">v</span><span class="op">,</span> d<span class="op">.</span><span class="at">t</span>]))</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="co">// Kartornas konfiguration bor i kartor.js (delas med kartgalleriet, kartgalleri/karta.html)</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { serviceKarta <span class="im">as</span> _serviceKarta<span class="op">,</span> vardagKarta <span class="im">as</span> _vardagKarta<span class="op">,</span> rackviddKarta <span class="im">as</span> _rackviddKarta } <span class="im">from</span> <span class="st">"./kartor.js"</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>serviceKarta <span class="op">=</span> (start <span class="op">=</span> {}) <span class="kw">=&gt;</span> <span class="fu">_serviceKarta</span>({ start })</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>vardagKarta <span class="op">=</span> () <span class="kw">=&gt;</span> <span class="fu">_vardagKarta</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display hidden">
+<div>
+<div id="ojs-cell-2-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<section id="service-och-tillganglighet-sammanfattning" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-sammanfattning">Sammanfattning</h2>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-sammanfattning-fardsattet">
+Färdsättet avgör mer än platsen
+</h3>
+<p class="kr-rapport-ingang">
+Med bil når nästan alla hallänningar både en stor arbetsmarknad och sin vardagsservice inom en kvart. Utan bil beror tillgängligheten helt på var man bor.
+</p>
+<p>Inom 30 minuter når medianhallänningen 104 000 människor med bil, 28 000 med cykel, 19 000 med kollektivtrafik vid den snabbaste avgången och 4 300 till fots. Med bil når 99 procent en livsmedelsbutik och 95 procent en vårdcentral inom 15 minuter, till fots 57 respektive 41 procent. Kollektivtrafiken är starkast för den som anpassar sig efter tidtabellen och kan cykla till hållplatsen; vid en typisk avgång når den bara en tredjedel så många som vid den snabbaste.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-sammanfattning-vardagen">
+Vardagen nära i stadskärnor och småorter, längre bort i villaområden och på landsbygden
+</h3>
+<p class="kr-rapport-ingang">
+Var femte hallänning har butik, skola, vårdcentral, apotek, bibliotek och hållplats inom en kvarts promenad, och sex av tio har dem inom en kvarts cykeltur.
+</p>
+<p>I stadskärnorna når hälften av invånarna alla sex vardagsfunktionerna till fots, och i de mindre orterna med egen service en tredjedel. I städernas yttre stadsområden, där många bor i villaområden, gör bara 8 procent det till fots men 84 procent med cykel. På landsbygden är servicen i praktiken bara nära med bil. Gymnasiet och akutsjukhuset ligger längst bort: tre av fyra når ett akutsjukhus inom 30 minuter med bil, men i Hylte ingen.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-sammanfattning-grannlanen">
+Halland hänger ihop med grannlänen
+</h3>
+<p class="kr-rapport-ingang">
+Hälften av de människor och sex av tio av de arbetsplatser som hallänningarna når inom 45 minuter med bil finns utanför länet.
+</p>
+<p>I Kungsbacka ligger 89 procent av de arbetsplatser som nås med bil inom 45 minuter i Göteborgsregionen, och Laholm når Skåne. En tillgänglighetsanalys som stannar vid länsgränsen underskattar därför räckvidden kraftigt i länets norra och södra delar. För planeringen pekar resultaten på två saker. Var service och bostäder lokaliseras avgör hur många som kan nå dem utan bil, och cykeln, särskilt i kombination med kollektivtrafik, är det färdsätt som kan ge villaområdena och de mindre orterna en räckvidd som liknar stadens.</p>
+</section>
 <section id="service-och-tillganglighet-om-tillganglighet" class="level2 kr-rapport-sektion">
-<h2 class="anchored" data-anchor-id="service-och-tillganglighet-om-tillganglighet">Om tillgänglighet</h2>
-<p><em>Text kommer.</em></p>
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-om-tillganglighet">Vad är tillgänglighet?</h2>
+<div class="kr-ikorthet">
+<ul>
+<li><strong>Tillgänglighet handlar om att nå, inte om att resa.</strong> Måttet beskriver hur transportsystemet och bebyggelsen fungerar tillsammans. Det kan förbättras på två sätt: genom kortare restider eller genom att det man behöver ligger närmare.</li>
+<li><strong>Nyttorna är fyra.</strong> En större arbetsmarknad inom räckhåll ger bättre matchning, högre lön och större chans att ha ett jobb. Tillgängligheten avgör också vem som kan delta i samhällslivet, den påverkar hälsan när vården ligger långt bort och den minskar sårbarheten när en stor arbetsgivare stänger.</li>
+<li><strong>Olika målpunkter har olika räckvidd.</strong> Butik och grundskola hör till gångavståndet, gymnasium och arbete till regionen, specialistvård och högskola till storregionen. En del service kan nås digitalt, men det digitala kompletterar oftare det fysiska än ersätter det.</li>
+<li><strong>Färdsättet förklarar mer än geografin.</strong> Med bil når nästan alla nästan allt. Till fots och med buss är skillnaden mellan stad och land stor, och den som saknar bil möter hela den skillnaden.</li>
+</ul>
+</div>
+<p>Ordet tillgänglighet har två betydelser på svenska. I plan- och bygglagstiftningen och i Boverkets vägledningar betyder det att en byggnad eller en miljö kan användas av personer med funktionsnedsättning. I det här kapitlet används ordet i transportforskningens betydelse: hur lätt det är att nå det man behöver, som arbete, vård, skola och butiker, från den plats där man bor.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-att-na">
+Att nå, inte att resa
+</h3>
+<p>Den klassiska definitionen är från 1959: tillgänglighet är potentialen för samspel, ett mått på hur stora möjligheterna är snarare än på hur lätt det är att förflytta sig (Hansen 1959). Den mest använda moderna definitionen preciserar att det gäller i vilken utsträckning markanvändning och transportsystem tillsammans gör det möjligt för människor att nå aktiviteter och målpunkter med ett eller flera färdsätt (Geurs och van Wee 2004). Tillgänglighet är alltså en potential, som mäter vad som skulle kunna göras och inte vad som görs, och den består av två delar: utbudet vid målpunkten och motståndet på vägen dit.</p>
+<p>Det skiljer tillgänglighet från rörlighet. Rörlighet mäter hur lätt det är att röra sig i transportnätet, tillgänglighet hur lätt det är att nå de platser man värdesätter, och den tar därför hänsyn både till nätet och till var målpunkterna ligger (Levinson och Wu 2020). Framkomligheten kan alltså förbättras samtidigt som tillgängligheten försämras, om avstånden till målpunkterna växer snabbare än hastigheten, och tillgängligheten kan förbättras utan att någon färdas fortare, om det man behöver hamnar närmare. Den statliga transportanalysen slog redan 2008 fast att tillgängligheten kan förbättras både genom åtgärder i alla trafikslag och genom lokalisering och bebyggelseplanering (Trafikanalys 2024a).</p>
+<p>Trafikanalys definierar i dag tillgänglighet brett, som möjligheten att delta i samhällslivet genom att överbrygga hinder, till exempel ett avstånd. Myndigheten talar om samhället i stället för om utbudet, för att markera att målpunkterna också är arbete, studier, vård, kultur och demokratiskt deltagande (Trafikanalys 2024b). Ett fullständigt mått borde enligt Geurs och van Wee fånga fyra saker: var möjligheterna finns och hur många de är, vad det kostar i tid, pengar och ansträngning att nå dem, när på dygnet de är öppna, och vilka förutsättningar den enskilde har i form av bil, inkomst och förmåga (Geurs och van Wee 2004).</p>
+<p>Den sista punkten är viktig för hur kapitlets kartor ska läsas: de beskriver platser, och den som saknar bil möter en annan geografi än den kartorna visar. Samma restidsberäkning kan också läsas åt andra hållet, som hur lätt en plats är att nå, vilket är arbetsgivarens och butikens fråga (Levinson och Wu 2020; Trafikanalys 2024a).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-ekonomi">
+Varför det spelar roll: arbete och ekonomi
+</h3>
+<p>Den ekonomiska nyttan bygger på samma mekanismer som stadens fördelar i kapitel 02 och 03: en större arbetsmarknad inom räckhåll ger bättre matchning mellan kompetens och arbetsuppgifter, fler att lära av och fler att dela kostsamma resurser med. För transport- och bebyggelseplaneringen är det avgörande att detta är en extern effekt, alltså en vinst som inte fångas i den vanliga restidskalkylen. När den räknas in kan den samlade vinsten av en förbindelse bli flera gånger större än restidsvinsten (Venables 2004; Graham 2007).</p>
+<p>Storleken ska dock inte överdrivas. De brittiska skattningar som startade debatten gav en produktivitetselasticitet på omkring 12 procent för hela ekonomin, och mer än dubbelt så hög för tjänstesektorn som för tillverkningen (Graham 2007). Den brittiska kalkylpraxisen använder i dag en fjärdedel av det ursprungliga värdet för tillverkning, sedan man tagit hänsyn till vilka som flyttar till städerna (Department for Transport 2025). De svenska beläggen gäller individen. Den som börjar pendla in till Stockholm får i genomsnitt 6,0 procent högre lön och den som pendlar till Göteborg 4,6 procent, och premien stiger med avståndet: från 4,6 procent i de närmaste kommunerna till 12,2 procent för dem som ligger 60–80 minuter bort (Tillväxtanalys 2020).</p>
+<p>Tillgänglighet till jobb påverkar också sannolikheten att alls ha ett arbete. En svensk studie använder 1990-talets statliga placering av flyktingar som ett naturligt experiment och finner att en fördubbling av antalet jobb nära bostaden ger nästan tre procentenheter högre sysselsättning nio år senare. Effekten underskattas normalt, eftersom människor med jobb också väljer att bo nära jobben (Åslund, Östh och Zenou 2010).</p>
+<p>För en region utan storstad är Trafikanalys genomgång viktig. Sambandet mellan tillgänglighet och produktivitet gäller främst specialiserade branscher och högutbildade, medan sambandet mellan tillgänglighet och sysselsättning är starkast för lågutbildade och i glesare regioner. Myndigheten bedömer att åtgärder som förtätar arbetsmarknader är mer effektiva för sysselsättningen än åtgärder för regionförstoring (Trafikanalys 2017). Var vinsterna tar slut behandlades i kapitel 03: stadens täthetseffekt är stark inom 40 minuters restid, svag mellan 40 och 80 minuter och knappt mätbar därbortom (Tillväxtanalys 2017).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-deltagande">
+Varför det spelar roll: deltagande, hälsa och sårbarhet
+</h3>
+<p>Tillgänglighet avgör också vem som kan delta i samhällslivet. Transportrelaterad utestängning definieras som den process där människor hindras från att delta i samhällets ekonomiska, politiska och sociala liv därför att de har sämre tillgång till möjligheter, service och sociala nätverk, helt eller delvis på grund av otillräcklig rörlighet i ett samhälle som byggts på antagandet om hög rörlighet (Kenyon, Lyons och Rafferty 2002). Det är alltså bristen på transporter i ett samhälle som byggts som om alla hade bil som utestänger: den höga och stigande rörligheten hos befolkningen i stort gör de mindre rörliga utestängda (Lucas 2012). Riskgrupperna är kända: hushåll med låg inkomst, arbetslösa, ensamstående föräldrar, unga, äldre och personer med funktionsnedsättning (Berg m.fl. 2019).</p>
+<p>Forskningen om rättvisa i transportsystemet drar slutsatsen att det som ska fördelas rättvist är tillgänglighet, inte infrastruktur eller resande. Målet blir att höja genomsnittet utan att gapet mellan de sämst och bäst ställda växer (Martens 2012). Tanken har en lång historia i Sverige. Redan 1953 års trafikutredning skrev att staten skulle trygga en grundläggande tillgänglighet även på bekostnad av den samhällsekonomiska effektiviteten, och 1970-talets utredning om kollektivtrafik gav kollektivtrafiken uppgiften att ge dem utan bil en grundläggande tillgänglighet (Bondemark 2017).</p>
+<p>Hälsan är en tredje nytta. I en systematisk genomgång av 108 studier från höginkomstländer fann 77 procent att patienter som bodde längre från den vård de behövde hade sämre utfall, i form av överlevnad, vårdtid eller uteblivna återbesök (Kelly m.fl. 2016). Avståndet till vården är alltså en hälsofråga. Skolresan fungerar på liknande sätt. I pendlingsomlanden kring Europas städer är gång inget alternativ för fyra av tio låg- och mellanstadieelever, och där skolskjuts saknas hamnar ansvaret hos föräldrarna, oftare hos mödrarna (ITF 2019).</p>
+<p>Den fjärde nyttan är minskad sårbarhet. Den som förlorar jobbet vid en företagsnedläggning på en stor arbetsmarknad är arbetslös kortare tid, förlorar mindre i inkomst, får ett jobb som passar bättre och behöver mer sällan flytta än den som drabbas på en liten (Moretti och Yi 2026). Samma nedläggning kan därför få mycket olika följder beroende på hur många arbetsplatser som ligger inom pendlingsavstånd. Det är skälet till att Tillväxtverket använder utpendlingens andel som en indikator på kommuners motståndskraft (Tillväxtverket 2022).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-rackvidd">
+Olika målpunkter har olika räckvidd
+</h3>
+<p>Att olika slags service ligger olika långt bort följer av ekonomisk geografi. Centralortsteorin beskrev det redan på 1930-talet med två begrepp: tröskeln, det minsta kundunderlag som krävs för att en verksamhet ska gå runt, och räckvidden, hur långt människor är beredda att resa för en viss tjänst innan de avstår eller väljer något annat (Christaller 1933, efter van Meeteren och Poorthuis 2018). Tröskeln nås snabbare där befolkningen är tät, medan räckvidden inte beror på tätheten. Därför uppstår en trappa av orter: mjölk och grundskola finns på många ställen, tandvård, möbelhandel och specialistvård på få (van Meeteren och Poorthuis 2018). Tillväxtverket beskriver samma mönster i sin serviceuppföljning och konstaterar att teorin fortfarande används som underlag för lokaliseringsbeslut i den fysiska planeringen (Tillväxtverket 2024a).</p>
+<p>Räckvidden skiljer sig också i vad människor gör när närheten saknas. För nödvändigheter som dagligvaror reser man längre än väntat om butiken inte finns i närheten, medan man avstår från trivselutbud som bokhandel och fritidsaktiviteter (van Meeteren och Poorthuis 2018). Dålig tillgänglighet till dagligvaror syns därför som mer resande, medan dålig tillgänglighet till kultur och fritid syns som utebliven konsumtion och inte alls i trafikstatistiken.</p>
+<p>Svensk statistik visar trappan tydligt. Inom 20 minuter till fots når 73 procent av befolkningen en livsmedelsbutik och 75 procent en grundskola, men bara 28 procent av 16–19-åringarna når ett gymnasium. Med bil når nästan alla allt (Trafikanalys 2025b). I Norden är skillnaden mellan stad och land minst för dagligvaror och skola och störst för bibliotek och apotek (Nordregio 2022). Staten har också skrivit in räckvidder i sina regler: en postlåda ska finnas inom 500 meter, en dagligvarubutik kan få stöd om det är mer än 15 kilometer till nästa, ett glesbygdsapotek om det är mer än 20 kilometer till ett annat, och för kontantuttag gäller 25 kilometer (SOU 2015:35; Tillväxtverket 2024a). Ett mål i minuter har staten däremot avvisat. Utredningen om service i glesbygd konstaterade att ett mål om att antalet med mer än 20 minuter till butik inte får öka mäter fel sak, eftersom siffran lika gärna förbättras av avfolkning, och föreslog i stället normen att servicen är tillräcklig när vardagen fungerar (SOU 2015:35).</p>
+<p>Tröskeln är ingen skarp gräns utan en avvägning som kommuner och regioner gör på nytt: större enheter är billigare per person och lättare att bemanna, men de ligger längre bort. Inom vården varierar underlaget per vårdcentral från knappt 4 000 invånare i de mest avlägsna landsbygdskommunerna till drygt 10 000 i storstadskommunerna. Avståndet är ett hinder främst för den som saknar bil, är äldre eller inte kan köra själv, och på kvällar och helger när den närmaste mottagningen är stängd (Vård- och omsorgsanalys 2021). I skolan syns avvägningen i kostnaderna. Skolskjutsen kostar 9 005 kronor per elev i mycket glesa kommuner mot 3 337 kronor i övriga, och de skolor som lagts ned sedan 2014 har till största delen haft högst 150 elever (Skolverket 2025). En del av besparingen med större enheter äts alltså upp av resorna.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-nivaer">
+Fyra nivåer, från kvarteret till storregionen
+</h3>
+<p>Tillgänglighetens skala bestäms av målpunkten, och i svensk praktik skiljer man mellan fyra nivåer med var sitt mätsystem. Den lokala nivån gäller vardagsservicen: dagligvaror, förskola, grundskola, apotek, vårdcentral och hållplats, som nås till fots eller med cykel inom 10–20 minuter. Den nivån mäter Trafikanalys med sitt tillgänglighetsindex och Tillväxtverket med vägavstånd från varje befolkningsruta (Trafikanalys 2021a; Tillväxtverket 2024a). Den regionala nivån gäller arbete, gymnasium, handel och akutsjukhus, som nås med bil eller kollektivtrafik inom 20–45 minuter. Det är regionförstoringens skala, och kapitel 03 visade att 45 minuter enkel väg är gränsen för daglig pendling.</p>
+<p>Den storregionala nivån gäller storstadens arbetsmarknad, högskolan och specialistvården, 45–90 minuter bort. Tillväxtverkets kommungruppsindelning bygger på den skalan: en kommun räknas som nära en större stad om huvuddelen av invånarna når en tätort med minst 50 000 invånare inom 45 minuters bilresa, och som mycket gles om ingen gör det inom 90 minuter (Tillväxtverket u.å.). EU-kommissionen använder 90 minuter med bil på samma sätt, med motiveringen att det räcker för en resa tur och retur med tid för ett halvdagsmöte (Dijkstra, Poelman och Ackermans 2019). Den interregionala nivån gäller huvudstaden, universitetssjukhuset, universitetsorten och utlandet. Där mäter Trafikverket vistelsetid i stället för restid: en kommun har grundläggande tillgänglighet till Stockholm om man kan resa dit över dagen, vara framme senast klockan tio och få minst sex timmar på plats (Trafikverket u.å.). År 2023 uppfyllde 191 av 290 kommuner alla åtta sådana kriterier, mot 207 år 2016, trots att statens kostnad för trafikavtal ökat med en tredjedel under samma tid (Riksrevisionen 2026).</p>
+<p>Nivåerna vilar på transportpolitikens funktionsmål från 2009. Enligt målet ska transportsystemet ge alla en grundläggande tillgänglighet med god kvalitet och användbarhet och bidra till utvecklingskraft i hela landet, och tillgängligheten ska förbättras inom och mellan regioner och mellan Sverige och andra länder (Prop. 2008/09:93). Målet anger en golvnivå för alla i hela landet, och regeringen medgav redan då att det saknades metoder för att följa upp det (Prop. 2008/09:93). Luckan finns kvar: den lokala nivån har ett index och den interregionala har kriterier, men den regionala nivån, med arbetspendling, gymnasium, akutsjukhus och länshandel, saknar nationell norm. Den nivån får den regionala planeringen därför fylla själv.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-platsbundet">
+Platsbundet och digitalt
+</h3>
+<p>Alla målpunkter är inte lika bundna till en plats. Förskolan, frisören, äldreomsorgen och butikens hyllor måste finnas där kunden är, medan bankärenden, apoteksvaror och en del av vården kan nås digitalt. Forskningen skiljer därför mellan fysisk och virtuell tillgänglighet. Det viktigaste fyndet är att den digitala kanalen i första hand kompletterar och förändrar den fysiska snarare än ersätter den. Enligt forskningsläget är komplementaritet viktigare än substitution, ökad e-handel ökar även den fysiska handeln, och distansarbete avgörs mer av vem man är än av hur långt man har till jobbet (Trafikanalys 2024a).</p>
+<p>Antagandet att digitaliseringen löser landsbygdens tillgänglighetsproblem har därför svagt stöd. Distansarbetet har visserligen vuxit från knappt 20 procent av de sysselsatta när de transportpolitiska målen antogs till närmare 40 procent 2024, men det domineras av högskoleutbildade tjänstemän i höginkomsthushåll i storstäderna. Bland personer i låginkomsthushåll arbetar bara var fjärde hemifrån (Trafikanalys 2025b). Det digitala skapar också ny fysisk infrastruktur: antalet paketskåp gick från ett hundratal till drygt 6 300 på fem år (Trafikanalys 2025b). Förändringen går också åt andra hållet: apoteksombuden i landsbygdsbutiker blir färre, eftersom läkemedel kan skickas som paket (Tillväxtverket 2024a).</p>
+<p>Vården är ett gränsfall. Utredningen om god och nära vård skriver att nära inte är en geografisk definition utan ett förhållningssätt. Vården ska komma närmare patienten genom digitala kontakter, mobila team och hemsjukvård snarare än genom fler byggnader, samtidigt som vissa delar centraliseras av kvalitetsskäl (SOU 2020:19). Digital tillgänglighet har dock egna trösklar i form av utrustning, uppkoppling, färdigheter och tid, och de fördelas ojämnt på ungefär samma sätt som bilinnehav, med den skillnaden att åldern väger tyngre (Trafikanalys 2024a). Utredningen varnar därför för en digitalisering som utestänger utsatta grupper i stället för att nå dem (SOU 2020:19).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-fardsatt">
+Skillnaderna inom en region, och färdsättet som avgör
+</h3>
+<p>Tillgängligheten varierar kraftigt inom ett land och en region, men den varierar ännu mer mellan färdsätten. Trafikanalys lokala index mäter hur stor andel av befolkningen som i genomsnitt når nio vardagsmålpunkter inom 20 minuter. Andelen är 78 procent för riket, 86 procent i storstadskommunerna och 60 procent i de mest avlägsna landsbygdskommunerna (Trafikanalys 2021a). Spännvidden är betydande men inte dramatisk, och skälet är att bilen jämnar ut nästan allt. I en glesbygdskommun som Bräcke når 37 procent av invånarna målpunkterna till fots och 58 procent med kollektivtrafik, men 100 procent med bil. I Solna spelar färdmedlet ingen roll (Trafikanalys 2021a). För den som har bil suddas den geografiska skillnaden alltså ut, medan den som saknar bil möter hela skillnaden.</p>
+<p>Mäts i stället utbudet nära bostaden blir klyftan mycket större. I storstäderna är medianen 1 200 kollektivtrafikavgångar per dygn i bostadens kilometerruta, i landsbygdskommunerna 12–13, och nästan en tredjedel av de boende i landsbygdskommuner har ingen kollektivtrafik alls i sin ruta (Trafikanalys 2019). Internationellt är mönstret detsamma. I 121 europeiska städer når den som kör bil omkring tre gånger så många människor som den som åker kollektivt inne i staden, men nästan åtta gånger så många i pendlingsomlandet (ITF 2019). Samma studie visar att täta städer har hög tillgänglighet trots trängsel, eftersom målpunkterna ligger nära (ITF 2019).</p>
+<p>Bilberoendet är ojämnt fördelat. Biltätheten varierar från 251 personbilar per tusen invånare i Sundbyberg till 723 i Älvdalen, och män står som ägare till 64 procent av de privatägda bilarna (Trafikanalys 2026a). Kvinnor reser oftare kollektivt och kortare sträckor, och åtgärder som stärker kollektivtrafiken förbättrar därför tillgängligheten mer för kvinnor än för män, medan det omvända gäller åtgärder som gör det lättare att köra bil (WSP 2017). Det är också här kollektivtrafikens samhällsnytta främst ligger. I den enda samlade svenska beräkningen står resenärernas tillgänglighet för omkring fyra femtedelar av den nytta som skulle gå förlorad om utbudet skars ned, långt mer än miljö- och trängseleffekterna. Kollektivtrafiken undervärderas alltså om den bara ses som ett sätt att begränsa bilens skador (WSP 2017).</p>
+<p>Mätningen har också svagheter. Bilens restider räknas normalt på skyltad hastighet, vilket överskattar bilens tillgänglighet i tätbebyggda områden (Trafikanalys 2021a). I tätortsnära landsbygdskommuner kan dessutom tillgängligheten till fots och med buss vara lägre än i glesare kommuner, eftersom servicen ligger i grannkommunens tätort snarare än i en egen (Trafikanalys 2023).</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-15min">
+Närheten i vardagen: 15-minutersstaden
+</h3>
+<p>15-minutersstaden är en planeringsvision som fick internationellt genomslag under pandemin: det man behöver i vardagen ska finnas inom en kvarts promenad eller cykeltur. Upphovsmännen beskriver sex funktioner som ska nås på det sättet, att bo, arbeta, handla, få vård, utbilda sig och ha fritid, och betonar att tiden ska anpassas till varje stad (Moreno m.fl. 2021). Idén är inte ny. Den bygger på gamla principer om grannskapsenheter men flyttar tyngdpunkten från hur lätt man når stadens funktioner till hur nära de ligger inom grannskapet (Pozoukidou och Chatziyiannaki 2021).</p>
+<p>Mätningarna ger ett tydligt resultat: befolkningstätheten avgör. I en global jämförelse av omkring tio tusen städer mäts den genomsnittliga gång- eller cykeltiden till vardagens målpunkter. Författarna drar slutsatsen att 15-minutersstaden inte kan gälla överallt, eftersom glesa områden skulle kräva orimligt många serviceställen per invånare, och att närhetstänkandet därför måste anpassas till tätheten (Bruno m.fl. 2024). Närhet är inte heller detsamma som användning. Med gånghastigheten hos äldre en vintermorgon sjunker andelen i Helsingfors som når en livsmedelsbutik inom 15 minuter från 93 till 34 procent (Willberg, Fink och Toivonen 2023). För en region som Halland är 15-minutersmåttet därför ett sätt att beskriva tätorternas vardag, inte en norm för landsbygden.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-prestanda">
+Närhet och prestanda
+</h3>
+<p>EU-kommissionen och Internationella transportforumet (ITF) delar upp tillgängligheten i två delar. Närheten är hur många som bor eller hur mycket som finns inom ett visst avstånd fågelvägen, och den bestäms av bebyggelsen. Prestandan är hur stor del av det närliggande man faktiskt når inom en viss restid, och den bestäms av transportsystemet. Tillgängligheten är produkten av de två (ITF 2019). Uppdelningen visar att ett lågt tillgänglighetstal i en gles region inte behöver betyda ett dåligt vägnät, och att en tät stad kan ha hög tillgänglighet trots trängsel.</p>
+<p>EU räknar prestandan som den befolkning som nås inom en restid delad med befolkningen inom en radie som motsvarar en rak färd i jämn fart: 2,5 kilometer för 30 minuters promenad, 7,5 kilometer för 30 minuter med cykel eller kollektivtrafik och 11,25 kilometer för 45 minuter med kollektivtrafik. I 42 europeiska städer nådde kollektivtrafiken i genomsnitt 24 procent av befolkningen inom 7,5 kilometer på 30 minuter och 57 procent inom 11,25 kilometer på 45 minuter, och cykeln 75 procent inom 7,5 kilometer (Poelman, Dijkstra och Ackermans 2020). För bilen jämför EU befolkningen inom 90 minuter med den inom 120 kilometer (Dijkstra, Poelman och Ackermans 2019). Samma mått räknas i det här kapitlet för Halland, så att länet kan ställas mot europeiska städer.</p>
+<h3 class="kr-rapport-underrubrik anchored" id="service-och-tillganglighet-om-matt">
+Hur tillgänglighet mäts, och så räknar kapitlet
+</h3>
+<p>Det finns i huvudsak tre sätt att sätta siffror på tillgänglighet. Man kan räkna hur många möjligheter som ligger inom en viss restid, till exempel antalet arbetsplatser inom 45 minuter. Man kan räkna med alla möjligheter men låta dem väga mindre ju längre bort de ligger, ett så kallat gravitationsmått. Eller man kan mäta restiden till närmaste målpunkt av ett visst slag, till exempel närmaste vårdcentral. De teoretiskt bästa måtten är också de svåraste att förklara, och forskningen är ovanligt samstämmig om att det enkla räknemåttet håller i praktiken. Det kräver lite data, är lätt att tolka och bygger inte på antaganden om hur människor upplever avstånd. Svagheten är att allt innanför gränsen räknas som lika värdefullt och att gränsen alltid är delvis godtycklig (Geurs och van Wee 2004).</p>
+<p>I en granskning av 32 storstadsregionala transportplaner från fyra världsdelar användes ordet tillgänglighet nästan överallt, men där planerna faktiskt mätte tillgängligheten var måttet genomgående antalet möjligheter inom en restid, och det gav nästan samma regionala bild som mer avancerade mått (Boisjoly och El-Geneidy 2017). En svensk kartläggning av ett sextiotal offentliga tillgänglighetsstudier fann att de enkla måtten dominerar, att nästan alla beskriver ett nuläge snarare än en förändring och att det saknas ett standardiserat arbetssätt, så att studierna sällan går att jämföra (Trivector 2024). En analys behöver därför redovisa sina egna val av tröskel, färdsätt, målpunkt och beräkningsnivå.</p>
+<p>Valet av restid har en förvånansvärt stabil empirisk grund. Människor lägger i genomsnitt omkring en timme om dagen på att resa, och när färdmedlen blir snabbare växer det område de rör sig i medan tiden förblir densamma (Marchetti 1994). Trafikanalys valde 20 minuter för lokal tillgänglighet därför att det stämmer med hur länge människor faktiskt går och cyklar, i genomsnitt 18 respektive 20 minuter till arbete och skola. Myndigheten medger att gränsen är låg för bil och kollektivtrafik, där samma resor tar 35 respektive 54 minuter, och att det saknas teoretiskt fastslagna gränser (Trafikanalys 2021a). Även upphovsmännen till 15-minutersstaden påpekar att tröskeln ska anpassas till varje stads form och behov (Moreno m.fl. 2021).</p>
+<p>Kapitlets egna beräkningar görs med ruttmotorn R5, som styrs från R genom paketet r5r (Pereira m.fl. 2021). Nätverket bygger på två öppna datakällor: OpenStreetMaps vägnät med gång- och cykelstråk, och kollektivtrafikens tidtabeller i formatet GTFS, som Samtrafiken publicerar för hela landet. Hastigheterna följer Trafikanalys praxis för gång, 5 km/h, medan cykeln räknas med 16 km/h enligt den svenska planeringshandboken, något lägre än Trafikanalys 20 km/h (Trafikanalys 2025a). Nätverket täcker fem sydsvenska län, eftersom en analys som slutade vid länsgränsen skulle underskatta räckvidden för den som bor nära den. Tillgänglighetsmått är känsliga för var gränsen dras (ITF 2019).</p>
+<p>Kapitlet använder tre mått. Räckvidden är antalet invånare eller arbetsplatser som nås inom 15, 30, 45 och 60 minuter, samma trösklar som ITF använder. Restiden till närmaste service mäts för skola, vård, butik, apotek och bibliotek, som i Trafikanalys och Tillväxtverkets uppföljningar. Vardagsindexet räknar hur många av sex vardagsfunktioner som nås inom 15 minuter till fots eller med cykel. Alla mått räknas från varje bebodd 250-metersruta och vägs sedan samman med befolkningen till bostadsområde och kommun, vilket ger en säkrare bild än att räkna från områdets mittpunkt (Apparicio m.fl. 2008). Kollektivtrafiken räknas på den faktiska tidtabellen för en vardagsmorgon. Huvudmåttet är den snabbaste avgången mellan sju och nio, som visar vad som är möjligt för den som anpassar sig efter tidtabellen och motsvarar Trafikanalys krav på minst en avgång i fönstret (Trafikanalys 2026b). Den typiska avgången, medianen, redovisas bredvid, eftersom den visar vad den får som går till hållplatsen utan att titta på tidtabellen (Conway, Byrd och van Eggermond 2018).</p>
+<p>Beräkningarna har två begränsningar. De beskriver platser och inte människor, och fångar därför inte om den enskilde har bil, råd eller förmåga att resa. Bilens restider räknas dessutom utan trängsel och parkering, vilket gör bilen något snabbare än i verkligheten. Med de utgångspunkterna går kapitlet vidare till Halland.</p>
+</section>
+<section id="service-och-tillganglighet-rackvidd" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-rackvidd">Hur många kan man nå?</h2>
+<div class="kr-ikorthet">
+<ul>
+<li><strong>Bilen når omkring tjugofem gånger så många som promenaden.</strong> Inom 30 minuter når medianhallänningen 104 000 människor med bil, 28 000 med cykel, 19 000 med kollektivtrafik vid den snabbaste avgången och 4 300 till fots.</li>
+<li><strong>Kollektivtrafiken beror på tidtabellen.</strong> Vid en typisk avgång når samma person 6 900 människor inom 30 minuter, en tredjedel av vad den snabbaste avgången ger. Med cykel till hållplatsen når hälften av hallänningarna minst 31 000 inom 30 minuter.</li>
+<li><strong>Grannlänen står för hälften av räckvidden med bil.</strong> Av dem som hallänningarna når inom 45 minuter med bil bor 53 procent utanför länet, i Kungsbacka 83 procent.</li>
+</ul>
+</div>
+<p>Det första måttet på tillgänglighet är hur många människor man kan nå. Det säger något om hur stor den marknad är som en bostad ligger i: för arbetsgivare, butiker och föreningar, och för den som söker arbete eller vill träffa andra. Kartan i figur 1 visar hur många invånare som nås inom 15, 30, 45 och 60 minuter från varje bebodd 250-metersruta i Halland, med gång, cykel, kollektivtrafik och bil. Invånare i grannlänen räknas med, eftersom resor inte stannar vid länsgränsen. Kartan kan också visas per bostadsområde (DeSO och RegSO) och per kommun, som medelvärdet för områdets invånare.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="89" data-source-offset="-67"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 88;"><span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>rackviddKarta <span class="op">=</span> (start <span class="op">=</span> {}<span class="op">,</span> rubrik <span class="op">=</span> {}) <span class="kw">=&gt;</span> <span class="fu">_rackviddKarta</span>({ start<span class="op">,</span> rubrik })</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="fu">rackviddKarta</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>Skillnaden mellan färdsätten är stor. Inom 30 minuter når medianhallänningen, den person som ligger i mitten om alla ordnas efter hur många de når, 104 000 människor med bil och 28 000 med cykel. Med kollektivtrafik når hen 19 000 om hen tar den snabbaste avgången mellan sju och nio och 4 300 till fots. Inom 60 minuter når medianhallänningen 556 000 människor med bil och 95 000 med kollektivtrafik. Inom en halvtimme når bilen alltså omkring tjugofem gånger så många som promenaden, och inom en timme omkring sex gånger så många som kollektivtrafiken.</p>
+<p>Kollektivtrafikens räckvidd beror mycket på om man anpassar sig efter tidtabellen. Den som går till hållplatsen utan att titta på tiderna, och därmed får en typisk avgång, når inom 30 minuter 6 900 människor, en tredjedel av vad den snabbaste avgången ger. Med cykel till hållplatsen, eller gång om det går fortare, växer räckvidden. Inom 45 minuter når 30 procent av hallänningarna då minst 100 000 människor, mot 10 procent med bara gång till hållplatsen och 97 procent med bil. Cykeln gör alltså kollektivtrafiken betydligt mer användbar i ett län där många bor en bit från närmaste hållplats.</p>
+<p>Räckvidden följer stads- och landsbygdsstrukturen (figur 2). I Hallandstypologins stadskärnor når invånarna i mitten av fördelningen 21 000 människor till fots på 30 minuter och 42 000 med kollektivtrafik, medan invånarna i den glesa landsbygden når 135 till fots och 248 med kollektivtrafik. Med bil är skillnaden mindre: 131 000 i stadskärnorna mot 16 000 på landsbygden inom 30 minuter. Mellan kommunerna är skillnaden störst för bilen, eftersom den avgörs av avståndet till Göteborg och Helsingborg. Medianinvånaren i Kungsbacka når 183 000 människor inom 30 minuter med bil och över en miljon inom en timme, i Hylte 20 000 respektive 241 000.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb4" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rvKlasser <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rackvidd-klasser.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>rvKlassnamn <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-rackvidd-klassnamn.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>rvKlassFig <span class="op">=</span> (opp<span class="op">,</span> titel<span class="op">,</span> undertitel) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> namn <span class="op">=</span> { <span class="dt">WALK</span><span class="op">:</span> <span class="st">"Gång"</span><span class="op">,</span> <span class="dt">BICYCLE</span><span class="op">:</span> <span class="st">"Cykel"</span><span class="op">,</span> <span class="dt">TRANSIT</span><span class="op">:</span> <span class="st">"Kollektivtrafik, snabbaste avgång"</span><span class="op">,</span> <span class="dt">TRANSIT50</span><span class="op">:</span> <span class="st">"Kollektivtrafik, typisk avgång"</span><span class="op">,</span> <span class="dt">TRANSITB</span><span class="op">:</span> <span class="st">"Kollektivtrafik, cykel eller gång till hållplats"</span><span class="op">,</span> <span class="dt">CAR</span><span class="op">:</span> <span class="st">"Bil"</span> }<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ordning <span class="op">=</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="op">...</span>typKlasser]<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> fsl <span class="op">=</span> [<span class="st">"WALK"</span><span class="op">,</span> <span class="st">"BICYCLE"</span><span class="op">,</span> <span class="st">"TRANSIT"</span><span class="op">,</span> <span class="st">"TRANSITB"</span><span class="op">,</span> <span class="st">"TRANSIT50"</span><span class="op">,</span> <span class="st">"CAR"</span>]<span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rad <span class="op">=</span> d <span class="kw">=&gt;</span> ({ <span class="dt">omrade</span><span class="op">:</span> d<span class="op">.</span><span class="at">omrade</span><span class="op">,</span> <span class="dt">klass</span><span class="op">:</span> d<span class="op">.</span><span class="at">klass</span><span class="op">,</span> <span class="dt">andel</span><span class="op">:</span> d<span class="op">.</span><span class="at">andel</span><span class="op">,</span> <span class="dt">inv</span><span class="op">:</span> d<span class="op">.</span><span class="at">inv</span><span class="op">,</span> <span class="dt">tid</span><span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>d<span class="op">.</span><span class="at">cutoff</span><span class="sc">}</span><span class="vs"> minuter`</span> })<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ms <span class="op">=</span> fsl<span class="op">.</span><span class="fu">map</span>(f <span class="kw">=&gt;</span> ({ <span class="dt">label</span><span class="op">:</span> namn[f]<span class="op">,</span> <span class="dt">data</span><span class="op">:</span> rvKlasser<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">opp</span> <span class="op">===</span> opp <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> f)<span class="op">.</span><span class="fu">map</span>(rad) }))<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">stapladeStaplar</span>(ms[<span class="dv">0</span>]<span class="op">.</span><span class="at">data</span><span class="op">,</span> {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">"omrade"</span><span class="op">,</span> <span class="dt">x</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">xAntal</span><span class="op">:</span> <span class="st">"inv"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"klass"</span><span class="op">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colorOrder</span><span class="op">:</span> rvKlassnamn[opp]<span class="op">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#C9B98A"</span><span class="op">,</span> <span class="st">"#8CC8EE"</span><span class="op">,</span> <span class="st">"#3FA9E8"</span><span class="op">,</span> <span class="st">"#1C7BC0"</span><span class="op">,</span> <span class="st">"#004990"</span><span class="op">,</span> <span class="st">"#1B2A5C"</span>]<span class="op">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yOrder</span><span class="op">:</span> ordning<span class="op">,</span> <span class="dt">bold</span><span class="op">:</span> [<span class="st">"Halland"</span>]<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> ms<span class="op">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measureLabel</span><span class="op">:</span> <span class="st">"Färdsätt"</span><span class="op">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">time</span><span class="op">:</span> <span class="st">"tid"</span><span class="op">,</span> <span class="dt">timeDefault</span><span class="op">:</span> <span class="st">"30 minuter"</span><span class="op">,</span> <span class="dt">timeLabel</span><span class="op">:</span> <span class="st">"Restid"</span><span class="op">,</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">normalize</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">toggle</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">barHeight</span><span class="op">:</span> <span class="dv">24</span><span class="op">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> titel<span class="op">,</span> <span class="dt">subtitle</span><span class="op">:</span> undertitel<span class="op">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap och GTFS Sverige 2 (tidtabell 13 oktober 2026); SCB, befolkning 2025 och BAS 2024. Kommunerna och Hallandstypologins sju klasser. Andel av invånarna, växla till antal i y-titeln."</span><span class="op">,</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">rvKlassFig</span>(<span class="st">"pop"</span><span class="op">,</span> <span class="st">"Stadskärnorna når många till fots, landsbygden når många bara med bil"</span><span class="op">,</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Invånarna efter hur många människor de når inom vald restid och med valt färdsätt. Välj färdsätt och restid nere till vänster."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-4" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<details class="kr-metod">
+<summary>
+Räckvidden: startpunkter, målpunkter och restider
+</summary>
+<p><strong>Startpunkter.</strong> Varje bebodd 250-metersruta i Halland, 20 098 rutor med 346 065 invånare. Befolkningen kommer från kapitel 06:s fördelning av SCB:s befolkning 31 december 2025 på fastighetskartans bostadshus (avvikelse mot SCB per kommun högst 0,04 procent). Rutans startpunkt är den befolkningsviktade medelpunkten av husen i rutan, så att ruttmotorn kopplar punkten till gatan där folk bor.</p>
+<p><strong>Målpunkter.</strong> Invånare: Hallands 250-metersrutor och SCB:s 1 km-rutor 2025 i Västra Götaland, Skåne, Kronoberg och Jönköping, sammanlagt 4,11 miljoner invånare. Arbetsplatser: SCB:s sysselsatta efter arbetsställets kommun 2024 (BAS, TAB3260), 2,01 miljoner i de fem länen. SCB publicerar inte arbetsplatser per DeSO öppet, så de placeras inom kommunen: de anställda i SCB:s verksamhetsområden 2020 (industri, handel och logistik utanför tätorterna, högst 80 procent av kommunens arbetsplatser) placeras i områdena och resten fördelas på kommunens bebodda rutor efter befolkningen. Summan stämmer exakt per kommun, medan placeringen inom kommunen är en modell.</p>
+<p><strong>Restider.</strong> Ruttmotorn R5 via r5r 2.4 på OpenStreetMaps vägnät för de fem länen och Samtrafikens tidtabeller (GTFS Sverige 2, version 21 september 2026). Gång 5 km/h, cykel 16 km/h på alla vägar utom motorväg. Bil med skyltad hastighet utan trängsel och parkering, räknad från rutans 1 km-ruta. Kollektivtrafik tisdag 13 oktober 2026 med avresa varje minut 07.00–09.00: snabbaste avgången (percentil 1) och typisk avgång (median), högst fyra fordon, gång till och från hållplatsen. Varianten med cykel tar det snabbaste av gång och cykel (högst 20 minuter) till första hållplatsen. Anropsstyrd trafik ingår inte.</p>
+<strong>Måttet.</strong> Antal invånare eller arbetsplatser i de målpunkter som nås inom 15, 30, 45 och 60 minuter (kumulativt mått). Rutans egen befolkning räknas med. Kommun, DeSO och RegSO är befolkningsviktade medelvärden av rutorna; texten använder medianen över invånarna, som inte påverkas av enstaka mycket höga värden. Nätverket slutar vid femlänsområdets gräns: Danmark, Blekinge och Östergötland ingår inte, vilket bara påverkar de längsta bilresorna från södra och östra Halland.
+</details>
+<p>Ett jämförbart mått som tar hänsyn till bebyggelsen är EU-kommissionens transportprestanda: hur stor del av befolkningen inom en viss fågelvägsradie som faktiskt nås inom restiden (figur 3). För Halland som helhet når cykeln 83 procent av dem som bor inom 7,5 kilometer på 30 minuter, promenaden 73 procent av dem inom 2,5 kilometer och kollektivtrafiken, vid en typisk avgång, 40 procent av dem inom 7,5 kilometer. I 42 europeiska städer var genomsnitten 75 procent för cykel, 52 procent för gång och 24 procent för kollektivtrafik (Poelman, Dijkstra och Ackermans 2020). Siffrorna ska läsas med ett förbehåll: måttet är en andel av dem som bor nära, och i ett glest län bor få nära. En hallänning har i genomsnitt 35 000 invånare inom 7,5 kilometer, en bråkdel av vad en invånare i en europeisk storstad har. Inom Halland skiljer sig kollektivtrafikens prestanda mycket, från 79 procent på 45 minuter i stadskärnorna till 23 procent i Laholm och 11 procent på landsbygden.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb5" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>euPrestanda <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-eu-prestanda.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>euMattNamn <span class="op">=</span> ({ <span class="dt">eu_WALK_30</span><span class="op">:</span> <span class="st">"gång 30 min"</span><span class="op">,</span> <span class="dt">eu_BICYCLE_30</span><span class="op">:</span> <span class="st">"cykel 30 min"</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                <span class="dt">eu_TRANSIT50_30</span><span class="op">:</span> <span class="st">"kollektivt 30 min"</span><span class="op">,</span> <span class="dt">eu_TRANSIT50_45</span><span class="op">:</span> <span class="st">"kollektivt 45 min"</span> })</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stapeldiagram</span>(euPrestanda<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> euMattNamn[d<span class="op">.</span><span class="at">matt</span>] <span class="op">&amp;&amp;</span> [<span class="op">...</span>[<span class="st">"Halland"</span>]<span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="st">"Stadskärna"</span><span class="op">,</span> <span class="st">"Landsbygd"</span>]<span class="op">.</span><span class="fu">includes</span>(d<span class="op">.</span><span class="at">omrade</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({ <span class="dt">omrade</span><span class="op">:</span> d<span class="op">.</span><span class="at">omrade</span><span class="op">,</span> <span class="dt">matt</span><span class="op">:</span> euMattNamn[d<span class="op">.</span><span class="at">matt</span>]<span class="op">,</span> <span class="dt">prestanda</span><span class="op">:</span> d<span class="op">.</span><span class="at">prestanda</span> }))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="st">"Stadskärna"</span><span class="op">,</span> <span class="st">"Landsbygd"</span>]<span class="op">.</span><span class="fu">indexOf</span>(a<span class="op">.</span><span class="at">omrade</span>) <span class="op">-</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="st">"Stadskärna"</span><span class="op">,</span> <span class="st">"Landsbygd"</span>]<span class="op">.</span><span class="fu">indexOf</span>(b<span class="op">.</span><span class="at">omrade</span>))<span class="op">,</span> {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> <span class="st">"omrade"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"prestanda"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"matt"</span><span class="op">,</span> <span class="dt">horizontal</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">grouped</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">groupOrder</span><span class="op">:</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">values</span>(euMattNamn)<span class="op">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#00AB60"</span><span class="op">,</span> <span class="st">"#8cd211"</span><span class="op">,</span> <span class="st">"#2DB8F6"</span><span class="op">,</span> <span class="st">"#004990"</span>]<span class="op">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">xLabel</span><span class="op">:</span> <span class="st">"Transportprestanda, procent"</span><span class="op">,</span> <span class="dt">valueMax</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span> <span class="dt">showLegend</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="fu">fmt0</span>(d) <span class="op">+</span> <span class="st">" %"</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">640</span><span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">title</span><span class="op">:</span> <span class="st">"Cykeln når fyra av fem grannar, kollektivtrafiken två av fem"</span><span class="op">,</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"EU:s transportprestanda: andel av befolkningen inom fågelvägsradien (2,5 km för gång, 7,5 km för 30 min, 11,25 km för 45 min) som nås med gång 30 min, cykel 30 min, kollektivt 30 min och kollektivt 45 min (typisk avgång). Snitt i 42 europeiska städer: 52, 75, 24 och 57 procent."</span><span class="op">,</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning enligt Poelman, Dijkstra och Ackermans (2020), med r5r på OpenStreetMap och GTFS Sverige 2. Kvot mellan befolkningsviktad nådd befolkning och befolkningsviktad befolkning inom radien. Stadskärna och landsbygd enligt Hallandstypologin."</span><span class="op">,</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>Länsgränsen spelar stor roll för räckvidden. Av de människor som hallänningarna i genomsnitt når inom 45 minuter med bil bor 53 procent i grannlänen, främst i Göteborgsregionen (figur 4). I Kungsbacka är andelen 83 procent och i Laholm, som når Skåne, 55 procent. I Falkenberg bor nästan alla som nås inom länet och i Varberg nio av tio. Med kollektivtrafik är andelen utanför länet 17 procent för Halland som helhet och 50 procent i Kungsbacka, där pendeltåg och bussar går till Göteborg. En analys som stannade vid länsgränsen skulle alltså kraftigt underskatta räckvidden i länets norra och södra delar.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb6" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rvUtanfor <span class="op">=</span> (opp) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ut <span class="op">=</span> opp <span class="op">+</span> <span class="st">"_ut"</span><span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rader <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> o <span class="kw">of</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning]) <span class="cf">for</span> (<span class="kw">const</span> [f<span class="op">,</span> n] <span class="kw">of</span> [[<span class="st">"CAR"</span><span class="op">,</span> <span class="st">"Bil"</span>]<span class="op">,</span> [<span class="st">"TRANSITB"</span><span class="op">,</span> <span class="st">"Kollektivt, cykel eller gång"</span>]<span class="op">,</span> [<span class="st">"TRANSIT"</span><span class="op">,</span> <span class="st">"Kollektivt, gång"</span>]]) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> a <span class="op">=</span> rackviddSamman<span class="op">.</span><span class="fu">find</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span> <span class="op">===</span> o <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">opp</span> <span class="op">===</span> opp <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> f <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">cutoff</span> <span class="op">===</span> <span class="dv">45</span>)<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> b <span class="op">=</span> rackviddSamman<span class="op">.</span><span class="fu">find</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span> <span class="op">===</span> o <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">opp</span> <span class="op">===</span> ut <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> f <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">cutoff</span> <span class="op">===</span> <span class="dv">45</span>)<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (a <span class="op">&amp;&amp;</span> b <span class="op">&amp;&amp;</span> a<span class="op">.</span><span class="at">medel</span> <span class="op">&gt;</span> <span class="dv">0</span>) rader<span class="op">.</span><span class="fu">push</span>({ <span class="dt">omrade</span><span class="op">:</span> o<span class="op">,</span> <span class="dt">fs</span><span class="op">:</span> n<span class="op">,</span> <span class="dt">andel</span><span class="op">:</span> <span class="dv">100</span> <span class="op">*</span> b<span class="op">.</span><span class="at">medel</span> <span class="op">/</span> a<span class="op">.</span><span class="at">medel</span> })<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> rader<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">grafStepper</span>([</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stapeldiagram</span>(<span class="fu">rvUtanfor</span>(<span class="st">"pop"</span>)<span class="op">,</span> {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">"omrade"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"fs"</span><span class="op">,</span> <span class="dt">horizontal</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">grouped</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">groupOrder</span><span class="op">:</span> [<span class="st">"Bil"</span><span class="op">,</span> <span class="st">"Kollektivt, cykel eller gång"</span><span class="op">,</span> <span class="st">"Kollektivt, gång"</span>]<span class="op">,</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#6A2E5E"</span><span class="op">,</span> <span class="st">"#1E63A8"</span><span class="op">,</span> <span class="st">"#2DB8F6"</span>]<span class="op">,</span> <span class="dt">valueMax</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">xLabel</span><span class="op">:</span> <span class="st">"Andel som bor utanför Halland, procent"</span><span class="op">,</span> <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="fu">fmt0</span>(d) <span class="op">+</span> <span class="st">" %"</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">440</span><span class="op">,</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Hälften av dem man når med bil bor i grannlänen"</span><span class="op">,</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Andel av de invånare som nås inom 45 minuter som bor utanför Halland. Medelvärde för kommunens invånare."</span><span class="op">,</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap och GTFS Sverige 2 (tidtabell 13 oktober 2026); SCB, befolkning 2025. Kollektivtrafik vid snabbaste avgång 07–09."</span><span class="op">,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  })<span class="op">,</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stapeldiagram</span>(<span class="fu">rvUtanfor</span>(<span class="st">"arbete"</span>)<span class="op">,</span> {</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">"omrade"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"fs"</span><span class="op">,</span> <span class="dt">horizontal</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">grouped</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">groupOrder</span><span class="op">:</span> [<span class="st">"Bil"</span><span class="op">,</span> <span class="st">"Kollektivt, cykel eller gång"</span><span class="op">,</span> <span class="st">"Kollektivt, gång"</span>]<span class="op">,</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#6A2E5E"</span><span class="op">,</span> <span class="st">"#1E63A8"</span><span class="op">,</span> <span class="st">"#2DB8F6"</span>]<span class="op">,</span> <span class="dt">valueMax</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">xLabel</span><span class="op">:</span> <span class="st">"Andel utanför Halland, procent"</span><span class="op">,</span> <span class="dt">formatY</span><span class="op">:</span> d <span class="kw">=&gt;</span> <span class="fu">fmt0</span>(d) <span class="op">+</span> <span class="st">" %"</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">440</span><span class="op">,</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Sex av tio arbetsplatser inom räckhåll med bil ligger utanför länet"</span><span class="op">,</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Andel av de arbetsplatser som nås inom 45 minuter som ligger utanför Halland. Medelvärde för kommunens invånare."</span><span class="op">,</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap och GTFS Sverige 2; SCB, BAS 2024 (arbetsplatser fördelade inom kommunen). Kollektivtrafik vid snabbaste avgång 07–09."</span><span class="op">,</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="service-och-tillganglighet-arbete" class="level2 kr-rapport-sektion">
-<h2 class="anchored" data-anchor-id="service-och-tillganglighet-arbete">Tillgänglighet till arbete</h2>
-<p><em>Text kommer.</em></p>
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-arbete">Tillgången till arbetsplatser</h2>
+<div class="kr-ikorthet">
+<ul>
+<li><strong>Med bil når nästan alla en stor arbetsmarknad.</strong> Inom 45 minuters bilresa når medianhallänningen 109 000 arbetsplatser, och 96 procent av invånarna når minst 50 000.</li>
+<li><strong>Med kollektivtrafik är arbetsmarknaden en femtedel så stor.</strong> Vid den snabbaste avgången når medianhallänningen 20 000 arbetsplatser inom 45 minuter och vid en typisk avgång 9 000. Med cykel till hållplatsen blir det 32 000.</li>
+<li><strong>Kungsbackas arbetsmarknad ligger i Göteborg.</strong> Invånarna i Kungsbacka når 490 000 arbetsplatser inom 45 minuter med bil, och 89 procent av dem ligger utanför länet.</li>
+</ul>
+</div>
+<p>Den ekonomiska betydelsen av tillgänglighet handlar främst om arbetsmarknaden. En större arbetsmarknad inom räckhåll ger bättre matchning och högre sannolikhet att ha ett arbete, och 45 minuter enkel resa brukar ses som gränsen för daglig pendling (se inledningen och kapitel 03). Kartan i figur 5 visar hur många arbetsplatser som nås från varje bebodd ruta. Den börjar i kollektivtrafik inom 45 minuter och kan ställas om till andra färdsätt och restider.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb7" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb7-0"><a href="#cb7-0" aria-hidden="true" tabindex="-1"></a><span class="fu">rackviddKarta</span>({ <span class="dt">matt</span><span class="op">:</span> <span class="st">"arbete"</span><span class="op">,</span> <span class="dt">fs</span><span class="op">:</span> <span class="st">"TRANSIT"</span><span class="op">,</span> <span class="dt">avg</span><span class="op">:</span> <span class="st">"snabb"</span><span class="op">,</span> <span class="dt">tid</span><span class="op">:</span> <span class="st">"45"</span> }<span class="op">,</span></span>
+<span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  { <span class="dt">title</span><span class="op">:</span> <span class="st">"Hur stor arbetsmarknad når man?"</span><span class="op">,</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Antal arbetsplatser som nås från varje bebodd 250-metersruta i Halland, grannlänen inräknade. Kartan börjar i kollektivtrafik inom 45 minuter; välj mått, färdsätt, restid och nivå i kartans panel."</span> })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-7" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Med bil når hallänningarna en stor arbetsmarknad. Inom 45 minuter når medianhallänningen 109 000 arbetsplatser, och 96 procent av invånarna når minst 50 000. Med kollektivtrafik är räckvidden en femtedel så stor: vid den snabbaste avgången mellan sju och nio når medianhallänningen 20 000 arbetsplatser inom 45 minuter och vid en typisk avgång 9 000. Med cykel eller gång till hållplatsen, det som går fortast, blir det 32 000 (figur 6). Cykeln ensam når 19 000 arbetsplatser inom 45 minuter, ungefär lika många som den snabbaste kollektivtrafiken med gång till hållplatsen.</p>
+<p>Skillnaderna mellan kommunerna följer läget. Invånarna i Kungsbacka når med bil 490 000 arbetsplatser inom 45 minuter, tre till fem gånger fler än invånarna i Halmstad, Falkenberg och Laholm, som når 104 000–139 000, och arton gånger fler än i Hylte, 27 000. Med kollektivtrafik ligger Halmstad högst, med 43 000 arbetsplatser inom 45 minuter vid den snabbaste avgången, eftersom stadens egen arbetsmarknad är stor och nås med stadstrafiken. Varberg och Kungsbacka följer med 22 000 respektive 19 000, Falkenberg når 15 000 och Laholm och Hylte 7 000 respektive 3 000.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb8" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb8-0"><a href="#cb8-0" aria-hidden="true" tabindex="-1"></a><span class="fu">rvKlassFig</span>(<span class="st">"arbete"</span><span class="op">,</span> <span class="st">"Bilen öppnar arbetsmarknaden, kollektivtrafiken gör det i städerna"</span><span class="op">,</span></span>
+<span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Invånarna efter hur många arbetsplatser de når inom vald restid och med valt färdsätt. Välj färdsätt och restid nere till vänster."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-8" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>En stor del av arbetsmarknaden ligger i grannlänen. Av de arbetsplatser som hallänningarna i genomsnitt når inom 45 minuter med bil ligger 61 procent utanför Halland, och med kollektivtrafik 25 procent (figur 4, andra vyn). För Kungsbacka är andelarna 89 respektive 68 procent. Det stämmer med pendlingsmönstret i kapitel 03, där norra Halland hör till Göteborgs arbetsmarknad. Söderut ligger 56 procent av de arbetsplatser som Laholms invånare når med bil utanför länet, främst i Skåne. Hylte, Falkenberg, Varberg och Halmstad når däremot i huvudsak arbetsplatser inom länet med kollektivtrafik.</p>
+<p>Beräkningen visar möjligheter, inte faktiska resor. Den säger hur stor arbetsmarknad som ligger inom räckhåll från bostaden men inte om arbetsplatserna passar den som bor där. Arbetsplatsernas läge inom kommunen är dessutom en modell, eftersom SCB inte publicerar arbetsplatser per bostadsområde öppet (se metodrutan i föregående avsnitt). För räckvidd på 30–60 minuter spelar det liten roll, men för enskilda rutor och korta restider ska värdena läsas med försiktighet.</p>
+</section>
+<section id="service-och-tillganglighet-vardag" class="level2 kr-rapport-sektion">
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-vardag">Vardagen inom en kvart</h2>
+<div class="kr-ikorthet">
+<ul>
+<li><strong>Var femte hallänning har hela vardagen inom en kvarts promenad.</strong> 22 procent når alla sex vardagsfunktioner inom 15 minuter till fots, och 14 procent når ingen av dem.</li>
+<li><strong>Med cykel har de flesta vardagen nära.</strong> 61 procent når alla sex inom 15 minuter med cykel. I Halmstad är andelen 75 procent, i Laholm 31 procent.</li>
+<li><strong>De små orterna är mer kompletta än villaområdena.</strong> I lokala centrum på landsbygden når 35 procent allt till fots, i städernas yttre stadsområden 8 procent. Med cykel når där i stället 84 procent allt.</li>
+</ul>
+</div>
+<p>15-minutersstaden mäter om vardagens service finns inom en kvarts promenad eller cykeltur (se inledningen). Här används sex funktioner som finns i de flesta sådana mätningar och som har god öppen data i hela femlänsområdet: livsmedelsbutik med fullt sortiment, grundskola för årskurs F–6, vårdcentral, apotek, folkbibliotek och en hållplats med minst en avgång i timmen. Förskolan hör också till vardagen men ingår inte, eftersom den öppna källan bara täcker omkring hälften av förskolorna. Kartan i figur 7 visar hur många av de sex funktionerna som nås inom 15 minuter från varje bebodd ruta.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb9" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb9-0"><a href="#cb9-0" aria-hidden="true" tabindex="-1"></a><span class="fu">vardagKarta</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-9" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Till fots har var femte hallänning hela vardagen inom en kvart. 22 procent når alla sex funktionerna inom 15 minuters promenad, 24 procent når fyra eller fem och 14 procent ingen alls. Hållplatsen är närmast: 84 procent av invånarna har en hållplats med minst en avgång i timmen inom en kvart. Därefter kommer grundskolan för F–6, som 61 procent av barnen i åldern 5–14 år når inom en kvarts promenad, och livsmedelsbutiken, 57 procent av invånarna. Vårdcentral, apotek och bibliotek når omkring en tredjedel till två femtedelar till fots. Med cykel förändras bilden: 61 procent når alla sex inom 15 minuter och bara 4 procent ingen.</p>
+<p>Skillnaderna följer tätheten och ortsstrukturen (figur 8). I stadskärnorna når 52 procent alla sex funktionerna till fots. I de lokala centrumen på landsbygden, alltså de mindre orterna med egen service, når 35 procent allt till fots och i stort sett alla med cykel. I städernas yttre stadsområden, som till stor del består av villaområden, når bara 8 procent allt till fots men 84 procent med cykel. Där ligger servicen samlad i centrum eller i handelsområden en bit bort. På landsbygden når 4 procent allt till fots och 12 procent med cykel. Bland kommunerna har Halmstad störst andel med hela vardagen inom en kvart, 36 procent till fots och 75 procent med cykel. Lägst andelar har Laholm och Hylte, med 11–12 procent till fots och 31 respektive 39 procent med cykel.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb10" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vardagFord <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-vardag-fordelning.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>vardagFig <span class="op">=</span> {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> klass <span class="op">=</span> v <span class="kw">=&gt;</span> v <span class="op">===</span> <span class="dv">6</span> <span class="op">?</span> <span class="st">"Alla 6"</span> <span class="op">:</span> v <span class="op">===</span> <span class="dv">0</span> <span class="op">?</span> <span class="st">"Ingen"</span> <span class="op">:</span> <span class="vs">`</span><span class="sc">${</span>v<span class="sc">}</span><span class="vs"> av 6`</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ordn <span class="op">=</span> [<span class="st">"Ingen"</span><span class="op">,</span> <span class="st">"1 av 6"</span><span class="op">,</span> <span class="st">"2 av 6"</span><span class="op">,</span> <span class="st">"3 av 6"</span><span class="op">,</span> <span class="st">"4 av 6"</span><span class="op">,</span> <span class="st">"5 av 6"</span><span class="op">,</span> <span class="st">"Alla 6"</span>]<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rader <span class="op">=</span> fs <span class="kw">=&gt;</span> vardagFord<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> fs)<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> ({ <span class="dt">omrade</span><span class="op">:</span> d<span class="op">.</span><span class="at">omrade</span><span class="op">,</span> <span class="dt">klass</span><span class="op">:</span> <span class="fu">klass</span>(d<span class="op">.</span><span class="at">v15</span>)<span class="op">,</span> <span class="dt">andel</span><span class="op">:</span> d<span class="op">.</span><span class="at">andel</span><span class="op">,</span> <span class="dt">inv</span><span class="op">:</span> d<span class="op">.</span><span class="at">pop</span> }))<span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ms <span class="op">=</span> [{ <span class="dt">label</span><span class="op">:</span> <span class="st">"Gång, 15 minuter"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> <span class="fu">rader</span>(<span class="st">"WALK"</span>) }<span class="op">,</span> { <span class="dt">label</span><span class="op">:</span> <span class="st">"Cykel, 15 minuter"</span><span class="op">,</span> <span class="dt">data</span><span class="op">:</span> <span class="fu">rader</span>(<span class="st">"BICYCLE"</span>) }]<span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">stapladeStaplar</span>(ms[<span class="dv">0</span>]<span class="op">.</span><span class="at">data</span><span class="op">,</span> {</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">"omrade"</span><span class="op">,</span> <span class="dt">x</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">xAntal</span><span class="op">:</span> <span class="st">"inv"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"klass"</span><span class="op">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colorOrder</span><span class="op">:</span> ordn<span class="op">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">colors</span><span class="op">:</span> [<span class="st">"#C9B98A"</span><span class="op">,</span> <span class="st">"#A8D5A3"</span><span class="op">,</span> <span class="st">"#7DC48A"</span><span class="op">,</span> <span class="st">"#4FAE6E"</span><span class="op">,</span> <span class="st">"#2A9A5C"</span><span class="op">,</span> <span class="st">"#00805A"</span><span class="op">,</span> <span class="st">"#00664D"</span>]<span class="op">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yOrder</span><span class="op">:</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="op">...</span>typKlasser]<span class="op">,</span> <span class="dt">bold</span><span class="op">:</span> [<span class="st">"Halland"</span>]<span class="op">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> ms<span class="op">,</span> <span class="dt">measureLabel</span><span class="op">:</span> <span class="st">"Färdsätt"</span><span class="op">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">normalize</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">toggle</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">barHeight</span><span class="op">:</span> <span class="dv">24</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Hela vardagen inom en kvart finns i stadskärnorna och de små orterna"</span><span class="op">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Invånarna efter hur många av sex vardagsfunktioner de når inom 15 minuter: livsmedelsbutik, grundskola F–6, vårdcentral, apotek, bibliotek och hållplats. Välj gång eller cykel nere till vänster."</span><span class="op">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap (gång 5 km/h, cykel 16 km/h). Målpunkter: Tillväxtverket (Pipos) och OpenStreetMap, Skolverket, 1177, Läkemedelsverket, KB och Samtrafiken. Kommunerna och Hallandstypologins sju klasser."</span><span class="op">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>vardagFig</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<details class="kr-metod">
+<summary>
+Vardagsindexet och målpunkterna
+</summary>
+<p><strong>Funktionerna.</strong> Livsmedelsbutik med fullt sortiment, grundskola med någon av årskurserna F–6, vårdcentral, apotek, folkbibliotek och hållplats med minst en avgång i timmen vardagar 06–20 i genomsnitt. Indexet är antalet av de sex som nås inom 15 minuter, utan vikter, på samma sätt som i de flesta mätningar av 15-minutersstaden (Bruno m.fl. 2024).</p>
+<p><strong>Målpunkter och källor.</strong> Dagligvaror i Halland: Tillväxtverkets serviceanalys Pipos, butiker med fullt utbud (107). I grannlänen används OpenStreetMap, eftersom Pipos kräver inloggning; i Halland hittas 91 procent av Pipos butiker med fullt utbud i OpenStreetMap inom 100 meter, så källorna är jämförbara för fullt utbud men inte för mindre butiker. Grundskolor: Skolverkets skolenhetsregister (aktiva enheter, skolenheter på samma adress räknas som en plats). Vårdcentraler: 1177, utan enheter som saknar listning; antalet stämmer med SKR:s uppgifter per region (Halland 48 mot 47). Apotek: Läkemedelsverkets apoteksregister, med läge från adressen. Bibliotek: Kungliga bibliotekets biblioteksdatabas, folkbibliotek. Hållplatser: Samtrafikens tidtabell för 13 oktober 2026, samma beräkning som kapitel 06 gör för kollektivtrafiknära läge; bara hållplatser i Halland ingår. Målpunkter i hela femlänsområdet räknas, så att en butik eller vårdcentral i grannkommunen på andra sidan länsgränsen räknas.</p>
+<p><strong>Restider.</strong> Gång 5 km/h och cykel 16 km/h i OpenStreetMaps vägnät, från rutans befolkningsviktade medelpunkt till målpunkten. Förskolan ingår inte eftersom förskolor saknas i öppna nationella register och OpenStreetMap bara har 156 av Skolverkets 302 förskoleenheter i Halland.</p>
+<strong>Förbehåll.</strong> Indexet mäter närhet, inte kvalitet, kapacitet eller öppettider. Gånghastigheten 5 km/h gäller en frisk vuxen; för äldre och barn är avstånden längre i tid.
+</details>
 </section>
 <section id="service-och-tillganglighet-service" class="level2 kr-rapport-sektion">
-<h2 class="anchored" data-anchor-id="service-och-tillganglighet-service">Service</h2>
-<p><em>Text kommer.</em></p>
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-service">Service: skola, vård och handel</h2>
+<div class="kr-ikorthet">
+<ul>
+<li><strong>Med bil är servicen nära för nästan alla.</strong> 99 procent når en livsmedelsbutik och 95 procent en vårdcentral inom 15 minuter med bil. Medianrestiden med bil är 4 minuter till butiken och 5 till vårdcentralen.</li>
+<li><strong>Till fots är avstånden längre än i riket.</strong> 64 procent når en livsmedelsbutik inom 20 minuters promenad, mot 73 procent i riket. Till grundskolan når 70 procent av barnen, till gymnasiet 30 procent av ungdomarna.</li>
+<li><strong>Akutsjukhuset är den service som ligger längst bort.</strong> Tre av fyra hallänningar når ett akutsjukhus inom 30 minuter med bil. I Hylte når ingen dit, i Falkenberg 36 procent.</li>
+</ul>
+</div>
+<p>Restiden till närmaste service är det mått som ligger närmast vardagens frågor: hur långt är det till skolan, vårdcentralen och butiken? Kartan i figur 9 visar restiden från varje bebodd ruta till närmaste målpunkt av tio slag, med fyra färdsätt. Målpunkterna i grannlänen räknas med, så den som bor nära länsgränsen kan ha sin närmaste service på andra sidan.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb11" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb11-0"><a href="#cb11-0" aria-hidden="true" tabindex="-1"></a><span class="fu">serviceKarta</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-11" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p>Med bil ligger det mesta nära. 99 procent av hallänningarna når en livsmedelsbutik med fullt sortiment och 95 procent en vårdcentral inom 15 minuter med bil, och medianrestiden är 4 respektive 5 minuter (figur 10). Med cykel når 82 procent en livsmedelsbutik och 71 procent en vårdcentral inom 15 minuter. Till fots är avstånden längre: 57 procent når en livsmedelsbutik inom 15 minuter och 41 procent en vårdcentral. Inom 20 minuters promenad når 64 procent en livsmedelsbutik, lägre än i riket, där andelen är 73 procent enligt Trafikanalys (Trafikanalys 2025b). Skillnaden hänger ihop med att många hallänningar bor i villaområden och på landsbygden, en bit från centrum.</p>
+<p>Skolorna ligger närmare barnen än butikerna ligger vuxna. 70 procent av barnen i åldern 5–14 år når en skola för årskurs F–6 inom 20 minuters promenad, i nivå med riket, där 75 procent når en grundskola. Till en skola med årskurs 7–9 når 53 procent. Gymnasiet ligger längre bort: 30 procent av ungdomarna i åldern 15–19 år når en gymnasieskola inom 20 minuters promenad, ungefär som i riket, 28 procent. Med kollektivtrafik når 66 procent av dem ett gymnasium inom 30 minuter vid den snabbaste avgången, men i Kungsbacka bara 46 procent.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb12" data-startfrom="1" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>svAndelar <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"data/05-service-andelar.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>svKlasser <span class="op">=</span> [<span class="st">"Högst 10 min"</span><span class="op">,</span> <span class="st">"10–15 min"</span><span class="op">,</span> <span class="st">"15–20 min"</span><span class="op">,</span> <span class="st">"20–30 min"</span><span class="op">,</span> <span class="st">"30–60 min"</span><span class="op">,</span> <span class="st">"Över 60 min"</span>]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>svKlassRader <span class="op">=</span> (filt<span class="op">,</span> radNamn) <span class="kw">=&gt;</span> {</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> g <span class="op">=</span> d3<span class="op">.</span><span class="fu">group</span>(svAndelar<span class="op">.</span><span class="fu">filter</span>(filt)<span class="op">,</span> radNamn)<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> ut <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> [namn<span class="op">,</span> rs] <span class="kw">of</span> g) {</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> a <span class="op">=</span> t <span class="kw">=&gt;</span> (rs<span class="op">.</span><span class="fu">find</span>(r <span class="kw">=&gt;</span> r<span class="op">.</span><span class="at">inom</span> <span class="op">===</span> t) <span class="op">||</span> { <span class="dt">andel</span><span class="op">:</span> <span class="dv">0</span> })<span class="op">.</span><span class="at">andel</span><span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> v <span class="op">=</span> [<span class="fu">a</span>(<span class="dv">10</span>)<span class="op">,</span> <span class="fu">a</span>(<span class="dv">15</span>) <span class="op">-</span> <span class="fu">a</span>(<span class="dv">10</span>)<span class="op">,</span> <span class="fu">a</span>(<span class="dv">20</span>) <span class="op">-</span> <span class="fu">a</span>(<span class="dv">15</span>)<span class="op">,</span> <span class="fu">a</span>(<span class="dv">30</span>) <span class="op">-</span> <span class="fu">a</span>(<span class="dv">20</span>)<span class="op">,</span> <span class="fu">a</span>(<span class="dv">60</span>) <span class="op">-</span> <span class="fu">a</span>(<span class="dv">30</span>)<span class="op">,</span> <span class="dv">100</span> <span class="op">-</span> <span class="fu">a</span>(<span class="dv">60</span>)]<span class="op">;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> grupp <span class="op">=</span> rs[<span class="dv">0</span>]<span class="op">.</span><span class="at">grupp</span><span class="op">;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    svKlasser<span class="op">.</span><span class="fu">forEach</span>((k<span class="op">,</span> i) <span class="kw">=&gt;</span> ut<span class="op">.</span><span class="fu">push</span>({ <span class="dt">rad</span><span class="op">:</span> namn<span class="op">,</span> <span class="dt">klass</span><span class="op">:</span> k<span class="op">,</span> <span class="dt">andel</span><span class="op">:</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">0</span><span class="op">,</span> v[i])<span class="op">,</span> <span class="dt">antal</span><span class="op">:</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">0</span><span class="op">,</span> v[i]) <span class="op">*</span> grupp <span class="op">/</span> <span class="dv">100</span> }))<span class="op">;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> ut<span class="op">;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>svFsNamn <span class="op">=</span> [[<span class="st">"WALK"</span><span class="op">,</span> <span class="st">"Gång"</span>]<span class="op">,</span> [<span class="st">"BICYCLE"</span><span class="op">,</span> <span class="st">"Cykel"</span>]<span class="op">,</span> [<span class="st">"TRANSIT"</span><span class="op">,</span> <span class="st">"Kollektivtrafik, snabbaste avgång"</span>]<span class="op">,</span> [<span class="st">"TRANSIT50"</span><span class="op">,</span> <span class="st">"Kollektivtrafik, typisk avgång"</span>]<span class="op">,</span> [<span class="st">"CAR"</span><span class="op">,</span> <span class="st">"Bil"</span>]]</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>svFigTyper <span class="op">=</span> [<span class="st">"dagligvaror"</span><span class="op">,</span> <span class="st">"grundskola_f6"</span><span class="op">,</span> <span class="st">"grundskola_79"</span><span class="op">,</span> <span class="st">"gymnasium"</span><span class="op">,</span> <span class="st">"forskola"</span><span class="op">,</span> <span class="st">"vardcentral"</span><span class="op">,</span> <span class="st">"apotek"</span><span class="op">,</span> <span class="st">"bibliotek"</span><span class="op">,</span> <span class="st">"akutsjukhus"</span><span class="op">,</span> <span class="st">"hallplats"</span>]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>svFarger <span class="op">=</span> [<span class="st">"#00664D"</span><span class="op">,</span> <span class="st">"#1E9E62"</span><span class="op">,</span> <span class="st">"#6CC08A"</span><span class="op">,</span> <span class="st">"#C9B98A"</span><span class="op">,</span> <span class="st">"#6FB6E6"</span><span class="op">,</span> <span class="st">"#2D6FB0"</span>]</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="fu">grafStepper</span>([</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stapladeStaplar</span>(<span class="fu">svKlassRader</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span> <span class="op">===</span> <span class="st">"Halland"</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> <span class="st">"WALK"</span> <span class="op">&amp;&amp;</span> svFigTyper<span class="op">.</span><span class="fu">includes</span>(d<span class="op">.</span><span class="at">typ</span>)<span class="op">,</span> d <span class="kw">=&gt;</span> svNamn[d<span class="op">.</span><span class="at">typ</span>])<span class="op">,</span> {</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">"rad"</span><span class="op">,</span> <span class="dt">x</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">xAntal</span><span class="op">:</span> <span class="st">"antal"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"klass"</span><span class="op">,</span> <span class="dt">colorOrder</span><span class="op">:</span> svKlasser<span class="op">,</span> <span class="dt">colors</span><span class="op">:</span> svFarger<span class="op">,</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yOrder</span><span class="op">:</span> svFigTyper<span class="op">.</span><span class="fu">map</span>(t <span class="kw">=&gt;</span> svNamn[t])<span class="op">,</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> svFsNamn<span class="op">.</span><span class="fu">map</span>(([f<span class="op">,</span> n]) <span class="kw">=&gt;</span> ({ <span class="dt">label</span><span class="op">:</span> n<span class="op">,</span> <span class="dt">data</span><span class="op">:</span> <span class="fu">svKlassRader</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span> <span class="op">===</span> <span class="st">"Halland"</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> f <span class="op">&amp;&amp;</span> svFigTyper<span class="op">.</span><span class="fu">includes</span>(d<span class="op">.</span><span class="at">typ</span>)<span class="op">,</span> d <span class="kw">=&gt;</span> svNamn[d<span class="op">.</span><span class="at">typ</span>]) }))<span class="op">,</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measureLabel</span><span class="op">:</span> <span class="st">"Färdsätt"</span><span class="op">,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">normalize</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">toggle</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">barHeight</span><span class="op">:</span> <span class="dv">26</span><span class="op">,</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Butik, skola och hållplats ligger nära, gymnasium och sjukhus längre bort"</span><span class="op">,</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Hallands invånare efter restid till närmaste målpunkt. Skolor räknas för barn och ungdomar i relevant ålder (förskola 0–4, grundskola 5–14, gymnasium 15–19 år), övrig service för alla. Välj färdsätt nere till vänster."</span><span class="op">,</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap och GTFS Sverige 2 (tidtabell 13 oktober 2026). Målpunkter i fem län. Förskolorna kommer ur OpenStreetMap, som bara täcker omkring hälften; deras restider är därför överskattade."</span><span class="op">,</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  })<span class="op">,</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stapladeStaplar</span>(<span class="fu">svKlassRader</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">typ</span> <span class="op">===</span> <span class="st">"vardcentral"</span> <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> <span class="st">"WALK"</span><span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span>)<span class="op">,</span> {</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">"rad"</span><span class="op">,</span> <span class="dt">x</span><span class="op">:</span> <span class="st">"andel"</span><span class="op">,</span> <span class="dt">xAntal</span><span class="op">:</span> <span class="st">"antal"</span><span class="op">,</span> <span class="dt">color</span><span class="op">:</span> <span class="st">"klass"</span><span class="op">,</span> <span class="dt">colorOrder</span><span class="op">:</span> svKlasser<span class="op">,</span> <span class="dt">colors</span><span class="op">:</span> svFarger<span class="op">,</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">yOrder</span><span class="op">:</span> [<span class="st">"Halland"</span><span class="op">,</span> <span class="op">...</span>kommunOrdning<span class="op">,</span> <span class="op">...</span>typKlasser]<span class="op">,</span> <span class="dt">bold</span><span class="op">:</span> [<span class="st">"Halland"</span>]<span class="op">,</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measures</span><span class="op">:</span> svFigTyper<span class="op">.</span><span class="fu">map</span>(t <span class="kw">=&gt;</span> ({ <span class="dt">label</span><span class="op">:</span> svNamn[t]<span class="op">,</span> <span class="dt">data</span><span class="op">:</span> <span class="fu">svKlassRader</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">typ</span> <span class="op">===</span> t <span class="op">&amp;&amp;</span> d<span class="op">.</span><span class="at">fs</span> <span class="op">===</span> <span class="st">"WALK"</span><span class="op">,</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">omrade</span>) }))<span class="op">,</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">measureLabel</span><span class="op">:</span> <span class="st">"Service"</span><span class="op">,</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">time</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">normalize</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">toggle</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="dt">barHeight</span><span class="op">:</span> <span class="dv">22</span><span class="op">,</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="st">"Restiden till fots skiljer mest mellan stad och land"</span><span class="op">,</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">subtitle</span><span class="op">:</span> <span class="st">"Invånarna efter restid till fots till närmaste målpunkt av vald typ, per kommun och per klass i Hallandstypologin. Välj service nere till vänster."</span><span class="op">,</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    <span class="dt">caption</span><span class="op">:</span> <span class="st">"Källa: egen beräkning med r5r på OpenStreetMap (gång 5 km/h). Målpunkter i fem län."</span><span class="op">,</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    <span class="dt">logo</span><span class="op">:</span> <span class="st">"../logo_farg.svg"</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-7" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<p>Den service som ligger längst bort är akutsjukhuset. Halland har akutsjukhus i Halmstad och Varberg och en närakut i Kungsbacka, och från norra Halland ligger sjukhusen i Göteborg och Mölndal närmast. Tre av fyra hallänningar når ett akutsjukhus med dygnet runt-öppen akutmottagning inom 30 minuter med bil, och medianrestiden är 23 minuter. I Halmstad och Varberg når nästan alla ett sjukhus inom en halvtimme, i Laholm 69 procent, i Kungsbacka 62 procent och i Falkenberg 36 procent. I Hylte når ingen ett akutsjukhus inom 30 minuter med bil. Med kollektivtrafik är medianrestiden 42 minuter vid den snabbaste avgången.</p>
+<p>Mellan stad och land är skillnaden stor för allt utom bilen. I stadskärnorna når 95 procent en livsmedelsbutik och 83 procent en vårdcentral inom 15 minuters promenad. På landsbygden är andelarna 21 och 4 procent, och 56 procent når en vårdcentral inom 15 minuter med bil. Hylte har längst restider bland kommunerna: 37 procent når en livsmedelsbutik och 20 procent en vårdcentral inom 15 minuter till fots, och 74 procent en vårdcentral inom 15 minuter med bil.</p>
+<p>I Halland är det färdsättet mer än avståndet som avgör hur nära servicen ligger. Ingen hallänning har mer än 20 kilometer till närmaste fullsortimentsbutik, något som bara gäller i tre län. I den senaste mätningen i restid hade heller ingen mer än 20 minuters bilresa till butik eller grundskola (Tillväxtverket 2018; 2024a). Med bil är länet alltså nästan helt försörjt.</p>
+<p>Till fots ser det annorlunda ut. I Halland har 66,7 procent av invånarna en fullsortimentsbutik inom två kilometer, mot 78,3 procent i riket. För apotek är andelen 50,6 procent, mot 63,1 i riket (Tillväxtverket 2024a). Länet har alltså ingen befolkning med mycket långa avstånd, men ovanligt många har lite för långt för att gå. Det stämmer med en bebyggelse som är utspridd längs kusten.</p>
+<p>Bilen har också en stark ställning i resandet. Kollektivtrafikens andel av de motoriserade resorna är 16,2 procent, mot 26 procent i riket och 46 procent i Stockholm, och regionens mål är 30 procent till 2050 (Region Halland 2025). Den låga andelen behöver inte betyda att kollektivtrafiken är dålig. Den kan också spegla att bilen är konkurrenskraftig i ett län med flera orter och korta avstånd mellan dem. Region Halland har, till skillnad från staten, satt ett mått för servicen: ingen ska ha mer än 20 kilometer till en livsmedelsbutik eller drivmedelsanläggning. Regionen stöder också butiker på landsbygden med servicebidrag, investeringsstöd och driftstöd (Region Halland u.å.).</p>
+<details class="kr-metod">
+<summary>
+Restid till närmaste service
+</summary>
+<p><strong>Mått.</strong> Restiden från varje bebodd 250-metersruta till den närmaste målpunkten av varje slag, med gång, cykel, kollektivtrafik och bil, upp till 60 minuter. Resultaten redovisas som andel av invånarna inom 5, 10, 15, 20, 30, 45 och 60 minuter. För skolorna vägs rutorna med antalet barn eller ungdomar i relevant ålder: 0–4 år för förskola, 5–14 år för grundskola och 15–19 år för gymnasium. Åldersfördelningen kommer från SCB:s 1 km-rutor 2025 och fördelas på 250-metersrutorna efter befolkningen, så åldersgrupperna är ungefärliga på rutnivå men stämmer för kommunen.</p>
+<p><strong>Beräkning.</strong> En restidsmatris i r5r från alla 20 098 rutor till 10 693 målpunkter i fem län (bil från 4 097 kilometerrutor). Kollektivtrafik tisdag 13 oktober 2026, avresa varje minut 07.00–09.00: snabbaste avgången och typisk avgång (median), gång till och från hållplatsen. Övriga inställningar som i metodrutan om räckvidden.</p>
+<p><strong>Målpunkter.</strong> Se metodrutan om vardagsindexet. Därtill gymnasieskolor och skolor med årskurs 7–9 ur Skolverkets skolenhetsregister och akutsjukhus med dygnet runt-öppen akutmottagning enligt 1177 (19 i de fem länen; närakuter med begränsade öppettider, som Kungsbacka, ingår inte). Förskolor ur OpenStreetMap ger för långa restider eftersom omkring hälften saknas.</p>
+<strong>Jämförelse med riket.</strong> Trafikanalys räknar samma slags mått för hela landet men med cykel i 20 km/h och på SCB:s rutor med mittpunkt. Skillnaderna i metod gör jämförelsen ungefärlig, i storleksordningen några procentenheter (Trafikanalys 2025a).
+</details>
+</section>
+<section id="service-och-tillganglighet-kallor" class="level2 kr-rapport-sektion kr-rapport-onumrerad">
+<h2 class="anchored" data-anchor-id="service-och-tillganglighet-kallor">Källor</h2>
+<div class="kr-rapport-kallor-lista">
+<p>Apparicio, P., Abdelmajid, M., Riva, M. och Shearmur, R. (2008). Comparing alternative approaches to measuring the geographical accessibility of urban health services: distance types and aggregation-error issues. <em>International Journal of Health Geographics</em>, 7, 7. doi:10.1186/1476-072X-7-7</p>
+<p>Berg, J., Allanson, J., Henriksson, M. och Lindkvist, C. (2019). <em>Hur kan kollektivtrafiken bidra till tillgänglighet och social rättvisa? En studie av mobilitetsstrategier i socialt utsatta områden.</em> K2 Outreach 2019:4. Lund: K2. <a href="https://www.k2centrum.se/sites/default/files/fields/field_uppladdad_rapport/k2_outreach_2919-4.pdf">k2centrum.se</a></p>
+<p>Boisjoly, G. och El-Geneidy, A. (2017). How to get there? A critical assessment of accessibility objectives and indicators in metropolitan transportation plans. <em>Transport Policy</em>, 55, 38–50. <a href="https://doi.org/10.1016/j.tranpol.2016.12.011">doi.org</a></p>
+<p>Bondemark, A. (2017). <em>Tillgänglighet, rättvisa och kollektivtrafik.</em> K2 Working Papers 2017:12. Lund: K2. <a href="https://www.k2centrum.se/sites/default/files/fields/field_uppladdad_rapport/tillganglighet_rattvisa_och_kollektivtrafik_k2_working_papers_2017_12.pdf">k2centrum.se</a></p>
+<p>Bruno, M., Monteiro Melo, H.P., Campanelli, B. och Loreto, V. (2024). A universal framework for inclusive 15-minute cities. <em>Nature Cities</em>, 1, 633–641. doi:10.1038/s44284-024-00119-4. <a href="https://arxiv.org/abs/2408.03794">arxiv.org</a></p>
+<p>Christaller, W. (1933). <em>Die zentralen Orte in Süddeutschland.</em> Jena: Gustav Fischer. Engelsk utgåva 1966, <em>Central Places in Southern Germany</em>, övers. C.W. Baskin. Englewood Cliffs: Prentice-Hall.</p>
+<p>Conway, M.W., Byrd, A. och van Eggermond, M. (2018). Accounting for uncertainty and variation in accessibility metrics for public transport sketch planning. <em>Journal of Transport and Land Use</em>, 11(1), 541–558. doi:10.5198/jtlu.2018.1074. <a href="https://www.jtlu.org/index.php/jtlu/article/view/1074">jtlu.org</a></p>
+<p>Department for Transport (2025). <em>TAG Unit A2.1: Wider Economic Impacts Appraisal.</em> London: Department for Transport. <a href="https://assets.publishing.service.gov.uk/media/6899ec58586f9c9360656a93/tag-unit-a2-1-wider-economic-impacts-appraisal-may-25.pdf">gov.uk</a></p>
+<p>Dijkstra, L., Poelman, H. och Ackermans, L. (2019). <em>Road Transport Performance in Europe: Introducing a new accessibility framework.</em> Regional Working Paper WP 01/2019. Bryssel: Europeiska kommissionen, DG REGIO. <a href="https://ec.europa.eu/regional_policy/sources/work/2019_02_road_transport.pdf">ec.europa.eu</a></p>
+<p>Geurs, K.T. och van Wee, B. (2004). Accessibility evaluation of land-use and transport strategies: review and research directions. <em>Journal of Transport Geography</em>, 12(2), 127–140. <a href="https://doi.org/10.1016/j.jtrangeo.2003.10.005">doi.org</a></p>
+<p>Graham, D.J. (2007). <em>Agglomeration Economies and Transport Investment.</em> OECD/ITF Joint Transport Research Centre Discussion Paper 2007-11. Paris: OECD Publishing. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2007/12/agglomeration-economies-and-transport-investment_g17a1b8f/234743465814.pdf">oecd.org</a></p>
+<p>Hansen, W.G. (1959). How accessibility shapes land use. <em>Journal of the American Institute of Planners</em>, 25(2), 73–76.</p>
+<p>ITF (2019). <em>Benchmarking Accessibility in Cities: Measuring the Impact of Proximity and Transport Performance.</em> ITF Policy Papers 68. Paris: OECD Publishing. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2019/05/benchmarking-accessibility-in-cities_f0c47d1b/4b1f722b-en.pdf">oecd.org</a></p>
+<p>Kelly, C., Hulme, C., Farragher, T. och Clarke, G. (2016). Are differences in travel time or distance to healthcare for adults in global north countries associated with an impact on health outcomes? A systematic review. <em>BMJ Open</em>, 6(11), e013059. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5178808/">pmc.ncbi.nlm.nih.gov</a></p>
+<p>Kenyon, S., Lyons, G. och Rafferty, J. (2002). Transport and social exclusion: investigating the possibility of promoting inclusion through virtual mobility. <em>Journal of Transport Geography</em>, 10(3), 207–219. <a href="https://doi.org/10.1016/S0966-6923(02)00012-1">doi.org</a></p>
+<p>Levinson, D.M. och Wu, H. (2020). Towards a general theory of access. <em>Journal of Transport and Land Use</em>, 13(1), 129–158. <a href="https://www.jtlu.org/index.php/jtlu/article/view/1660/1468">jtlu.org</a></p>
+<p>Lucas, K. (2012). Transport and social exclusion: where are we now? <em>Transport Policy</em>, 20, 105–113. <a href="https://doi.org/10.1016/j.tranpol.2012.01.013">doi.org</a></p>
+<p>Marchetti, C. (1994). Anthropological invariants in travel behavior. <em>Technological Forecasting and Social Change</em>, 47(1), 75–88. <a href="https://pure.iiasa.ac.at/id/eprint/4071/1/RR-95-04.pdf">iiasa.ac.at</a></p>
+<p>Martens, K. (2012). Justice in transport as justice in accessibility: applying Walzer’s “Spheres of Justice” to the transport sector. <em>Transportation</em>, 39(6), 1035–1053. <a href="https://link.springer.com/content/pdf/10.1007/s11116-012-9388-7.pdf">springer.com</a></p>
+<p>Moreno, C., Allam, Z., Chabaud, D., Gall, C. och Pratlong, F. (2021). Introducing the “15-minute city”: sustainability, resilience and place identity in future post-pandemic cities. <em>Smart Cities</em>, 4(1), 93–111. <a href="https://doi.org/10.3390/smartcities4010006">doi.org</a></p>
+<p>Moretti, E. och Yi, M. (2026). <em>Size Matters: Matching Externalities and the Advantages of Large Labor Markets.</em> Working paper. Berkeley: University of California. <a href="https://eml.berkeley.edu/~moretti/size.pdf">berkeley.edu</a></p>
+<p>Nordregio (2022). <em>Essential rural services in the Nordic Region: challenges and opportunities.</em> Slätmo, E. m.fl. Nordregio Report 2022:1. Stockholm: Nordregio. <a href="https://pub.nordregio.org/r-2022-1-essential-rural-services/">nordregio.org</a></p>
+<p>Pereira, R.H.M., Saraiva, M., Herszenhut, D., Braga, C.K.V. och Conway, M.W. (2021). r5r: rapid realistic routing on multimodal transport networks with R5 in R. <em>Findings</em>, mars 2021. <a href="https://doi.org/10.32866/001c.21262">doi.org</a></p>
+<p>Poelman, H., Dijkstra, L. och Ackermans, L. (2020). <em>How many people can you reach by public transport, bicycle or on foot in European cities? Measuring urban accessibility for low-carbon modes.</em> Regional and Urban Policy Working Paper WP 01/2020. Luxemburg: Europeiska unionens publikationsbyrå. <a href="https://ec.europa.eu/regional_policy/sources/work/012020_low_carbon_urban.pdf">ec.europa.eu</a></p>
+<p>Pozoukidou, G. och Chatziyiannaki, Z. (2021). 15-minute city: decomposing the new urban planning eutopia. <em>Sustainability</em>, 13(2), 928. doi:10.3390/su13020928</p>
+<p>Prop. 2008/09:93. <em>Mål för framtidens resor och transporter.</em> Stockholm: Näringsdepartementet. <a href="https://www.regeringen.se/contentassets/80dd7d80fc64401ca08b176a475393c5/mal-for-framtidens-resor-och-transporter-prop.-20080993">regeringen.se</a></p>
+<p>Region Halland (2025). <em>Trafikförsörjningsprogram för Halland 2026–2030.</em> Remissversion. Halmstad: Region Halland. <a href="https://www.regionhalland.se/download/18.8106721199c29384d23d81/1759908819866/Remissversion%20-%20Trafikf%C3%B6rs%C3%B6rjningsprogram%20f%C3%B6r%20Halland%202026-2030.pdf">regionhalland.se</a></p>
+<p>Region Halland (u.å.). <em>Stöd till butiker på landet.</em> Halmstad: Region Halland. <a href="https://www.regionhalland.se/utveckling-och-tillvaxt/stod-och-finansiering/stod-till-butiker-pa-landet/">regionhalland.se</a></p>
+<p>Riksrevisionen (2026). <em>Trafikavtal: statens insatser för förbättrad tillgänglighet mellan regioner.</em> RiR 2026:7. Stockholm: Riksrevisionen. <a href="https://www.riksrevisionen.se/download/18.b83a3f819d0498c47b1874c/1774361965174/RiR-2026-7-rapport.pdf">riksrevisionen.se</a></p>
+<p>Skolverket (2025). <em>Grundskola i glesbygd.</em> Rapport 2025:18. Stockholm: Skolverket. <a href="https://www.skolverket.se/download/18.4aa9fe3a199138f4d991a7ec/1757400548434/pdf13312.pdf">skolverket.se</a></p>
+<p>SOU 2015:35. <em>Service i glesbygd.</em> Betänkande av Utredningen Service i glesbygd. Stockholm: Näringsdepartementet. <a href="https://www.regeringen.se/contentassets/ddacd084293a4b11b2fb26fdd7950208/service-i-glesbygd-del-1-av-2-sou-201535">regeringen.se</a></p>
+<p>SOU 2020:19. <em>God och nära vård: en reform för ett hållbart hälso- och sjukvårdssystem.</em> Stockholm: Socialdepartementet. <a href="https://www.regeringen.se/contentassets/320f37078d854712ab89e8185466817b/god-och-nara-vard-en-reform-for-ett-hallbart-halso--och-sjukvardssystem-sou_2020_19_webb.pdf">regeringen.se</a></p>
+<p>Tillväxtanalys (2017). <em>Näringslivsdynamik, städer och agglomerationsekonomier: forskningsöversikt och agenda.</em> Andersson, M. och Larsson, J.P. PM 2017:08. Östersund: Tillväxtanalys. <a href="https://www.growthanalysis.se/download/18.62dd45451715a00666f1ffbd/1586366202737/pm_2017_08_N%C3%A4ringslivsdynamik,%20st%C3%A4der%20och%20agglomerationsekonomier.pdf">growthanalysis.se</a></p>
+<p>Tillväxtanalys (2020). <em>Pendling, urbana lönepremier och regionala spridningseffekter.</em> Eliasson, K. PM 2020:21. Östersund: Tillväxtanalys. <a href="https://www.growthanalysis.se/download/18.4b802068175e123bec816eff/1606315850391/PM_2020_21_Pendling%20urbana%20l%C3%B6nepremier%20och%20regionala%20spridningseffekter.pdf">growthanalysis.se</a></p>
+<p>Tillväxtverket (2018). <em>Tillgänglighet till kommersiell och offentlig service 2018.</em> Rapport 0249. Stockholm: Tillväxtverket. <a href="https://tillvaxtverket.se/download/18.6855bfcf184896002ffaa7/1668765751027/Rapport%200249%20Tillg%C3%A4nglighet%20till%20kommersiell%20och%20offentlig%20service%202018.pdf">tillvaxtverket.se</a></p>
+<p>Tillväxtverket (2022). <em>Kommuners sårbarhet vid företagsnedläggningar.</em> Rapport 0394. Stockholm: Tillväxtverket. <a href="https://tillvaxtverket.se/download/18.6855bfcf184896002ffc69/1668765916305/Kommuners%20s%C3%A5rbarhet%20vid%20f%C3%B6retagsnedl%C3%A4ggningar.pdf">tillvaxtverket.se</a></p>
+<p>Tillväxtverket (2024a). <em>Tillgänglighet till grundläggande kommersiell service 2024.</em> Pichler, W. och Olofsson, E. Rapport 0478. Stockholm: Tillväxtverket. <a href="https://tillvaxtverket.se/download/18.5eafc64b18ee72dfa42537a/1713437212174/Tillganglighet_grundlaggande_kommersiell_service_2024.pdf">tillvaxtverket.se</a></p>
+<p>Tillväxtverket (u.å.). <em>Olika typer av landsbygder.</em> Webbsida. Stockholm: Tillväxtverket. <a href="https://tillvaxtverket.se/tillvaxtverket/guiderochverktyg/guiderochverktyg/metodstodforlivskraftigalandsbygder/olikatyperavlandsbygder.5538.html">tillvaxtverket.se</a></p>
+<p>Trafikanalys (2017). <em>Sambandet mellan åtgärder inom transportområdet, produktivitet och sysselsättning.</em> PM 2017:10. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2017/pm-2017_10-sambandet-mellan-atgarder-inom-transportomradet-produktivitet-och-sysselsattning.pdf">trafa.se</a></p>
+<p>Trafikanalys (2019). <em>Gång-, cykel- och kollektivtrafik: uppföljning och indikativa kommunala mål.</em> Rapport 2019:7. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/rapporter/2019/rapport-2019_7-gang--cykel--och-kollektivtrafik---uppfoljning-och-indikativa-kommunala-mal.pdf">trafa.se</a></p>
+<p>Trafikanalys (2021a). <em>Förslag till reviderat index för lokal tillgänglighet.</em> PM 2021:1. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2021/pm2021_1-forslag-till-reviderat-index-for-lokal-tillganglighet.pdf">trafa.se</a></p>
+<p>Trafikanalys (2023). <em>Uppföljning av de transportpolitiska målen 2023.</em> Rapport 2023:5. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/rapporter/2023/rapport-2023_5-uppfoljning-av-de-transportpolitiska-malen-2023.pdf">trafa.se</a></p>
+<p>Trafikanalys (2024a). <em>Tillgänglighet: teori och praktik.</em> PM 2024:3. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2024/pm-2024-3-tillganglighet---teori-och-praktik.pdf">trafa.se</a></p>
+<p>Trafikanalys (2024b). <em>ABC om tillgänglighet.</em> Rapport 2024:6. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/rapporter/2024/rapport-2024-6-abc-om-tillganglighet.pdf">trafa.se</a></p>
+<p>Trafikanalys (2025a). <em>Metodbeskrivning för tillgänglighetsanalyser.</em> PM 2025:2. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2025/pm-2025-2-metodbeskrivning-for-tillganglighetsanalyser.pdf">trafa.se</a></p>
+<p>Trafikanalys (2025b). <em>Måluppföljningens indikatorer och mått 2025.</em> PM 2025:7. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2025/pm-2025-7-maluppfoljningens-indikatorer-och-matt-2025.pdf">trafa.se</a></p>
+<p>Trafikanalys (2026a). <em>Fordon i län och kommuner 2025.</em> Statistikblad. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/statistik/vagtrafik/fordon/2026/fordon-i-lan-och-kommuner-2025.pdf">trafa.se</a></p>
+<p>Trafikanalys (2026b). <em>Måluppföljningens indikatorer och mått 2026.</em> PM 2026:4. Stockholm: Trafikanalys. <a href="https://www.trafa.se/globalassets/pm/2026/pm-2026-4-maluppfoljningens-indikatorer-och-matt-2026.pdf">trafa.se</a></p>
+<p>Trafikverket (u.å.). <em>Trafikverkets tillgänglighetskriterier: för analys inför trafikavtal om interregional kollektivtrafik.</em> Borlänge: Trafikverket. <a href="https://bransch.trafikverket.se/contentassets/bd574b838ada4882926a9c0d58c0d994/tillganglighetskriterier.pdf">trafikverket.se</a></p>
+<p>Trivector (2024). <em>Tillgång till tillgänglighet: kartläggning av tillgänglighetsstudier inom offentlig verksamhet de senaste 15 åren.</em> Rapport 2023:163, underlagsrapport till Trafikanalys. Lund: Trivector Traffic. <a href="https://www.trafa.se/globalassets/rapporter/underlagsrapporter/2024/tillgang-till-tillganglighet-trivector.pdf">trafa.se</a></p>
+<p>van Meeteren, M. och Poorthuis, A. (2018). Christaller and “big data”: recalibrating central place theory via the geoweb. <em>Urban Geography</em>, 39(1), 122–148. <a href="https://dspace.library.uu.nl/bitstream/handle/1874/428025/vanMeeterenPoorthuis2017.pdf?sequence=1">uu.nl</a></p>
+<p>Venables, A.J. (2004). <em>Evaluating Urban Transport Improvements: Cost-Benefit Analysis in the Presence of Agglomeration and Income Taxation.</em> CEP Discussion Paper 651. London: Centre for Economic Performance. <a href="https://cep.lse.ac.uk/pubs/download/dp0651.pdf">lse.ac.uk</a></p>
+<p>Vård- och omsorgsanalys (2021). <em>Långt bort men nära: kartläggning av primärvården i landsbygden.</em> Rapport 2021:11. Stockholm: Myndigheten för vård- och omsorgsanalys. <a href="https://www.vardanalys.se/wp-content/uploads/2021/11/Rapport-2021-11-L%C3%A5ngt-bort-men-n%C3%A4ra.pdf">vardanalys.se</a></p>
+<p>Willberg, E., Fink, C. och Toivonen, T. (2023). The 15-minute city for all? Measuring individual and temporal variations in walking accessibility. <em>Journal of Transport Geography</em>, 106, 103521. doi:10.1016/j.jtrangeo.2022.103521</p>
+<p>WSP (2017). <em>Kollektivtrafikens samhällsnytta.</em> Brundell-Freij, K., Jörgensen, P., Bondemark, A. och Larek, P. Rapport åt Svensk Kollektivtrafik. Stockholm: WSP Analys &amp; Strategi. <a href="https://svenskkollektivtrafik.se/app/uploads/2024/09/kollektivtrafikens-samhallsnytta-rapport.pdf">svenskkollektivtrafik.se</a></p>
+<p>Åslund, O., Östh, J. och Zenou, Y. (2010). How important is access to jobs? Old question, improved answer. <em>Journal of Economic Geography</em>, 10(3), 389–422. Working paper-version: IZA Discussion Paper 2051. <a href="https://docs.iza.org/dp2051.pdf">iza.org</a></p>
+</div>
 </section>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="28" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 27;"><span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { byggToc } <span class="im">from</span> <span class="st">"../js/toc.js"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb13" data-startfrom="0" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line -1;"><span id="cb13-0"><a href="#cb13-0" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { byggToc } <span class="im">from</span> <span class="st">"../js/toc.js"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-1" data-nodetype="declaration">
+<div id="ojs-cell-13" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
 <div class="cell hidden">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="34" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 33;"><span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">byggToc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb14" data-startfrom="1" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">byggToc</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display hidden">
-<div id="ojs-cell-2" data-nodetype="expression">
+<div id="ojs-cell-14" data-nodetype="expression">
 
 </div>
 </div>
@@ -170,7 +1014,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImltcG9ydCB7IGJ5Z2dUb2MgfSBmcm9tIFwiLi4vanMvdG9jLmpzXCJcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImJ5Z2dUb2MoKVxuIn1dfQ==
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIOKUgOKUgCBHcmFmbW9kdWxlciBvY2gga2FydG9yIOKUgOKUgFxuaW1wb3J0IHsgbGluamVkaWFncmFtIH0gZnJvbSBcIi4uL2pzL2dyYWZlci9saW5qZWRpYWdyYW0uanNcIlxuaW1wb3J0IHsgc3RhcGVsZGlhZ3JhbSB9IGZyb20gXCIuLi9qcy9ncmFmZXIvc3RhcGVsZGlhZ3JhbS5qc1wiXG5pbXBvcnQgeyBzdGFwbGFkZVN0YXBsYXIgfSBmcm9tIFwiLi4vanMvZ3JhZmVyL3N0YXBsYWRlU3RhcGxhci5qc1wiXG5pbXBvcnQgeyBkb3RwbG90IH0gZnJvbSBcIi4uL2pzL2dyYWZlci9kb3RwbG90LmpzXCJcbmltcG9ydCB7IGdyYWZTdGVwcGVyIH0gZnJvbSBcIi4uL2pzL2dyYWZlci9ncmFmU3RlcHBlci5qc1wiXG5pbXBvcnQgeyB0aWxsZ2FuZ2xpZ2hldHNrYXJ0YSwgZm10U3YgfSBmcm9tIFwiLi4vanMva2FydG9yL3RpbGxnYW5nbGlnaGV0c2thcnRhLmpzXCJcblxuLy8g4pSA4pSAIEdlbWVuc2FtbWEgaGrDpGxwYXJlIOKUgOKUgFxuZm10MCA9IGQgPT4gZC50b0xvY2FsZVN0cmluZyhcInN2LVNFXCIsIHsgbWF4aW11bUZyYWN0aW9uRGlnaXRzOiAwIH0pXG5mbXQxID0gZCA9PiBkLnRvTG9jYWxlU3RyaW5nKFwic3YtU0VcIiwgeyBtaW5pbXVtRnJhY3Rpb25EaWdpdHM6IDEsIG1heGltdW1GcmFjdGlvbkRpZ2l0czogMSB9KVxua29tbXVuT3JkbmluZyA9IFtcIkt1bmdzYmFja2FcIiwgXCJWYXJiZXJnXCIsIFwiRmFsa2VuYmVyZ1wiLCBcIkhhbG1zdGFkXCIsIFwiTGFob2xtXCIsIFwiSHlsdGVcIl1cbmtvbW11bkZhcmdlciA9IFtcIiMwQzhDN0VcIiwgXCIjMDA0OTkwXCIsIFwiI0ZGN0UwMFwiLCBcIiNBNTEzMDBcIiwgXCIjOGNkMjExXCIsIFwiIzdiMmQ4ZVwiXVxudHlwS2xhc3NlciA9IFtcIlN0YWRza8Okcm5hXCIsIFwiWXR0cmUgc3RhZHNvbXLDpWRlXCIsIFwiUGVyaS11cmJhbnRcIiwgXCJTdGFkc27DpHJhIGxhbmRzYnlnZFwiLCBcIkxva2FsdCBjZW50cnVtIG7DpHJhIHN0YWRcIiwgXCJMYW5kc2J5Z2RcIiwgXCJMb2thbHQgY2VudHJ1bSBww6UgbGFuZHNieWdkXCJdXG50eXBGYXJnZXIgID0gW1wiIzFiMGEzY1wiLCBcIiM3YjJkOGVcIiwgXCIjMGY3YjNmXCIsIFwiIzhjZDIxMVwiLCBcIiNmZmMxMDdcIiwgXCIjZjBkOWEwXCIsIFwiI2U4NDkxYVwiXVxuZnNOYW1uID0gKHsgV0FMSzogXCJHw6VuZ1wiLCBCSUNZQ0xFOiBcIkN5a2VsXCIsIFRSQU5TSVQ6IFwiS29sbGVrdGl2dHJhZmlrXCIsIFRSQU5TSVQ1MDogXCJLb2xsZWt0aXZ0cmFmaWssIHR5cGlzayBhdmfDpW5nXCIsIFRSQU5TSVRCOiBcIktvbGxla3RpdnRyYWZpayBtZWQgY3lrZWxcIiwgQ0FSOiBcIkJpbFwiIH0pXG5mc0ZhcmcgPSAoeyBXQUxLOiBcIiMwMEFCNjBcIiwgQklDWUNMRTogXCIjOGNkMjExXCIsIFRSQU5TSVQ6IFwiIzJEQjhGNlwiLCBUUkFOU0lUNTA6IFwiI0EyRDlGOFwiLCBUUkFOU0lUQjogXCIjMUU2M0E4XCIsIENBUjogXCIjNkEyRTVFXCIgfSlcblxuLy8g4pSA4pSAIERhdGE6IGVnbmEgcjVyLWJlcsOka25pbmdhciAoYmVhcmJldG5pbmdfZGF0YS90Z18qLlIpLCBPU00gKyBHVEZTIFN2ZXJpZ2UgMiBow7ZzdGVuIDIwMjYg4pSA4pSAXG5ydXRvclJhY2t2aWRkID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LXJ1dG9yLXJhY2t2aWRkLmpzb25cIikuanNvbigpXG5kZXNvUmFja3ZpZGQgID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LWRlc28tcmFja3ZpZGQuZ2VvanNvblwiKS5qc29uKClcbnJlZ3NvUmFja3ZpZGQgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtcmVnc28tcmFja3ZpZGQuZ2VvanNvblwiKS5qc29uKClcbmtvbVJhY2t2aWRkICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUta29tLXJhY2t2aWRkLmdlb2pzb25cIikuanNvbigpXG5yYWNrdmlkZFNhbW1hbiA9IEZpbGVBdHRhY2htZW50KFwiZGF0YS8wNS1yYWNrdmlkZC1zYW1tYW5mYXR0bmluZy5qc29uXCIpLmpzb24oKVxucmFja3ZpZGRLdXJ2b3IgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtcmFja3ZpZGQta3Vydm9yLmpzb25cIikuanNvbigpXG5ydXRvclNlcnZpY2UgID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LXJ1dG9yLXNlcnZpY2UuanNvblwiKS5qc29uKClcbmRlc29TZXJ2aWNlICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtZGVzby1zZXJ2aWNlLmdlb2pzb25cIikuanNvbigpXG5yZWdzb1NlcnZpY2UgID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LXJlZ3NvLXNlcnZpY2UuZ2VvanNvblwiKS5qc29uKClcbmtvbVNlcnZpY2UgICAgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUta29tLXNlcnZpY2UuZ2VvanNvblwiKS5qc29uKClcblxuLy8gS29tbXVuZXJuYXMgdXRicmVkbmluZyBmw7ZyIGthcnRvcm5hcyB6b29tXG5rb21tdW5CYm94ID0ga29tUmFja3ZpZGQuZmVhdHVyZXMubWFwKGYgPT4ge1xuICBjb25zdCBiID0gZDMuZ2VvQm91bmRzKGYpO1xuICByZXR1cm4geyBuYW1uOiBmLnByb3BlcnRpZXMubmFtbiwga246IGYucHJvcGVydGllcy5rbiwgYmJveDogW2JbMF1bMF0sIGJbMF1bMV0sIGJbMV1bMF0sIGJbMV1bMV1dIH07XG59KS5zb3J0KChhLCBiKSA9PiBrb21tdW5PcmRuaW5nLmluZGV4T2YoYS5uYW1uKSAtIGtvbW11bk9yZG5pbmcuaW5kZXhPZihiLm5hbW4pKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8g4pSA4pSAIEthcnRrb25maWd1cmF0aW9uIGbDtnIgc2VydmljZWthcnRhbiBvY2ggdmFyZGFnc2thcnRhbiAodGlsbGdhbmdsaWdoZXRza2FydGEuanMpIOKUgOKUgFxuc3ZUeXBlciA9IFtcbiAgeyB2OiBcImRhZ2xpZ3Zhcm9yXCIsIHQ6IFwiTGl2c21lZGVsXCIgfSwgeyB2OiBcImZvcnNrb2xhXCIsIHQ6IFwiRsO2cnNrb2xhXCIgfSxcbiAgeyB2OiBcImdydW5kc2tvbGFfZjZcIiwgdDogXCJHcnVuZHNrb2xhIEbigJM2XCIgfSwgeyB2OiBcImdydW5kc2tvbGFfNzlcIiwgdDogXCJHcnVuZHNrb2xhIDfigJM5XCIgfSxcbiAgeyB2OiBcImd5bW5hc2l1bVwiLCB0OiBcIkd5bW5hc2l1bVwiIH0sIHsgdjogXCJ2YXJkY2VudHJhbFwiLCB0OiBcIlbDpXJkY2VudHJhbFwiIH0sXG4gIHsgdjogXCJha3V0c2p1a2h1c1wiLCB0OiBcIkFrdXRzanVraHVzXCIgfSwgeyB2OiBcImFwb3Rla1wiLCB0OiBcIkFwb3Rla1wiIH0sXG4gIHsgdjogXCJiaWJsaW90ZWtcIiwgdDogXCJCaWJsaW90ZWtcIiB9LCB7IHY6IFwiaGFsbHBsYXRzXCIsIHQ6IFwiSMOlbGxwbGF0c1wiIH1cbl1cbnN2TmFtbiA9IE9iamVjdC5mcm9tRW50cmllcyhzdlR5cGVyLm1hcChkID0+IFtkLnYsIGQudF0pKVxuLy8gS2FydG9ybmFzIGtvbmZpZ3VyYXRpb24gYm9yIGkga2FydG9yLmpzIChkZWxhcyBtZWQga2FydGdhbGxlcmlldCwga2FydGdhbGxlcmkva2FydGEuaHRtbClcbmltcG9ydCB7IHNlcnZpY2VLYXJ0YSBhcyBfc2VydmljZUthcnRhLCB2YXJkYWdLYXJ0YSBhcyBfdmFyZGFnS2FydGEsIHJhY2t2aWRkS2FydGEgYXMgX3JhY2t2aWRkS2FydGEgfSBmcm9tIFwiLi9rYXJ0b3IuanNcIlxuc2VydmljZUthcnRhID0gKHN0YXJ0ID0ge30pID0+IF9zZXJ2aWNlS2FydGEoeyBzdGFydCB9KVxudmFyZGFnS2FydGEgPSAoKSA9PiBfdmFyZGFnS2FydGEoKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8gS2FydGFucyBrb25maWd1cmF0aW9uIGJvciBpIGthcnRvci5qcyAoZGVsYXMgbWVkIGthcnRnYWxsZXJpZXQpXG5yYWNrdmlkZEthcnRhID0gKHN0YXJ0ID0ge30sIHJ1YnJpayA9IHt9KSA9PiBfcmFja3ZpZGRLYXJ0YSh7IHN0YXJ0LCBydWJyaWsgfSlcblxucmFja3ZpZGRLYXJ0YSgpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTQiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJydktsYXNzZXIgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtcmFja3ZpZGQta2xhc3Nlci5qc29uXCIpLmpzb24oKVxucnZLbGFzc25hbW4gPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtcmFja3ZpZGQta2xhc3NuYW1uLmpzb25cIikuanNvbigpXG5cbnJ2S2xhc3NGaWcgPSAob3BwLCB0aXRlbCwgdW5kZXJ0aXRlbCkgPT4ge1xuICBjb25zdCBuYW1uID0geyBXQUxLOiBcIkfDpW5nXCIsIEJJQ1lDTEU6IFwiQ3lrZWxcIiwgVFJBTlNJVDogXCJLb2xsZWt0aXZ0cmFmaWssIHNuYWJiYXN0ZSBhdmfDpW5nXCIsIFRSQU5TSVQ1MDogXCJLb2xsZWt0aXZ0cmFmaWssIHR5cGlzayBhdmfDpW5nXCIsIFRSQU5TSVRCOiBcIktvbGxla3RpdnRyYWZpaywgY3lrZWwgZWxsZXIgZ8OlbmcgdGlsbCBow6VsbHBsYXRzXCIsIENBUjogXCJCaWxcIiB9O1xuICBjb25zdCBvcmRuaW5nID0gW1wiSGFsbGFuZFwiLCAuLi5rb21tdW5PcmRuaW5nLCAuLi50eXBLbGFzc2VyXTtcbiAgY29uc3QgZnNsID0gW1wiV0FMS1wiLCBcIkJJQ1lDTEVcIiwgXCJUUkFOU0lUXCIsIFwiVFJBTlNJVEJcIiwgXCJUUkFOU0lUNTBcIiwgXCJDQVJcIl07XG4gIGNvbnN0IHJhZCA9IGQgPT4gKHsgb21yYWRlOiBkLm9tcmFkZSwga2xhc3M6IGQua2xhc3MsIGFuZGVsOiBkLmFuZGVsLCBpbnY6IGQuaW52LCB0aWQ6IGAke2QuY3V0b2ZmfSBtaW51dGVyYCB9KTtcbiAgY29uc3QgbXMgPSBmc2wubWFwKGYgPT4gKHsgbGFiZWw6IG5hbW5bZl0sIGRhdGE6IHJ2S2xhc3Nlci5maWx0ZXIoZCA9PiBkLm9wcCA9PT0gb3BwICYmIGQuZnMgPT09IGYpLm1hcChyYWQpIH0pKTtcbiAgcmV0dXJuIHN0YXBsYWRlU3RhcGxhcihtc1swXS5kYXRhLCB7XG4gICAgeTogXCJvbXJhZGVcIiwgeDogXCJhbmRlbFwiLCB4QW50YWw6IFwiaW52XCIsIGNvbG9yOiBcImtsYXNzXCIsXG4gICAgY29sb3JPcmRlcjogcnZLbGFzc25hbW5bb3BwXSxcbiAgICBjb2xvcnM6IFtcIiNDOUI5OEFcIiwgXCIjOENDOEVFXCIsIFwiIzNGQTlFOFwiLCBcIiMxQzdCQzBcIiwgXCIjMDA0OTkwXCIsIFwiIzFCMkE1Q1wiXSxcbiAgICB5T3JkZXI6IG9yZG5pbmcsIGJvbGQ6IFtcIkhhbGxhbmRcIl0sXG4gICAgbWVhc3VyZXM6IG1zLFxuICAgIG1lYXN1cmVMYWJlbDogXCJGw6RyZHPDpHR0XCIsXG4gICAgdGltZTogXCJ0aWRcIiwgdGltZURlZmF1bHQ6IFwiMzAgbWludXRlclwiLCB0aW1lTGFiZWw6IFwiUmVzdGlkXCIsXG4gICAgbm9ybWFsaXplOiB0cnVlLCB0b2dnbGU6IHRydWUsIGJhckhlaWdodDogMjQsXG4gICAgdGl0bGU6IHRpdGVsLCBzdWJ0aXRsZTogdW5kZXJ0aXRlbCxcbiAgICBjYXB0aW9uOiBcIkvDpGxsYTogZWdlbiBiZXLDpGtuaW5nIG1lZCByNXIgcMOlIE9wZW5TdHJlZXRNYXAgb2NoIEdURlMgU3ZlcmlnZSAyICh0aWR0YWJlbGwgMTMgb2t0b2JlciAyMDI2KTsgU0NCLCBiZWZvbGtuaW5nIDIwMjUgb2NoIEJBUyAyMDI0LiBLb21tdW5lcm5hIG9jaCBIYWxsYW5kc3R5cG9sb2dpbnMgc2p1IGtsYXNzZXIuIEFuZGVsIGF2IGludsOlbmFybmEsIHbDpHhsYSB0aWxsIGFudGFsIGkgeS10aXRlbG4uXCIsXG4gICAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbiAgfSk7XG59XG5cbnJ2S2xhc3NGaWcoXCJwb3BcIiwgXCJTdGFkc2vDpHJub3JuYSBuw6VyIG3DpW5nYSB0aWxsIGZvdHMsIGxhbmRzYnlnZGVuIG7DpXIgbcOlbmdhIGJhcmEgbWVkIGJpbFwiLFxuICBcIkludsOlbmFybmEgZWZ0ZXIgaHVyIG3DpW5nYSBtw6Rubmlza29yIGRlIG7DpXIgaW5vbSB2YWxkIHJlc3RpZCBvY2ggbWVkIHZhbHQgZsOkcmRzw6R0dC4gVsOkbGogZsOkcmRzw6R0dCBvY2ggcmVzdGlkIG5lcmUgdGlsbCB2w6Ruc3Rlci5cIilcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImV1UHJlc3RhbmRhID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LWV1LXByZXN0YW5kYS5qc29uXCIpLmpzb24oKVxuZXVNYXR0TmFtbiA9ICh7IGV1X1dBTEtfMzA6IFwiZ8OlbmcgMzAgbWluXCIsIGV1X0JJQ1lDTEVfMzA6IFwiY3lrZWwgMzAgbWluXCIsXG4gICAgICAgICAgICAgICAgZXVfVFJBTlNJVDUwXzMwOiBcImtvbGxla3RpdnQgMzAgbWluXCIsIGV1X1RSQU5TSVQ1MF80NTogXCJrb2xsZWt0aXZ0IDQ1IG1pblwiIH0pXG5cbnN0YXBlbGRpYWdyYW0oZXVQcmVzdGFuZGEuZmlsdGVyKGQgPT4gZXVNYXR0TmFtbltkLm1hdHRdICYmIFsuLi5bXCJIYWxsYW5kXCJdLCAuLi5rb21tdW5PcmRuaW5nLCBcIlN0YWRza8Okcm5hXCIsIFwiTGFuZHNieWdkXCJdLmluY2x1ZGVzKGQub21yYWRlKSlcbiAgICAubWFwKGQgPT4gKHsgb21yYWRlOiBkLm9tcmFkZSwgbWF0dDogZXVNYXR0TmFtbltkLm1hdHRdLCBwcmVzdGFuZGE6IGQucHJlc3RhbmRhIH0pKVxuICAgIC5zb3J0KChhLCBiKSA9PiBbXCJIYWxsYW5kXCIsIC4uLmtvbW11bk9yZG5pbmcsIFwiU3RhZHNrw6RybmFcIiwgXCJMYW5kc2J5Z2RcIl0uaW5kZXhPZihhLm9tcmFkZSkgLSBbXCJIYWxsYW5kXCIsIC4uLmtvbW11bk9yZG5pbmcsIFwiU3RhZHNrw6RybmFcIiwgXCJMYW5kc2J5Z2RcIl0uaW5kZXhPZihiLm9tcmFkZSkpLCB7XG4gIHg6IFwib21yYWRlXCIsIHk6IFwicHJlc3RhbmRhXCIsIGNvbG9yOiBcIm1hdHRcIiwgaG9yaXpvbnRhbDogdHJ1ZSwgZ3JvdXBlZDogdHJ1ZSxcbiAgZ3JvdXBPcmRlcjogT2JqZWN0LnZhbHVlcyhldU1hdHROYW1uKSxcbiAgY29sb3JzOiBbXCIjMDBBQjYwXCIsIFwiIzhjZDIxMVwiLCBcIiMyREI4RjZcIiwgXCIjMDA0OTkwXCJdLFxuICB4TGFiZWw6IFwiVHJhbnNwb3J0cHJlc3RhbmRhLCBwcm9jZW50XCIsIHZhbHVlTWF4OiAxMDAsIHNob3dMZWdlbmQ6IGZhbHNlLFxuICBmb3JtYXRZOiBkID0+IGZtdDAoZCkgKyBcIiAlXCIsIGhlaWdodDogNjQwLFxuICB0aXRsZTogXCJDeWtlbG4gbsOlciBmeXJhIGF2IGZlbSBncmFubmFyLCBrb2xsZWt0aXZ0cmFmaWtlbiB0dsOlIGF2IGZlbVwiLFxuICBzdWJ0aXRsZTogXCJFVTpzIHRyYW5zcG9ydHByZXN0YW5kYTogYW5kZWwgYXYgYmVmb2xrbmluZ2VuIGlub20gZsOlZ2VsdsOkZ3NyYWRpZW4gKDIsNSBrbSBmw7ZyIGfDpW5nLCA3LDUga20gZsO2ciAzMCBtaW4sIDExLDI1IGttIGbDtnIgNDUgbWluKSBzb20gbsOlcyBtZWQgZ8OlbmcgMzAgbWluLCBjeWtlbCAzMCBtaW4sIGtvbGxla3RpdnQgMzAgbWluIG9jaCBrb2xsZWt0aXZ0IDQ1IG1pbiAodHlwaXNrIGF2Z8OlbmcpLiBTbml0dCBpIDQyIGV1cm9wZWlza2Egc3TDpGRlcjogNTIsIDc1LCAyNCBvY2ggNTcgcHJvY2VudC5cIixcbiAgY2FwdGlvbjogXCJLw6RsbGE6IGVnZW4gYmVyw6RrbmluZyBlbmxpZ3QgUG9lbG1hbiwgRGlqa3N0cmEgb2NoIEFja2VybWFucyAoMjAyMCksIG1lZCByNXIgcMOlIE9wZW5TdHJlZXRNYXAgb2NoIEdURlMgU3ZlcmlnZSAyLiBLdm90IG1lbGxhbiBiZWZvbGtuaW5nc3Zpa3RhZCBuw6VkZCBiZWZvbGtuaW5nIG9jaCBiZWZvbGtuaW5nc3Zpa3RhZCBiZWZvbGtuaW5nIGlub20gcmFkaWVuLiBTdGFkc2vDpHJuYSBvY2ggbGFuZHNieWdkIGVubGlndCBIYWxsYW5kc3R5cG9sb2dpbi5cIixcbiAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJydlV0YW5mb3IgPSAob3BwKSA9PiB7XG4gIGNvbnN0IHV0ID0gb3BwICsgXCJfdXRcIjtcbiAgY29uc3QgcmFkZXIgPSBbXTtcbiAgZm9yIChjb25zdCBvIG9mIFtcIkhhbGxhbmRcIiwgLi4ua29tbXVuT3JkbmluZ10pIGZvciAoY29uc3QgW2YsIG5dIG9mIFtbXCJDQVJcIiwgXCJCaWxcIl0sIFtcIlRSQU5TSVRCXCIsIFwiS29sbGVrdGl2dCwgY3lrZWwgZWxsZXIgZ8OlbmdcIl0sIFtcIlRSQU5TSVRcIiwgXCJLb2xsZWt0aXZ0LCBnw6VuZ1wiXV0pIHtcbiAgICBjb25zdCBhID0gcmFja3ZpZGRTYW1tYW4uZmluZChkID0+IGQub21yYWRlID09PSBvICYmIGQub3BwID09PSBvcHAgJiYgZC5mcyA9PT0gZiAmJiBkLmN1dG9mZiA9PT0gNDUpO1xuICAgIGNvbnN0IGIgPSByYWNrdmlkZFNhbW1hbi5maW5kKGQgPT4gZC5vbXJhZGUgPT09IG8gJiYgZC5vcHAgPT09IHV0ICYmIGQuZnMgPT09IGYgJiYgZC5jdXRvZmYgPT09IDQ1KTtcbiAgICBpZiAoYSAmJiBiICYmIGEubWVkZWwgPiAwKSByYWRlci5wdXNoKHsgb21yYWRlOiBvLCBmczogbiwgYW5kZWw6IDEwMCAqIGIubWVkZWwgLyBhLm1lZGVsIH0pO1xuICB9XG4gIHJldHVybiByYWRlcjtcbn1cblxuZ3JhZlN0ZXBwZXIoW1xuICBzdGFwZWxkaWFncmFtKHJ2VXRhbmZvcihcInBvcFwiKSwge1xuICAgIHg6IFwib21yYWRlXCIsIHk6IFwiYW5kZWxcIiwgY29sb3I6IFwiZnNcIiwgaG9yaXpvbnRhbDogdHJ1ZSwgZ3JvdXBlZDogdHJ1ZSxcbiAgICBncm91cE9yZGVyOiBbXCJCaWxcIiwgXCJLb2xsZWt0aXZ0LCBjeWtlbCBlbGxlciBnw6VuZ1wiLCBcIktvbGxla3RpdnQsIGfDpW5nXCJdLFxuICAgIGNvbG9yczogW1wiIzZBMkU1RVwiLCBcIiMxRTYzQThcIiwgXCIjMkRCOEY2XCJdLCB2YWx1ZU1heDogMTAwLFxuICAgIHhMYWJlbDogXCJBbmRlbCBzb20gYm9yIHV0YW5mw7ZyIEhhbGxhbmQsIHByb2NlbnRcIiwgZm9ybWF0WTogZCA9PiBmbXQwKGQpICsgXCIgJVwiLCBoZWlnaHQ6IDQ0MCxcbiAgICB0aXRsZTogXCJIw6RsZnRlbiBhdiBkZW0gbWFuIG7DpXIgbWVkIGJpbCBib3IgaSBncmFubmzDpG5lblwiLFxuICAgIHN1YnRpdGxlOiBcIkFuZGVsIGF2IGRlIGludsOlbmFyZSBzb20gbsOlcyBpbm9tIDQ1IG1pbnV0ZXIgc29tIGJvciB1dGFuZsO2ciBIYWxsYW5kLiBNZWRlbHbDpHJkZSBmw7ZyIGtvbW11bmVucyBpbnbDpW5hcmUuXCIsXG4gICAgY2FwdGlvbjogXCJLw6RsbGE6IGVnZW4gYmVyw6RrbmluZyBtZWQgcjVyIHDDpSBPcGVuU3RyZWV0TWFwIG9jaCBHVEZTIFN2ZXJpZ2UgMiAodGlkdGFiZWxsIDEzIG9rdG9iZXIgMjAyNik7IFNDQiwgYmVmb2xrbmluZyAyMDI1LiBLb2xsZWt0aXZ0cmFmaWsgdmlkIHNuYWJiYXN0ZSBhdmfDpW5nIDA34oCTMDkuXCIsXG4gICAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbiAgfSksXG4gIHN0YXBlbGRpYWdyYW0ocnZVdGFuZm9yKFwiYXJiZXRlXCIpLCB7XG4gICAgeDogXCJvbXJhZGVcIiwgeTogXCJhbmRlbFwiLCBjb2xvcjogXCJmc1wiLCBob3Jpem9udGFsOiB0cnVlLCBncm91cGVkOiB0cnVlLFxuICAgIGdyb3VwT3JkZXI6IFtcIkJpbFwiLCBcIktvbGxla3RpdnQsIGN5a2VsIGVsbGVyIGfDpW5nXCIsIFwiS29sbGVrdGl2dCwgZ8OlbmdcIl0sXG4gICAgY29sb3JzOiBbXCIjNkEyRTVFXCIsIFwiIzFFNjNBOFwiLCBcIiMyREI4RjZcIl0sIHZhbHVlTWF4OiAxMDAsXG4gICAgeExhYmVsOiBcIkFuZGVsIHV0YW5mw7ZyIEhhbGxhbmQsIHByb2NlbnRcIiwgZm9ybWF0WTogZCA9PiBmbXQwKGQpICsgXCIgJVwiLCBoZWlnaHQ6IDQ0MCxcbiAgICB0aXRsZTogXCJTZXggYXYgdGlvIGFyYmV0c3BsYXRzZXIgaW5vbSByw6Rja2jDpWxsIG1lZCBiaWwgbGlnZ2VyIHV0YW5mw7ZyIGzDpG5ldFwiLFxuICAgIHN1YnRpdGxlOiBcIkFuZGVsIGF2IGRlIGFyYmV0c3BsYXRzZXIgc29tIG7DpXMgaW5vbSA0NSBtaW51dGVyIHNvbSBsaWdnZXIgdXRhbmbDtnIgSGFsbGFuZC4gTWVkZWx2w6RyZGUgZsO2ciBrb21tdW5lbnMgaW52w6VuYXJlLlwiLFxuICAgIGNhcHRpb246IFwiS8OkbGxhOiBlZ2VuIGJlcsOka25pbmcgbWVkIHI1ciBww6UgT3BlblN0cmVldE1hcCBvY2ggR1RGUyBTdmVyaWdlIDI7IFNDQiwgQkFTIDIwMjQgKGFyYmV0c3BsYXRzZXIgZsO2cmRlbGFkZSBpbm9tIGtvbW11bmVuKS4gS29sbGVrdGl2dHJhZmlrIHZpZCBzbmFiYmFzdGUgYXZnw6VuZyAwN+KAkzA5LlwiLFxuICAgIGxvZ286IFwiLi4vbG9nb19mYXJnLnN2Z1wiXG4gIH0pXG5dKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC03IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoicmFja3ZpZGRLYXJ0YSh7IG1hdHQ6IFwiYXJiZXRlXCIsIGZzOiBcIlRSQU5TSVRcIiwgYXZnOiBcInNuYWJiXCIsIHRpZDogXCI0NVwiIH0sXG4gIHsgdGl0bGU6IFwiSHVyIHN0b3IgYXJiZXRzbWFya25hZCBuw6VyIG1hbj9cIixcbiAgICBzdWJ0aXRsZTogXCJBbnRhbCBhcmJldHNwbGF0c2VyIHNvbSBuw6VzIGZyw6VuIHZhcmplIGJlYm9kZCAyNTAtbWV0ZXJzcnV0YSBpIEhhbGxhbmQsIGdyYW5ubMOkbmVuIGlucsOka25hZGUuIEthcnRhbiBiw7ZyamFyIGkga29sbGVrdGl2dHJhZmlrIGlub20gNDUgbWludXRlcjsgdsOkbGogbcOldHQsIGbDpHJkc8OkdHQsIHJlc3RpZCBvY2ggbml2w6UgaSBrYXJ0YW5zIHBhbmVsLlwiIH0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTgiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJydktsYXNzRmlnKFwiYXJiZXRlXCIsIFwiQmlsZW4gw7ZwcG5hciBhcmJldHNtYXJrbmFkZW4sIGtvbGxla3RpdnRyYWZpa2VuIGfDtnIgZGV0IGkgc3TDpGRlcm5hXCIsXG4gIFwiSW52w6VuYXJuYSBlZnRlciBodXIgbcOlbmdhIGFyYmV0c3BsYXRzZXIgZGUgbsOlciBpbm9tIHZhbGQgcmVzdGlkIG9jaCBtZWQgdmFsdCBmw6RyZHPDpHR0LiBWw6RsaiBmw6RyZHPDpHR0IG9jaCByZXN0aWQgbmVyZSB0aWxsIHbDpG5zdGVyLlwiKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC05IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidmFyZGFnS2FydGEoKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xMCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InZhcmRhZ0ZvcmQgPSBGaWxlQXR0YWNobWVudChcImRhdGEvMDUtdmFyZGFnLWZvcmRlbG5pbmcuanNvblwiKS5qc29uKClcbnZhcmRhZ0ZpZyA9IHtcbiAgY29uc3Qga2xhc3MgPSB2ID0+IHYgPT09IDYgPyBcIkFsbGEgNlwiIDogdiA9PT0gMCA/IFwiSW5nZW5cIiA6IGAke3Z9IGF2IDZgO1xuICBjb25zdCBvcmRuID0gW1wiSW5nZW5cIiwgXCIxIGF2IDZcIiwgXCIyIGF2IDZcIiwgXCIzIGF2IDZcIiwgXCI0IGF2IDZcIiwgXCI1IGF2IDZcIiwgXCJBbGxhIDZcIl07XG4gIGNvbnN0IHJhZGVyID0gZnMgPT4gdmFyZGFnRm9yZC5maWx0ZXIoZCA9PiBkLmZzID09PSBmcykubWFwKGQgPT4gKHsgb21yYWRlOiBkLm9tcmFkZSwga2xhc3M6IGtsYXNzKGQudjE1KSwgYW5kZWw6IGQuYW5kZWwsIGludjogZC5wb3AgfSkpO1xuICBjb25zdCBtcyA9IFt7IGxhYmVsOiBcIkfDpW5nLCAxNSBtaW51dGVyXCIsIGRhdGE6IHJhZGVyKFwiV0FMS1wiKSB9LCB7IGxhYmVsOiBcIkN5a2VsLCAxNSBtaW51dGVyXCIsIGRhdGE6IHJhZGVyKFwiQklDWUNMRVwiKSB9XTtcbiAgcmV0dXJuIHN0YXBsYWRlU3RhcGxhcihtc1swXS5kYXRhLCB7XG4gICAgeTogXCJvbXJhZGVcIiwgeDogXCJhbmRlbFwiLCB4QW50YWw6IFwiaW52XCIsIGNvbG9yOiBcImtsYXNzXCIsXG4gICAgY29sb3JPcmRlcjogb3JkbixcbiAgICBjb2xvcnM6IFtcIiNDOUI5OEFcIiwgXCIjQThENUEzXCIsIFwiIzdEQzQ4QVwiLCBcIiM0RkFFNkVcIiwgXCIjMkE5QTVDXCIsIFwiIzAwODA1QVwiLCBcIiMwMDY2NERcIl0sXG4gICAgeU9yZGVyOiBbXCJIYWxsYW5kXCIsIC4uLmtvbW11bk9yZG5pbmcsIC4uLnR5cEtsYXNzZXJdLCBib2xkOiBbXCJIYWxsYW5kXCJdLFxuICAgIG1lYXN1cmVzOiBtcywgbWVhc3VyZUxhYmVsOiBcIkbDpHJkc8OkdHRcIixcbiAgICBub3JtYWxpemU6IHRydWUsIHRvZ2dsZTogdHJ1ZSwgYmFySGVpZ2h0OiAyNCxcbiAgICB0aXRsZTogXCJIZWxhIHZhcmRhZ2VuIGlub20gZW4ga3ZhcnQgZmlubnMgaSBzdGFkc2vDpHJub3JuYSBvY2ggZGUgc23DpSBvcnRlcm5hXCIsXG4gICAgc3VidGl0bGU6IFwiSW52w6VuYXJuYSBlZnRlciBodXIgbcOlbmdhIGF2IHNleCB2YXJkYWdzZnVua3Rpb25lciBkZSBuw6VyIGlub20gMTUgbWludXRlcjogbGl2c21lZGVsc2J1dGlrLCBncnVuZHNrb2xhIEbigJM2LCB2w6VyZGNlbnRyYWwsIGFwb3RlaywgYmlibGlvdGVrIG9jaCBow6VsbHBsYXRzLiBWw6RsaiBnw6VuZyBlbGxlciBjeWtlbCBuZXJlIHRpbGwgdsOkbnN0ZXIuXCIsXG4gICAgY2FwdGlvbjogXCJLw6RsbGE6IGVnZW4gYmVyw6RrbmluZyBtZWQgcjVyIHDDpSBPcGVuU3RyZWV0TWFwIChnw6VuZyA1IGttL2gsIGN5a2VsIDE2IGttL2gpLiBNw6VscHVua3RlcjogVGlsbHbDpHh0dmVya2V0IChQaXBvcykgb2NoIE9wZW5TdHJlZXRNYXAsIFNrb2x2ZXJrZXQsIDExNzcsIEzDpGtlbWVkZWxzdmVya2V0LCBLQiBvY2ggU2FtdHJhZmlrZW4uIEtvbW11bmVybmEgb2NoIEhhbGxhbmRzdHlwb2xvZ2lucyBzanUga2xhc3Nlci5cIixcbiAgICBsb2dvOiBcIi4uL2xvZ29fZmFyZy5zdmdcIlxuICB9KTtcbn1cbnZhcmRhZ0ZpZ1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6InNlcnZpY2VLYXJ0YSgpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTEyIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoic3ZBbmRlbGFyID0gRmlsZUF0dGFjaG1lbnQoXCJkYXRhLzA1LXNlcnZpY2UtYW5kZWxhci5qc29uXCIpLmpzb24oKVxuc3ZLbGFzc2VyID0gW1wiSMO2Z3N0IDEwIG1pblwiLCBcIjEw4oCTMTUgbWluXCIsIFwiMTXigJMyMCBtaW5cIiwgXCIyMOKAkzMwIG1pblwiLCBcIjMw4oCTNjAgbWluXCIsIFwiw5Z2ZXIgNjAgbWluXCJdXG5zdktsYXNzUmFkZXIgPSAoZmlsdCwgcmFkTmFtbikgPT4ge1xuICBjb25zdCBnID0gZDMuZ3JvdXAoc3ZBbmRlbGFyLmZpbHRlcihmaWx0KSwgcmFkTmFtbik7XG4gIGNvbnN0IHV0ID0gW107XG4gIGZvciAoY29uc3QgW25hbW4sIHJzXSBvZiBnKSB7XG4gICAgY29uc3QgYSA9IHQgPT4gKHJzLmZpbmQociA9PiByLmlub20gPT09IHQpIHx8IHsgYW5kZWw6IDAgfSkuYW5kZWw7XG4gICAgY29uc3QgdiA9IFthKDEwKSwgYSgxNSkgLSBhKDEwKSwgYSgyMCkgLSBhKDE1KSwgYSgzMCkgLSBhKDIwKSwgYSg2MCkgLSBhKDMwKSwgMTAwIC0gYSg2MCldO1xuICAgIGNvbnN0IGdydXBwID0gcnNbMF0uZ3J1cHA7XG4gICAgc3ZLbGFzc2VyLmZvckVhY2goKGssIGkpID0+IHV0LnB1c2goeyByYWQ6IG5hbW4sIGtsYXNzOiBrLCBhbmRlbDogTWF0aC5tYXgoMCwgdltpXSksIGFudGFsOiBNYXRoLm1heCgwLCB2W2ldKSAqIGdydXBwIC8gMTAwIH0pKTtcbiAgfVxuICByZXR1cm4gdXQ7XG59XG5zdkZzTmFtbiA9IFtbXCJXQUxLXCIsIFwiR8OlbmdcIl0sIFtcIkJJQ1lDTEVcIiwgXCJDeWtlbFwiXSwgW1wiVFJBTlNJVFwiLCBcIktvbGxla3RpdnRyYWZpaywgc25hYmJhc3RlIGF2Z8OlbmdcIl0sIFtcIlRSQU5TSVQ1MFwiLCBcIktvbGxla3RpdnRyYWZpaywgdHlwaXNrIGF2Z8OlbmdcIl0sIFtcIkNBUlwiLCBcIkJpbFwiXV1cbnN2RmlnVHlwZXIgPSBbXCJkYWdsaWd2YXJvclwiLCBcImdydW5kc2tvbGFfZjZcIiwgXCJncnVuZHNrb2xhXzc5XCIsIFwiZ3ltbmFzaXVtXCIsIFwiZm9yc2tvbGFcIiwgXCJ2YXJkY2VudHJhbFwiLCBcImFwb3Rla1wiLCBcImJpYmxpb3Rla1wiLCBcImFrdXRzanVraHVzXCIsIFwiaGFsbHBsYXRzXCJdXG5zdkZhcmdlciA9IFtcIiMwMDY2NERcIiwgXCIjMUU5RTYyXCIsIFwiIzZDQzA4QVwiLCBcIiNDOUI5OEFcIiwgXCIjNkZCNkU2XCIsIFwiIzJENkZCMFwiXVxuXG5ncmFmU3RlcHBlcihbXG4gIHN0YXBsYWRlU3RhcGxhcihzdktsYXNzUmFkZXIoZCA9PiBkLm9tcmFkZSA9PT0gXCJIYWxsYW5kXCIgJiYgZC5mcyA9PT0gXCJXQUxLXCIgJiYgc3ZGaWdUeXBlci5pbmNsdWRlcyhkLnR5cCksIGQgPT4gc3ZOYW1uW2QudHlwXSksIHtcbiAgICB5OiBcInJhZFwiLCB4OiBcImFuZGVsXCIsIHhBbnRhbDogXCJhbnRhbFwiLCBjb2xvcjogXCJrbGFzc1wiLCBjb2xvck9yZGVyOiBzdktsYXNzZXIsIGNvbG9yczogc3ZGYXJnZXIsXG4gICAgeU9yZGVyOiBzdkZpZ1R5cGVyLm1hcCh0ID0+IHN2TmFtblt0XSksXG4gICAgbWVhc3VyZXM6IHN2RnNOYW1uLm1hcCgoW2YsIG5dKSA9PiAoeyBsYWJlbDogbiwgZGF0YTogc3ZLbGFzc1JhZGVyKGQgPT4gZC5vbXJhZGUgPT09IFwiSGFsbGFuZFwiICYmIGQuZnMgPT09IGYgJiYgc3ZGaWdUeXBlci5pbmNsdWRlcyhkLnR5cCksIGQgPT4gc3ZOYW1uW2QudHlwXSkgfSkpLFxuICAgIG1lYXN1cmVMYWJlbDogXCJGw6RyZHPDpHR0XCIsXG4gICAgbm9ybWFsaXplOiB0cnVlLCB0b2dnbGU6IHRydWUsIGJhckhlaWdodDogMjYsXG4gICAgdGl0bGU6IFwiQnV0aWssIHNrb2xhIG9jaCBow6VsbHBsYXRzIGxpZ2dlciBuw6RyYSwgZ3ltbmFzaXVtIG9jaCBzanVraHVzIGzDpG5ncmUgYm9ydFwiLFxuICAgIHN1YnRpdGxlOiBcIkhhbGxhbmRzIGludsOlbmFyZSBlZnRlciByZXN0aWQgdGlsbCBuw6RybWFzdGUgbcOlbHB1bmt0LiBTa29sb3IgcsOka25hcyBmw7ZyIGJhcm4gb2NoIHVuZ2RvbWFyIGkgcmVsZXZhbnQgw6VsZGVyIChmw7Zyc2tvbGEgMOKAkzQsIGdydW5kc2tvbGEgNeKAkzE0LCBneW1uYXNpdW0gMTXigJMxOSDDpXIpLCDDtnZyaWcgc2VydmljZSBmw7ZyIGFsbGEuIFbDpGxqIGbDpHJkc8OkdHQgbmVyZSB0aWxsIHbDpG5zdGVyLlwiLFxuICAgIGNhcHRpb246IFwiS8OkbGxhOiBlZ2VuIGJlcsOka25pbmcgbWVkIHI1ciBww6UgT3BlblN0cmVldE1hcCBvY2ggR1RGUyBTdmVyaWdlIDIgKHRpZHRhYmVsbCAxMyBva3RvYmVyIDIwMjYpLiBNw6VscHVua3RlciBpIGZlbSBsw6RuLiBGw7Zyc2tvbG9ybmEga29tbWVyIHVyIE9wZW5TdHJlZXRNYXAsIHNvbSBiYXJhIHTDpGNrZXIgb21rcmluZyBow6RsZnRlbjsgZGVyYXMgcmVzdGlkZXIgw6RyIGTDpHJmw7ZyIMO2dmVyc2thdHRhZGUuXCIsXG4gICAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbiAgfSksXG4gIHN0YXBsYWRlU3RhcGxhcihzdktsYXNzUmFkZXIoZCA9PiBkLnR5cCA9PT0gXCJ2YXJkY2VudHJhbFwiICYmIGQuZnMgPT09IFwiV0FMS1wiLCBkID0+IGQub21yYWRlKSwge1xuICAgIHk6IFwicmFkXCIsIHg6IFwiYW5kZWxcIiwgeEFudGFsOiBcImFudGFsXCIsIGNvbG9yOiBcImtsYXNzXCIsIGNvbG9yT3JkZXI6IHN2S2xhc3NlciwgY29sb3JzOiBzdkZhcmdlcixcbiAgICB5T3JkZXI6IFtcIkhhbGxhbmRcIiwgLi4ua29tbXVuT3JkbmluZywgLi4udHlwS2xhc3Nlcl0sIGJvbGQ6IFtcIkhhbGxhbmRcIl0sXG4gICAgbWVhc3VyZXM6IHN2RmlnVHlwZXIubWFwKHQgPT4gKHsgbGFiZWw6IHN2TmFtblt0XSwgZGF0YTogc3ZLbGFzc1JhZGVyKGQgPT4gZC50eXAgPT09IHQgJiYgZC5mcyA9PT0gXCJXQUxLXCIsIGQgPT4gZC5vbXJhZGUpIH0pKSxcbiAgICBtZWFzdXJlTGFiZWw6IFwiU2VydmljZVwiLFxuICAgIHRpbWU6IG51bGwsXG4gICAgbm9ybWFsaXplOiB0cnVlLCB0b2dnbGU6IHRydWUsIGJhckhlaWdodDogMjIsXG4gICAgdGl0bGU6IFwiUmVzdGlkZW4gdGlsbCBmb3RzIHNraWxqZXIgbWVzdCBtZWxsYW4gc3RhZCBvY2ggbGFuZFwiLFxuICAgIHN1YnRpdGxlOiBcIkludsOlbmFybmEgZWZ0ZXIgcmVzdGlkIHRpbGwgZm90cyB0aWxsIG7DpHJtYXN0ZSBtw6VscHVua3QgYXYgdmFsZCB0eXAsIHBlciBrb21tdW4gb2NoIHBlciBrbGFzcyBpIEhhbGxhbmRzdHlwb2xvZ2luLiBWw6RsaiBzZXJ2aWNlIG5lcmUgdGlsbCB2w6Ruc3Rlci5cIixcbiAgICBjYXB0aW9uOiBcIkvDpGxsYTogZWdlbiBiZXLDpGtuaW5nIG1lZCByNXIgcMOlIE9wZW5TdHJlZXRNYXAgKGfDpW5nIDUga20vaCkuIE3DpWxwdW5rdGVyIGkgZmVtIGzDpG4uXCIsXG4gICAgbG9nbzogXCIuLi9sb2dvX2Zhcmcuc3ZnXCJcbiAgfSlcbl0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTEzIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiaW1wb3J0IHsgYnlnZ1RvYyB9IGZyb20gXCIuLi9qcy90b2MuanNcIlxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImJ5Z2dUb2MoKVxuIn1dfQ==
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

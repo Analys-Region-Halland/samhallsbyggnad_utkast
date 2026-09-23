@@ -6,6 +6,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
+import { skapaRam, TYP, FARG } from "../lib/grafRam.js";
 
 export function karta(geodata, {
   // Datalänkning (optional choropleth)
@@ -258,24 +259,9 @@ export function karta(geodata, {
   // ============================================================================
   // CONTAINER + HEADER
   // ============================================================================
-  const container = d3.create("div")
-    .attr("class", "graf-container")
-    .style("position", "relative");
-
-  const header = container.append("div")
-    .attr("class", "graf-header");
-
-  if (title) {
-    header.append("div")
-      .attr("class", "graf-title")
-      .text(title);
-  }
-
-  if (subtitle) {
-    header.append("div")
-      .attr("class", "graf-subtitle")
-      .text(subtitle);
-  }
+  const ram = skapaRam({ title, subtitle, caption });
+  const container = ram.container;
+  const header = ram.header;
 
   // ============================================================================
   // BUBBLE INTERACTIVE STATE
@@ -294,63 +280,9 @@ export function karta(geodata, {
   // BUBBLE INTERACTIVE CONTROLS
   // ============================================================================
   if (bubbles && bubbleInteractive) {
-    // CSS injection (once per page)
-    if (!document.getElementById("graf-bubble-controls-css")) {
-      const style = document.createElement("style");
-      style.id = "graf-bubble-controls-css";
-      style.textContent = `
-        .graf-bubble-controls {
-          display: flex; flex-direction: column; gap: 6px; margin-top: 8px;
-          font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; color: #555;
-        }
-        .graf-bubble-top-row {
-          display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-        }
-        .graf-bubble-agg-group {
-          display: flex; align-items: center; gap: 4px; flex-shrink: 0;
-        }
-        .graf-bubble-agg-btn {
-          padding: 3px 10px; border: 1px solid #d0ccc6; border-radius: 4px;
-          background: #fff; font-family: inherit; font-size: 11px; color: #666;
-          cursor: pointer; transition: all 0.15s; user-select: none; line-height: 1.2;
-        }
-        .graf-bubble-agg-btn:hover { border-color: #999; color: #333; }
-        .graf-bubble-agg-btn.active { background: #2c2826; color: #fff; border-color: #2c2826; }
-        .graf-bubble-slider-group {
-          display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;
-        }
-        .graf-bubble-slider-lbl {
-          font-size: 10px; color: #999; flex-shrink: 0;
-        }
-        .graf-bubble-slider {
-          width: 100px; max-width: 120px; -webkit-appearance: none; appearance: none;
-          height: 4px; border-radius: 2px; background: #e0ddd8; outline: none; cursor: pointer;
-        }
-        .graf-bubble-slider::-webkit-slider-thumb {
-          -webkit-appearance: none; appearance: none; width: 14px; height: 14px;
-          border-radius: 50%; background: #2c2826; cursor: pointer;
-          border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .graf-bubble-slider-val {
-          font-size: 11px; color: #555; font-variant-numeric: tabular-nums; min-width: 22px;
-        }
-        .graf-bubble-stat { display: flex; flex-direction: column; gap: 3px; }
-        .graf-bubble-stat-row { display: flex; align-items: center; gap: 6px; }
-        .graf-bubble-stat-bar {
-          width: 80px; height: 6px; background: #eee; border-radius: 3px;
-          overflow: hidden; flex-shrink: 0;
-        }
-        .graf-bubble-stat-fill {
-          height: 100%; border-radius: 3px; transition: width 0.25s ease;
-        }
-        .graf-bubble-stat-text {
-          font-size: 10px; color: #777; font-variant-numeric: tabular-nums; white-space: nowrap;
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    // CSS: style.scss (GRAFSYSTEM, .graf-bubble-*)
 
-    const bubbleControls = header.append("div")
+    const bubbleControls = ram.controlsLeft.append("div")
       .attr("class", "graf-bubble-controls");
 
     // Top row: agg buttons + slider
@@ -401,20 +333,27 @@ export function karta(geodata, {
       .text("inv/km\u00b2");
 
     // Stat bars (cells + population, populated after data computation)
-    const statBlock = bubbleControls.append("div").attr("class", "graf-bubble-stat");
+    const statBlock = bubbleControls.append("div").attr("class", "graf-bubble-stat")
+      .style("display", "flex").style("flex-direction", "column").style("gap", "3px");
+    const statRad = (sel) => sel.style("display", "flex").style("align-items", "center").style("gap", "6px");
+    const statBar = (sel) => sel.style("width", "80px").style("height", "6px").style("background", "#eef0ef")
+      .style("border-radius", "3px").style("overflow", "hidden").style("flex-shrink", "0");
+    const statFill = (sel) => sel.style("height", "100%").style("border-radius", "3px").style("transition", "width 0.25s ease");
+    const statText = (sel) => sel.style("font-size", "10.5px").style("color", FARG.mjuk)
+      .style("font-variant-numeric", "tabular-nums").style("white-space", "nowrap");
 
-    const cellRow = statBlock.append("div").attr("class", "graf-bubble-stat-row");
-    cellRow.append("div").attr("class", "graf-bubble-stat-bar")
-      .append("div").attr("class", "graf-bubble-stat-fill")
+    const cellRow = statRad(statBlock.append("div").attr("class", "graf-bubble-stat-row"));
+    statFill(statBar(cellRow.append("div").attr("class", "graf-bubble-stat-bar"))
+      .append("div").attr("class", "graf-bubble-stat-fill"))
       .style("width", "100%").style("background", `rgba(${bubbleColor}, 0.45)`);
-    statTextCellsEl = cellRow.append("span").attr("class", "graf-bubble-stat-text");
+    statTextCellsEl = statText(cellRow.append("span").attr("class", "graf-bubble-stat-text"));
     statBarCellsEl = cellRow.select(".graf-bubble-stat-fill");
 
-    const popRow = statBlock.append("div").attr("class", "graf-bubble-stat-row");
-    popRow.append("div").attr("class", "graf-bubble-stat-bar")
-      .append("div").attr("class", "graf-bubble-stat-fill")
+    const popRow = statRad(statBlock.append("div").attr("class", "graf-bubble-stat-row"));
+    statFill(statBar(popRow.append("div").attr("class", "graf-bubble-stat-bar"))
+      .append("div").attr("class", "graf-bubble-stat-fill"))
       .style("width", "100%").style("background", `rgba(${bubbleColor}, 0.8)`);
-    statTextPopEl = popRow.append("span").attr("class", "graf-bubble-stat-text");
+    statTextPopEl = statText(popRow.append("span").attr("class", "graf-bubble-stat-text"));
     statBarPopEl = popRow.select(".graf-bubble-stat-fill");
 
     // Mini histogram container (built after data is computed)
@@ -426,41 +365,28 @@ export function karta(geodata, {
   // ============================================================================
   let overlayToggle = null;
   if (overlayFeatures.length > 0) {
-    overlayToggle = header.append("div")
-      .style("display", "flex")
-      .style("align-items", "center")
-      .style("gap", "8px")
-      .style("margin-top", "6px")
-      .style("font-family", "'IBM Plex Sans', system-ui, sans-serif")
-      .style("font-size", "12px")
-      .style("color", "#555")
-      .style("cursor", "pointer")
-      .style("user-select", "none")
+    overlayToggle = ram.controlsLeft.append("button")
+      .attr("type", "button")
+      .attr("class", "graf-knapp")
+      .attr("aria-pressed", overlayOn ? "true" : "false")
+      .classed("oppen", overlayOn)
       .on("click", () => {
         overlayOn = !overlayOn;
+        overlayToggle.classed("oppen", overlayOn).attr("aria-pressed", overlayOn ? "true" : "false");
         overlayToggle.select(".overlay-toggle-dot")
-          .style("background", overlayOn ? "#00664D" : "#ccc");
-        overlayToggle.select(".overlay-toggle-label")
-          .style("color", overlayOn ? "#2c2826" : "#999");
+          .style("background", overlayOn ? "var(--graf-accent)" : "#d5d8d7");
         mapGroup.selectAll(".overlay-path")
           .style("pointer-events", overlayOn ? "all" : "none")
           .transition().duration(300)
           .style("opacity", overlayOn ? 1 : 0);
       });
-
     overlayToggle.append("span")
       .attr("class", "overlay-toggle-dot")
-      .style("width", "10px")
-      .style("height", "10px")
-      .style("border-radius", "50%")
-      .style("background", overlayOn ? "#00664D" : "#ccc")
-      .style("flex-shrink", "0")
-      .style("transition", "background 0.2s");
-
+      .style("width", "9px").style("height", "9px").style("border-radius", "50%")
+      .style("background", overlayOn ? "var(--graf-accent)" : "#d5d8d7")
+      .style("flex-shrink", "0").style("transition", "background 0.2s");
     overlayToggle.append("span")
       .attr("class", "overlay-toggle-label")
-      .style("color", overlayOn ? "#2c2826" : "#999")
-      .style("transition", "color 0.2s")
       .text("Visa tätorter");
   }
 
@@ -470,11 +396,11 @@ export function karta(geodata, {
   let selectorCtrl = null;
 
   if (interactive && filterState) {
-    selectorCtrl = createSelectorPanel(header, {
+    selectorCtrl = createSelectorPanel(ram.controlsLeft, {
       filterState,
       allItems,
       colorScale: groupColorScale,
-      triggerText: "Välj kommuner \u203a",
+      triggerText: "Välj kommuner",
       onUpdate: () => updateChart(),
       onItemHover: (item) => {
         const feat = features.find(f => f.properties[label] === item);
@@ -490,15 +416,13 @@ export function karta(geodata, {
   // ============================================================================
   // VÄRDE-DISPLAY
   // ============================================================================
-  const valueDisplay = container.append("div")
-    .attr("class", "graf-value-display")
-    .html("<span style='opacity:0.35'>Peka på kartan</span>");
+  const avlasning = ram.avlasning("Peka på kartan");
+  const valueDisplay = { html(h) { if (h == null) avlasning.rensa(); else avlasning.visa(h); return this; } };
 
   // ============================================================================
   // SVG + PROJEKTION
   // ============================================================================
-  const svgContainer = container.append("div")
-    .attr("class", "graf-svg-container");
+  const svgContainer = ram.svgWrap;
 
   // Beräkna kartans höjd exkl. legend
   const legendHeight = hasChoropleth ? 50 : 0;
@@ -904,7 +828,7 @@ export function karta(geodata, {
         const labelCfg = { 1: { size: 13, weight: 700 }, 2: { size: 11, weight: 600 }, 3: { size: 9, weight: 500 }, 4: { size: 7.5, weight: 400 } };
         applyPlaceStyle(d3.select(this), d, false, labelCfg[d.tier] || labelCfg[4]);
       });
-    valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+    valueDisplay.html(null);
   }
 
   // ============================================================================
@@ -1022,7 +946,7 @@ export function karta(geodata, {
       histSvgEl.append("text")
         .attr("x", histW).attr("y", histH - 1)
         .attr("text-anchor", "end")
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
+        .attr("font-family", TYP.ui)
         .attr("font-size", "8px").attr("fill", "#bbb")
         .text("inv/km\u00b2 \u2192");
     }
@@ -1141,7 +1065,7 @@ export function karta(geodata, {
           .attr("class", "bubble-label")
           .attr("x", d.cx).attr("y", d.cy)
           .attr("dy", "0.35em").attr("text-anchor", "middle")
-          .attr("font-family", "'IBM Plex Sans', system-ui, sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", `${Math.min(d._r * 0.35, 14)}px`)
           .attr("font-weight", 600).attr("fill", "#fff")
           .attr("stroke", `rgb(${bc})`).attr("stroke-width", 2.5)
@@ -1195,7 +1119,7 @@ export function karta(geodata, {
 
     bubbleLegendGroup.append("text")
       .attr("x", 0).attr("y", 6)
-      .attr("font-family", "'IBM Plex Sans', sans-serif")
+      .attr("font-family", TYP.ui)
       .attr("font-size", "8.5px").attr("font-weight", 600)
       .attr("fill", "#999").attr("letter-spacing", "0.08em")
       .text(unitLabel);
@@ -1216,7 +1140,7 @@ export function karta(geodata, {
       bubbleLegendGroup.append("text")
         .attr("x", circleX + maxRefR + 12).attr("y", circleBaseY - r * 2)
         .attr("dy", "0.35em")
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
+        .attr("font-family", TYP.ui)
         .attr("font-size", "9px").attr("fill", "#666")
         .text(val.toLocaleString("sv-SE"));
     }
@@ -1326,7 +1250,7 @@ export function karta(geodata, {
               .attr("fill-opacity", opacityScale(d.value))
               .attr("stroke-opacity", opacityScale(d.value) * 0.4)
               .attr("stroke-width", strokeW);
-            valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+            valueDisplay.html(null);
           });
 
         // Labels for largest bubbles
@@ -1340,7 +1264,7 @@ export function karta(geodata, {
             .attr("x", d => d.cx)
             .attr("y", d => d.cy - Math.max(minR, radiusScale(d.value)) - 3)
             .attr("text-anchor", "middle")
-            .attr("font-family", "'IBM Plex Sans', system-ui, sans-serif")
+            .attr("font-family", TYP.ui)
             .attr("font-size", "9px")
             .attr("font-weight", 600)
             .attr("fill", "#2c2826")
@@ -1380,7 +1304,7 @@ export function karta(geodata, {
         .on("mouseleave", function(event, d) {
           if (colorBy) {
             d3.select(this).attr("opacity", getFeatureOpacity(d));
-            valueDisplay.html("<span style='opacity:0.35'>Peka på kartan</span>");
+            valueDisplay.html(null);
           } else {
             highlightFeature(d, false);
           }
@@ -1411,7 +1335,7 @@ export function karta(geodata, {
         })
         .on("mouseleave", function() {
           d3.select(this).attr("fill", "rgba(140, 120, 90, 0.18)");
-          valueDisplay.html("<span style='opacity:0.35'>Peka på kartan</span>");
+          valueDisplay.html(null);
         });
     }
 
@@ -1453,7 +1377,7 @@ export function karta(geodata, {
             .attr("fill", "rgba(255, 255, 255, 0.35)")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.2);
-          valueDisplay.html("<span style='opacity:0.35'>Peka på kartan</span>");
+          valueDisplay.html(null);
         });
     }
 
@@ -1519,7 +1443,7 @@ export function karta(geodata, {
             .filter(r => r === d)
             .attr("stroke-opacity", d => getRoadStyle(d).opacity)
             .attr("stroke-width", d => getRoadStyle(d).width);
-          valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+          valueDisplay.html(null);
         });
     }
 
@@ -1587,7 +1511,7 @@ export function karta(geodata, {
             .filter(r => r === d)
             .attr("stroke-opacity", 0.25)
             .attr("stroke-width", 3.5);
-          valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+          valueDisplay.html(null);
         });
     }
 
@@ -1682,7 +1606,7 @@ export function karta(geodata, {
             .attr("y", dy)
             .attr("dy", "0.35em")
             .attr("text-anchor", "end")
-            .attr("font-family", "'IBM Plex Sans', system-ui, sans-serif")
+            .attr("font-family", TYP.ui)
             .attr("font-size", `${cfg.size + 1}px`)
             .attr("font-weight", cfg.weight)
             .attr("fill", "#2c2826")
@@ -1698,7 +1622,7 @@ export function karta(geodata, {
           g.append("text")
             .attr("x", p.radius + 3)
             .attr("dy", "0.35em")
-            .attr("font-family", "'IBM Plex Sans', system-ui, sans-serif")
+            .attr("font-family", TYP.ui)
             .attr("font-size", `${cfg.size}px`)
             .attr("font-weight", cfg.weight)
             .attr("fill", "#2c2826")
@@ -1726,7 +1650,7 @@ export function karta(geodata, {
             if (frozenPlace === p) return;
             applyPlaceStyle(d3.select(this), p, false, cfg);
             if (!frozenPlace) {
-              valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+              valueDisplay.html(null);
             }
           })
           .on("click", function(event) {
@@ -1771,7 +1695,7 @@ export function karta(geodata, {
       }
     } else {
       overlay.style("opacity", 0);
-      valueDisplay.html("<span style='opacity:0.35'>Peka på kartan</span>");
+      valueDisplay.html(null);
     }
   }
 
@@ -1834,7 +1758,7 @@ export function karta(geodata, {
           : `<b>${pop}</b> inv/km\u00b2`;
         valueDisplay.html(lbl);
       } else {
-        valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+        valueDisplay.html(null);
       }
     });
 
@@ -1847,7 +1771,7 @@ export function karta(geodata, {
           .attr("fill-opacity", bubbleOpScale(prev.value))
           .attr("stroke-opacity", bubbleOpScale(prev.value) * 0.4)
           .attr("stroke-width", bubbleStrokeW);
-        valueDisplay.html("<span style='opacity:0.35'>Peka p\u00e5 kartan</span>");
+        valueDisplay.html(null);
       }
     });
   }
@@ -1910,13 +1834,13 @@ export function karta(geodata, {
           .attr("stroke", "#1a1a1a").attr("stroke-width", 2.5);
         row.append("text")
           .attr("x", 32).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "10px").attr("font-weight", 600).attr("fill", "#333")
           .text(item.label);
       } else if (item.type === "heading") {
         row.append("text")
           .attr("x", 0).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "8.5px")
           .attr("font-weight", 600)
           .attr("fill", "#999")
@@ -1930,7 +1854,7 @@ export function karta(geodata, {
           .attr("stroke-opacity", s.opacity).attr("stroke-linecap", "round");
         row.append("text")
           .attr("x", 32).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "10px").attr("fill", "#555")
           .text(item.label);
       } else if (item.type === "railway") {
@@ -1944,7 +1868,7 @@ export function karta(geodata, {
           .attr("stroke-opacity", 0.25).attr("stroke-dasharray", "1.5,7");
         row.append("text")
           .attr("x", 32).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "10px").attr("fill", "#555")
           .text(item.label);
       } else if (item.type === "circle") {
@@ -1954,7 +1878,7 @@ export function karta(geodata, {
           .attr("stroke", "#fff").attr("stroke-width", 0.8);
         row.append("text")
           .attr("x", 32).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "10px").attr("fill", "#555")
           .text(item.label);
       } else if (item.type === "swatch") {
@@ -1965,7 +1889,7 @@ export function karta(geodata, {
           .attr("stroke", "#c8c4be").attr("stroke-width", 0.5);
         row.append("text")
           .attr("x", 32).attr("dy", "0.9em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "10px").attr("fill", "#555")
           .text(item.label);
       }
@@ -2003,7 +1927,7 @@ export function karta(geodata, {
         .attr("fill", colorByScale(cat));
       row.append("text")
         .attr("x", 24).attr("dy", "0.9em")
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
+        .attr("font-family", TYP.ui)
         .attr("font-size", "10px").attr("fill", "#444")
         .text(cat);
     });
@@ -2069,7 +1993,7 @@ export function karta(geodata, {
       const legendTitle = unit ? unit.toUpperCase() : "ANTAL";
       lgGroup.append("text")
         .attr("x", 0).attr("y", 6)
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
+        .attr("font-family", TYP.ui)
         .attr("font-size", "8.5px").attr("font-weight", 600)
         .attr("fill", "#999").attr("letter-spacing", "0.08em")
         .text(legendTitle);
@@ -2090,7 +2014,7 @@ export function karta(geodata, {
         lgGroup.append("text")
           .attr("x", circleX + maxRefR + 12).attr("y", circleBaseY - r * 2)
           .attr("dy", "0.35em")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
+          .attr("font-family", TYP.ui)
           .attr("font-size", "9px").attr("fill", "#666")
           .text(val.toLocaleString("sv-SE"));
       }
@@ -2134,7 +2058,7 @@ export function karta(geodata, {
       .attr("x", d => tickScale(d))
       .attr("y", 26)
       .attr("text-anchor", "middle")
-      .attr("font-family", "'IBM Plex Sans', sans-serif")
+      .attr("font-family", TYP.ui)
       .attr("font-size", "10px")
       .attr("fill", "#666")
       .text(d => formatValue(d) + (unit ? " " + unit : ""));
@@ -2143,12 +2067,6 @@ export function karta(geodata, {
   // ============================================================================
   // CAPTION + EXPORT
   // ============================================================================
-  if (caption) {
-    container.append("div")
-      .attr("class", "graf-caption")
-      .text(caption);
-  }
-
   addExportButton(container, svg.node(), {
     title,
     subtitle,

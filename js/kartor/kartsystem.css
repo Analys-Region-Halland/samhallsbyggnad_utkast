@@ -1,0 +1,180 @@
+/* =============================================================================
+   KARTSYSTEM — gemensam kartstil för alla maplibre-kartor i rapporten
+   (mapgl-widgets i egna kartsidor under kartgalleri/, tillganglighetskarta.js
+   inline i kapitlen). Laddas av js/kartor/kartsystem.js.
+
+   Principer (research 2026-09-23, se PROJEKTGUIDE):
+   - Legender och val ligger i en fast PANEL (vänster på bred karta, ark nertill
+     på smal) och aldrig som flytande rutor över kartan → inga krockar.
+   - Kartans egna hörn: zoom/hem/helskärm uppe till höger, skala och
+     källa nere till höger. Inget annat.
+   - IBM Plex Sans i allt (samma som grafsystemet), kontroller ≥ 32 px.
+   ============================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --kr-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --kr-ink: #15202b;
+  --kr-mjuk: #5f6b72;
+  --kr-linje: #e6e9e8;
+  --kr-panel-bg: #ffffff;
+  --kr-accent: var(--accent, #004990);
+}
+
+/* ── Kartsida (iframe-dokumentet) ─────────────────────────────────────────── */
+html.kr-kartsida, html.kr-kartsida body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #f2f3f1; }
+html.kr-kartsida #htmlwidget_container { position: absolute; inset: 0; }
+html.kr-kartsida .html-widget { width: 100% !important; height: 100% !important; }
+
+/* ── Typografi: ett typsnitt i allt som ligger på kartan ──────────────────── */
+.kr-kartan, .kr-kartan .maplibregl-popup, .kr-kartan .maplibregl-popup *,
+.kr-kd, .kr-kd *:not(i):not(svg):not(path) {
+  font-family: var(--kr-ui) !important;
+}
+.kr-kartan .maplibregl-popup-content { border-radius: 8px; box-shadow: 0 6px 22px -6px rgba(16, 32, 43, .28), 0 1px 3px rgba(16, 32, 43, .12); padding: 9px 12px; }
+.kr-kartan .maplibregl-popup-close-button { width: 28px; height: 28px; font-size: 18px; color: var(--kr-mjuk); border-radius: 0 8px 0 6px; }
+.kr-kartan canvas:focus-visible { outline: 3px solid var(--kr-accent); outline-offset: -3px; }
+
+/* Tooltip-klassen som flera kartor använder (tidigare i style.scss) */
+.kr-tip .maplibregl-popup-content { padding: 6px 10px; border-radius: 6px; font-size: 12.5px; line-height: 1.35; color: var(--kr-ink); pointer-events: none; }
+.kr-tip .maplibregl-popup-tip { display: none; }
+
+/* mapgl-legendernas rubrik är <h2>; får inte ärva rapportens sektionsnummer */
+.kr-kd h2::before, .mapboxgl-legend h2::before { content: none !important; }
+
+/* ── Knappgruppen uppe till höger (zoom + hem + helskärm) ─────────────────── */
+.kr-kartan .maplibregl-ctrl-top-right, .kr-kartan .maplibregl-ctrl-bottom-right { z-index: 4; }
+.kr-kartan .maplibregl-control-container .maplibregl-ctrl-group { border-radius: 8px; box-shadow: 0 1px 4px rgba(16, 32, 43, .22); }
+.kr-kartan .maplibregl-control-container .maplibregl-ctrl-group button { width: 34px; height: 34px; }
+.kr-kartan .maplibregl-control-container .maplibregl-ctrl-group button:focus-visible { box-shadow: 0 0 0 3px var(--kr-accent) inset; }
+.kr-kartan .maplibregl-control-container .maplibregl-ctrl-group button + button { border-top-color: #eceeed; }
+.kr-kartan .maplibregl-ctrl-scale { border-color: #6b767c; color: #39495a; font-size: 10.5px; background: rgba(255, 255, 255, .8); }
+.kr-kartan .maplibregl-ctrl-attrib { font-size: 10.5px; }
+.kr-kn { display: flex; align-items: center; justify-content: center; color: #2c3a44; }
+.kr-kn svg { width: 17px; height: 17px; display: block; }
+.kr-kn:hover { color: #000; }
+/* Kompassen syns bara när kartan faktiskt är vriden/lutad */
+.kr-kartan:not(.kr-vriden) .maplibregl-ctrl-compass { display: none !important; }
+
+/* ── PANELEN (kartdocka) ──────────────────────────────────────────────────── */
+.kr-kd {
+  position: absolute; z-index: 3;
+  display: flex; flex-direction: column;
+  background: var(--kr-panel-bg);
+  color: var(--kr-ink);
+  box-sizing: border-box;
+}
+.kr-kd *, .kr-kd *::before, .kr-kd *::after { box-sizing: border-box; }
+.kr-kd-huvud {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 10px 8px 16px; flex: none;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--kr-mjuk);
+}
+.kr-kd-huvud span { flex: 1; }
+.kr-kd-fall {
+  flex: none; width: 32px; height: 32px; border: 0; border-radius: 7px; background: transparent; color: var(--kr-mjuk);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+}
+.kr-kd-fall:hover { background: #f1f3f2; color: var(--kr-ink); }
+.kr-kd-fall:focus-visible { outline: 3px solid var(--kr-accent); outline-offset: -3px; }
+.kr-kd-fall svg { width: 18px; height: 18px; transition: transform .2s; }
+.kr-kd-innehall { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; padding: 0 0 12px; scrollbar-width: thin; }
+
+/* Varje flyttad panel blir en platt sektion med tunn avdelare */
+.kr-kd-innehall > * {
+  position: static !important; inset: auto !important; transform: none !important;
+  float: none !important; margin: 0 !important;
+  width: auto !important; max-width: none !important; min-width: 0 !important; max-height: none !important;
+  background: transparent !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important;
+  padding: 12px 16px !important;
+  pointer-events: auto;
+}
+.kr-kd-innehall > * + * { border-top: 1px solid var(--kr-linje) !important; }
+.kr-kd-innehall > .maplibregl-ctrl-group, .kr-kd-innehall > .maplibregl-ctrl { overflow: visible; }
+/* kartornas egna "kort" inuti en flyttad kontroll blir platta */
+.kr-kd-innehall > .maplibregl-ctrl > *:not([class*="toggle"]) {
+  box-shadow: none !important; background: transparent !important; border: 0 !important; border-radius: 0 !important;
+  width: auto !important; max-width: none !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important;
+  position: static !important;
+}
+/* inre boxar i flyttade kontroller (t.ex. mapgl-legendens egen ruta) */
+.kr-kd-innehall > * .mapboxgl-legend { position: static !important; box-shadow: none !important; background: transparent !important;
+  border: 0 !important; margin: 0 !important; padding: 0 !important; max-width: none !important; width: auto !important; }
+.kr-kd-innehall .mapboxgl-legend h2, .kr-kd-innehall .mapgl-legend-title {
+  font-size: 12.5px !important; font-weight: 700 !important; margin: 0 0 6px !important; color: var(--kr-ink) !important; line-height: 1.3 !important; }
+.kr-kd-innehall .legend-item, .kr-kd-innehall .mapboxgl-legend .legend-text { font-size: 12px !important; }
+/* knappar i paneler: tydliga mål (≥ 32 px) */
+.kr-kd-innehall button:not(.kr-kd-fall) { min-height: 32px; }
+.kr-kd-innehall select { min-height: 32px; }
+.kr-kd-innehall button:focus-visible, .kr-kd-innehall select:focus-visible { outline: 3px solid var(--kr-accent); outline-offset: 1px; }
+/* Val-grupper med horisontell layout (t.ex. Karta/Värme/3D) får fylla bredden */
+.kr-kd-innehall > .maplibregl-ctrl > [class*="toggle"] { display: flex !important; width: 100%; box-shadow: none !important; background: #f1f3f2 !important; }
+.kr-kd-innehall > .maplibregl-ctrl > [class*="toggle"] button { flex: 1 1 0; padding-left: 8px !important; padding-right: 8px !important; text-align: center; }
+
+/* Bred karta: panel som fast sidokolumn till vänster */
+.kr-kd.kr-kd--sida { top: 0; left: 0; bottom: 0; width: var(--kr-kd-w, 272px); border-right: 1px solid var(--kr-linje);
+  box-shadow: 4px 0 16px -12px rgba(16, 32, 43, .25); }
+.kr-kd.kr-kd--sida .kr-kd-fall svg { transform: rotate(0deg); }
+/* Hopfälld sidopanel → liten flik */
+.kr-kd.kr-kd--sida.kr-kd--stangd { bottom: auto; width: auto; border-right: 0; border-radius: 0 0 10px 0; box-shadow: 0 1px 6px rgba(16, 32, 43, .2); }
+.kr-kd.kr-kd--sida.kr-kd--stangd .kr-kd-innehall { display: none; }
+.kr-kd.kr-kd--sida.kr-kd--stangd .kr-kd-huvud { padding: 4px 4px 4px 12px; }
+.kr-kd.kr-kd--sida.kr-kd--stangd .kr-kd-fall svg { transform: rotate(180deg); }
+
+/* Smal karta: ark nertill som tittar fram och fälls upp */
+.kr-kd.kr-kd--ark { left: 0; right: 0; bottom: 0; max-height: var(--kr-ark-max, 66%);
+  border-top: 1px solid var(--kr-linje); border-radius: 14px 14px 0 0; box-shadow: 0 -6px 20px -10px rgba(16, 32, 43, .3); }
+.kr-kd.kr-kd--ark .kr-kd-huvud { padding-top: 12px; cursor: pointer; position: relative; }
+.kr-kd.kr-kd--ark .kr-kd-huvud::before { content: ""; position: absolute; top: 5px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: #d3d8d6; }
+.kr-kd.kr-kd--ark .kr-kd-fall svg { transform: rotate(90deg); }
+.kr-kd.kr-kd--ark.kr-kd--stangd .kr-kd-innehall { max-height: var(--kr-ark-titt, 118px); overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+.kr-kd.kr-kd--ark.kr-kd--stangd .kr-kd-fall svg { transform: rotate(-90deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kr-kd-fall svg { transition: none; }
+}
+
+/* ── Inbäddad karta i kapitlet (iframe-ram) ───────────────────────────────── */
+.kr-karta-ram {
+  position: relative; width: 100%; height: var(--kr-karta-h, 600px);
+  background: #eef0ee center / cover no-repeat;
+  border-top: 1px solid #eef0ef;
+  overflow: hidden;
+}
+.kr-karta-ram > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; opacity: 0; transition: opacity .35s ease; }
+.kr-karta-ram.kr-laddad > iframe { opacity: 1; }
+.kr-karta-ram:not(.kr-laddad)::after {
+  content: "Laddar karta…"; position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+  font: 500 12px var(--kr-ui); color: #39495a; background: rgba(255, 255, 255, .92); padding: 6px 12px; border-radius: 99px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+}
+.kr-karta-ram.kr-vilande::after { content: "Karta pausad · klicka för att starta"; cursor: pointer; }
+@media (max-width: 700px) { .kr-karta-ram { height: min(var(--kr-karta-h, 600px), 78vh); } }
+@media (prefers-reduced-motion: reduce) { .kr-karta-ram > iframe { transition: none; } }
+
+/* ── Helskärm för en kartfigur ────────────────────────────────────────────── */
+.kr-helskarm-mal:fullscreen, .kr-helskarm-mal.kr-helskarm-css {
+  display: flex !important; flex-direction: column; width: 100% !important; max-width: none !important; height: 100% !important;
+  margin: 0 !important; border-radius: 0 !important; border: 0 !important; background: #fff; overflow: hidden !important;
+}
+.kr-helskarm-mal.kr-helskarm-css {
+  position: fixed !important; inset: 0; z-index: 10000; height: 100dvh !important;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.kr-helskarm-mal:fullscreen > *, .kr-helskarm-mal.kr-helskarm-css > * { flex: none; }
+.kr-helskarm-mal:fullscreen, .kr-helskarm-mal.kr-helskarm-css { overflow-y: auto !important; }
+.kr-helskarm-mal:fullscreen .graf-header, .kr-helskarm-mal.kr-helskarm-css .graf-header { padding-right: 64px; }
+.kr-helskarm-mal:fullscreen .graf-subtitle, .kr-helskarm-mal.kr-helskarm-css .graf-subtitle { max-width: 80ch; }
+html.kr-har-css-helskarm, html.kr-har-css-helskarm body { overflow: hidden !important; }
+.kr-helskarm-stang {
+  position: absolute; top: 12px; right: 14px; z-index: 20; display: none;
+  height: 36px; padding: 0 14px 0 10px; border-radius: 99px; border: 1px solid #d6dbd9; background: #fff; color: var(--kr-ink);
+  font: 600 13px var(--kr-ui); cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+}
+.kr-helskarm-stang svg { width: 16px; height: 16px; }
+.kr-helskarm-mal:fullscreen .kr-helskarm-stang, .kr-helskarm-mal.kr-helskarm-css .kr-helskarm-stang { display: inline-flex; }
+.kr-helskarm-stang:focus-visible { outline: 3px solid var(--kr-accent); outline-offset: 2px; }
+
+/* Miniatyrläge (kartgalleri/bygg-tumnaglar.mjs): bara kartan */
+html.kr-tumnagel .maplibregl-control-container, html.kr-tumnagel .kr-kd { display: none !important; }

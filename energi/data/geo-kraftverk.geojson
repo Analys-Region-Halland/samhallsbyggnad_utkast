@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"xy_coordinate_resolution": 1e-05,
+"features": [
+{ "type": "Feature", "properties": { "namn": "Ringhals kärnkraftverk", "kraftslag": "Kärnkraft", "effekt_mw": 2210.0, "agare": "Vattenfall (Ringhals AB)", "kommun": "Varberg", "kalla": "Energisituationen i Halland 2025: R3 1 080 MW + R4 1 130 MW", "lage": "OSM-objekt", "osm_id": "r13350325" }, "geometry": { "type": "Point", "coordinates": [ 12.11064, 57.26164 ] } },
+{ "type": "Feature", "properties": { "namn": "Södra Cell Värö", "kraftslag": "Industriellt mottryck", "effekt_mw": 126.8, "agare": "Södra Skogsägarna", "kommun": "Varberg", "kalla": "Energimyndigheten, anläggningslista (el-effekt)", "lage": "OSM-objekt", "osm_id": "w1135306849" }, "geometry": { "type": "Point", "coordinates": [ 12.17308, 57.22301 ] } },
+{ "type": "Feature", "properties": { "namn": "Hylte bruk (Hylte Paper)", "kraftslag": "Industriellt mottryck", "effekt_mw": 39.3, "agare": "Hylte Paper AB", "kommun": "Hylte", "kalla": "Energimyndigheten, anläggningslista: Elenora 28,0 + Hedvig 11,3 MW", "lage": "Handsatt (ungefärligt)", "osm_id": null }, "geometry": { "type": "Point", "coordinates": [ 13.245, 57.0 ] } },
+{ "type": "Feature", "properties": { "namn": "Kristinehedsverket", "kraftslag": "Kraftvärme (avfall)", "effekt_mw": 10.0, "agare": "Halmstads Energi och Miljö (HEM)", "kommun": "Halmstad", "kalla": "Energimyndigheten, anläggningslista (el-effekt)", "lage": "OSM-objekt", "osm_id": "w188532622" }, "geometry": { "type": "Point", "coordinates": [ 12.9063, 56.69262 ] } },
+{ "type": "Feature", "properties": { "namn": "Oceanen", "kraftslag": "Kraftvärme (biobränsle)", "effekt_mw": 4.0, "agare": "Halmstads Energi och Miljö (HEM)", "kommun": "Halmstad", "kalla": "Energimyndigheten, anläggningslista (el-effekt)", "lage": "OSM-objekt", "osm_id": "w1167970758" }, "geometry": { "type": "Point", "coordinates": [ 12.8613, 56.65541 ] } },
+{ "type": "Feature", "properties": { "namn": "Lahall", "kraftslag": "Gasturbin (reservkraft)", "effekt_mw": 240.0, "agare": "Svensk Kraftreserv (Svenska kraftnät)", "kommun": "Varberg", "kalla": "Energisituationen i Halland 2025, s. 7", "lage": "OSM-objekt", "osm_id": "r15070951" }, "geometry": { "type": "Point", "coordinates": [ 12.17406, 57.23336 ] } },
+{ "type": "Feature", "properties": { "namn": "Halmstadsverket", "kraftslag": "Gasturbin (störningsreserv)", "effekt_mw": 250.0, "agare": "Sydkraft Thermal Power", "kommun": "Halmstad", "kalla": "Energisituationen i Halland 2025, s. 7", "lage": "OSM-objekt", "osm_id": "r10181564" }, "geometry": { "type": "Point", "coordinates": [ 12.86164, 56.65298 ] } }
+]
+}

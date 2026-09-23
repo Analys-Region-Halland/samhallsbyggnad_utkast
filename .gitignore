@@ -1,5 +1,0 @@
-# Tunga rådata som quarto kopierar in i _site men som sidan aldrig laddar.
-# Sprängar GitHubs 100 MB/fil-gräns om de committas.
-bostader/data/byggnadspunkter/
-bostader/data/byggnadspunkter.zip
-befolkning/data/befolkning_1km_2025.gpkg

@@ -1,34 +1,39 @@
 // =============================================================================
-// STAPELDIAGRAM - Universell D3-komponent (vertikal och horisontell)
+// STAPELDIAGRAM — vertikal och horisontell, enkel, grupperad eller staplad.
+//
+// Byggd på den gemensamma ramen (js/lib/grafRam.js):
+//   • måttets namn (yLabel, för liggande staplar xLabel) står horisontellt
+//     uppe till vänster ovanför plotytan
+//   • tidsdimension (option `time`) väljs i en rullgardin i nedre raden
+//   • väljaren "Markera" ligger i samma nedre rad
+//   • avläsningsrad under rubriken visar värden vid hover
 // =============================================================================
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
+import {
+  skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
+  stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
+  valPill, skapaTooltip, tooltipHtml
+} from "../lib/grafRam.js";
 
-// Hjälpfunktion: beräkna snyggt intervall och max för axeln
+// Snyggt intervall och max för värdeaxeln
 function niceScale(dataMax, targetTicks = 5) {
   if (dataMax <= 0) return { max: 10, interval: 2, ticks: [0, 2, 4, 6, 8, 10] };
-
   const roughInterval = dataMax / targetTicks;
   const magnitude = Math.pow(10, Math.floor(Math.log10(roughInterval)));
   const normalized = roughInterval / magnitude;
-
   let niceInterval;
   if (normalized <= 1) niceInterval = 1;
   else if (normalized <= 2) niceInterval = 2;
   else if (normalized <= 2.5) niceInterval = 2.5;
   else if (normalized <= 5) niceInterval = 5;
   else niceInterval = 10;
-
   const interval = niceInterval * magnitude;
   const max = Math.ceil(dataMax / interval) * interval;
-
   const ticks = [];
-  for (let v = 0; v <= max; v += interval) {
-    ticks.push(v);
-  }
-
+  for (let v = 0; v <= max; v += interval) ticks.push(v);
   return { max, interval, ticks };
 }
 
@@ -36,7 +41,7 @@ export function stapeldiagram(data, {
   x = "kategori",
   y = "värde",
   color = null,
-  time = null,            // Fält för tid (t.ex. "år") - aktiverar play-animation för ranking
+  time = null,            // Fält för tid (t.ex. "år") - aktiverar årsval för ranking
   width = null,
   height = 500,
   title = null,
@@ -44,7 +49,7 @@ export function stapeldiagram(data, {
   caption = null,
   xLabel = null,
   yLabel = null,
-  colors = ["#00664D", "#004990", "#FF7E00", "#433C9D", "#2DB8F6", "#A51300"],
+  colors = SERIEFARGER,
   formatY = d => d.toLocaleString("sv-SE"),
   horizontal = false,
   grouped = false,
@@ -57,7 +62,8 @@ export function stapeldiagram(data, {
   highlight = null,
   filterBy = "x",         // "x" = filtrera kategorier, "color" = filtrera grupper
   groupOrder = null,      // explicit ordning för color-grupper (stapling, färg, legend)
-  showLegend = true       // false = dölj separat legendruta (förlita sig på färgade namn i undertiteln)
+  valueMax = null,        // fast övre gräns för värdeaxeln (t.ex. 100 för staplade andelar)
+  showLegend = true       // false = dölj separat legendruta (färgade namn i undertiteln räcker)
 } = {}) {
 
   const filterByColor = filterBy === "color" && color;
@@ -67,77 +73,64 @@ export function stapeldiagram(data, {
     : createFilterState(data, { itemField: x, groupField: color, filter, highlight });
 
   const categories = [...new Set(data.map(d => d[x]))];
-  // groupOrder ger explicit stapling/färg/legend-ordning (annars dataordning)
   const groups = color
     ? (groupOrder || [...new Set(data.map(d => d[color]))])
     : ["_all"];
 
-  // Tidshantering för ranking-animation
+  // ── Tid (ranking-animation) ──
   const allTimes = time ? [...new Set(data.map(d => d[time]))].sort((a, b) => a - b) : [];
   let currentTime = allTimes.length > 0 ? allTimes[allTimes.length - 1] : null;
-  const hasTimeAnimation = time && allTimes.length > 1 && !color;  // Endast för enkla stapeldiagram
+  const hasTimeAnimation = time && allTimes.length > 1 && !color;
+  const getDataForTime = (t) => (!time ? data : data.filter(d => d[time] === t));
 
-  // Hämta data för aktuell tid
-  const getDataForTime = (t) => {
-    if (!time) return data;
-    return data.filter(d => d[time] === t);
-  };
-
-  // Beräkna min/max-värde över alla tider (för stabil skala).
-  // Staplat läge (color utan grouped): axelmax = största stapelsumma per
-  // kategori (och tidpunkt) — inte största enskilda segment, som klipper
-  // staplar vars summa överstiger segmentmaxets nice-avrundning.
+  // Skala: staplat läge → största stapelsumma per kategori (och tidpunkt)
   const dataMax = (color && !grouped)
     ? d3.max(d3.rollups(data,
         v => Math.round(d3.sum(v, d => Math.max(0, d[y])) * 1e6) / 1e6,
         d => `${d[x]}|${time ? d[time] : ""}`), d => d[1])
     : d3.max(data, d => d[y]);
   const dataMin = d3.min(data, d => d[y]);
-  const valueNice = niceScale(dataMax, 5);
+  const valueNice = valueMax != null ? niceScale(valueMax, 4) : niceScale(dataMax, 5);
 
-  // Hantera negativa värden: utöka ticks och domän nedåt
   if (dataMin < 0) {
     const negMin = Math.floor(dataMin / valueNice.interval) * valueNice.interval;
     const newTicks = [];
-    for (let v = negMin; v <= valueNice.max; v += valueNice.interval) {
-      newTicks.push(Math.round(v * 1000) / 1000);
-    }
+    for (let v = negMin; v <= valueNice.max; v += valueNice.interval) newTicks.push(Math.round(v * 1000) / 1000);
     valueNice.ticks = newTicks;
     valueNice.min = negMin;
   } else {
     valueNice.min = 0;
   }
 
-  // Dimensioner - tydlig breakout-effekt
-  // Best practice: ~48px per kategori för god läsbarhet
+  // ── Layout ──
   const autoWidth = width || 780;
-  const marginTop = (horizontal ? 20 : (yLabel ? 36 : 20));
+  // Måttets namn: yLabel (stående) resp. xLabel (liggande) står horisontellt ovanför plotytan
+  const mattTitel = horizontal ? xLabel : yLabel;
+  const marginTop = mattTitel ? 36 : 20;
   const marginRight = (color && !(interactive && filterByColor)) ? 105 : 40;
-  const marginBottom = horizontal
-    ? (xLabel ? 58 : 48)
-    : (xLabel ? 58 : 48);
+  // Stående staplar med många kategorier får vinklade etiketter och mer luft nedtill
+  const rotera = !horizontal && categories.length > 6;
+  const marginBottom = horizontal ? 40 : (xLabel ? 58 : 48) + (rotera ? 26 : 0);
 
-  // Dynamisk höjd för horisontell: 48px per kategori, min 240px, max 600px
   const pixelsPerCategory = 48;
   const dynamicHeight = horizontal
     ? Math.min(600, Math.max(240, marginTop + marginBottom + categories.length * pixelsPerCategory))
     : height;
 
-  // För horisontell: beräkna marginal för högerjusterade etiketter
-  let marginLeft = 14;
+  let marginLeft = 18;
   if (horizontal) {
     const maxLabelLength = Math.max(...categories.map(c => String(c).length));
-    marginLeft = 16 + maxLabelLength * 8 + 10;
+    marginLeft = 16 + maxLabelLength * 7.2 + 10;
   }
 
-  const maxTickWidth = formatY(valueNice.max).length * 6 + 8;
+  const maxTickWidth = Math.max(...valueNice.ticks.map(t => String(formatY(t)).length)) * 6.6 + 8;
   const axisLeft = horizontal ? marginLeft : marginLeft + maxTickWidth;
+  const plotRight = autoWidth - marginRight;
+  const chartHeight = horizontal ? dynamicHeight : height;
 
-  const colorScale = d3.scaleOrdinal()
-    .domain(groups)
-    .range(colors);
+  const colorScale = d3.scaleOrdinal().domain(groups).range(colors);
 
-  // Färgkoda gruppnamn i undertiteln (fungerar som inbäddad legend)
+  // Färgkoda gruppnamn i undertiteln (inbäddad legend)
   const colorizeSubtitle = (text) => {
     if (!color || groups[0] === "_all" || !text) return null;
     let html = text;
@@ -149,328 +142,65 @@ export function stapeldiagram(data, {
       const c = colorScale(group);
       html = html.replace(regex, (match) => {
         anyMatch = true;
-        return `<span style="background:${c};color:#fff;padding:2px 7px;border-radius:3px;font-weight:600;white-space:nowrap;letter-spacing:0.01em">${match}</span>`;
+        return `<span style="background:${c};color:#fff;padding:1px 7px;border-radius:999px;font-weight:600;white-space:nowrap;font-size:0.92em">${match}</span>`;
       });
     }
     return anyMatch ? html : null;
   };
 
-  // Skapa wrapper-container
-  const container = d3.create("div")
-    .attr("class", "graf-container")
-    .attr("data-base-width", autoWidth);
+  // ── Ram ──
+  const ram = skapaRam({ title, subtitle, caption });
+  const container = ram.container;
+  container.attr("data-base-width", autoWidth);
 
-  // Header
-  const header = container.append("div")
-    .attr("class", "graf-header");
-
-  if (title) {
-    header.append("div")
-      .attr("class", "graf-title")
-      .text(title);
-  }
-
-  // ==========================================================================
-  // UNDERTITEL MED INTEGRERAD TIDSKONTROLL
-  // ==========================================================================
-  let timeControl = null;
-  let isAnimating = false;
-  let animationInterval = null;
-  let updateBars = null;  // Definieras senare
-
-  if (subtitle || hasTimeAnimation) {
-    // Inject CSS för tidskontroll (delad med scatterplot)
-    if (hasTimeAnimation && !document.getElementById("graf-time-control-styles")) {
-      const styles = document.createElement("style");
-      styles.id = "graf-time-control-styles";
-      styles.textContent = `
-        .graf-subtitle-wrapper {
-          display: flex;
-          align-items: baseline;
-          gap: 0;
-          flex-wrap: wrap;
-        }
-        .graf-subtitle-text {
-          font-family: 'IBM Plex Sans', sans-serif;
-          font-size: 14px;
-          color: #666;
-        }
-        .graf-time-control {
-          display: inline-flex;
-          align-items: center;
-          font-family: 'IBM Plex Sans', sans-serif;
-          user-select: none;
-          position: relative;
-        }
-        .graf-time-trigger {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          cursor: pointer;
-          padding: 2px 0;
-        }
-        .graf-time-year {
-          font-size: 14px;
-          font-weight: 600;
-          color: #1a1a1a;
-          text-decoration: underline;
-          text-decoration-color: #ccc;
-          text-underline-offset: 2px;
-          transition: text-decoration-color 0.15s;
-        }
-        .graf-time-trigger:hover .graf-time-year {
-          text-decoration-color: #00664D;
-        }
-        .graf-time-panel {
-          display: none;
-          position: absolute;
-          top: 50%;
-          left: 100%;
-          transform: translateY(-50%);
-          margin-left: 8px;
-          padding: 8px 12px;
-          background: #fff;
-          border: 1px solid #1a1a1a;
-          z-index: 100;
-          white-space: nowrap;
-        }
-        .graf-time-control.expanded .graf-time-panel {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .graf-time-slider {
-          width: 120px;
-          height: 4px;
-          -webkit-appearance: none;
-          appearance: none;
-          background: #ddd;
-          border-radius: 2px;
-          outline: none;
-          cursor: pointer;
-        }
-        .graf-time-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: #00664D;
-          cursor: pointer;
-          border: 2px solid #fff;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        .graf-time-slider::-moz-range-thumb {
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: #00664D;
-          cursor: pointer;
-          border: 2px solid #fff;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        .graf-time-play-btn {
-          width: 24px;
-          height: 24px;
-          border: none;
-          background: #1a1a1a;
-          border-radius: 3px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: background 0.15s;
-          color: #fff;
-          font-size: 10px;
-          line-height: 1;
-        }
-        .graf-time-play-btn:hover {
-          background: #333;
-        }
-        .graf-time-range {
-          font-size: 11px;
-          color: #888;
-        }
-      `;
-      document.head.appendChild(styles);
+  // Undertitel: färgade gruppnamn, eller aktuellt år vid årsval
+  const yearRangeMatch = (hasTimeAnimation && subtitle)
+    ? subtitle.match(/^(.+?)(\d{4})\s*[–\-]\s*(\d{4})(.*)$/) : null;
+  const sattUndertitel = () => {
+    if (yearRangeMatch) {
+      const [, prefix, , , suffix] = yearRangeMatch;
+      ram.setSubtitle(`${prefix.replace(/[,\s]+$/, "")}, ${currentTime}${suffix}`);
+      return;
     }
-
-    const subtitleWrapper = header.append("div")
-      .attr("class", "graf-subtitle-wrapper");
-
-    if (hasTimeAnimation && subtitle) {
-      // Dela upp subtitle för att ersätta årtalsspan
-      const yearRangeMatch = subtitle.match(/^(.+?)(\d{4})\s*[–\-]\s*(\d{4})(.*)$/);
-
-      if (yearRangeMatch) {
-        const [, prefix, startYear, endYear, suffix] = yearRangeMatch;
-
-        // Ta bort eventuellt komma/mellanslag i slutet av prefix
-        const cleanPrefix = prefix.replace(/[,\s]+$/, '');
-
-        subtitleWrapper.append("span")
-          .attr("class", "graf-subtitle-text")
-          .text(cleanPrefix);
-
-        timeControl = subtitleWrapper.append("span")
-          .attr("class", "graf-time-control");
-
-        const trigger = timeControl.append("span")
-          .attr("class", "graf-time-trigger");
-
-        trigger.append("span")
-          .text("\u00A0(");
-
-        trigger.append("span")
-          .attr("class", "graf-time-year")
-          .text(currentTime);
-
-        trigger.append("span")
-          .text(")");
-
-        const panel = timeControl.append("div")
-          .attr("class", "graf-time-panel");
-
-        panel.append("span")
-          .attr("class", "graf-time-range")
-          .text(allTimes[0]);
-
-        const slider = panel.append("input")
-          .attr("type", "range")
-          .attr("class", "graf-time-slider")
-          .attr("min", 0)
-          .attr("max", allTimes.length - 1)
-          .attr("value", allTimes.length - 1)
-          .on("input", function() {
-            if (isAnimating) stopAnimation();
-            currentTime = allTimes[+this.value];
-            updateTimeDisplay();
-            if (updateBars) updateBars(true);
-          });
-
-        panel.append("span")
-          .attr("class", "graf-time-range")
-          .text(allTimes[allTimes.length - 1]);
-
-        const playBtn = panel.append("button")
-          .attr("class", "graf-time-play-btn")
-          .attr("title", "Spela animation")
-          .html("▶")
-          .on("click", () => {
-            if (isAnimating) {
-              stopAnimation();
-            } else {
-              playAnimation();
-            }
-          });
-
-        if (suffix) {
-          subtitleWrapper.append("span")
-            .attr("class", "graf-subtitle-text")
-            .text(suffix);
-        }
-
-        // Hover-hantering
-        let hoverTimeout = null;
-        timeControl.on("mouseenter", () => {
-          clearTimeout(hoverTimeout);
-          timeControl.classed("expanded", true);
-        });
-        timeControl.on("mouseleave", () => {
-          clearTimeout(hoverTimeout);
-          hoverTimeout = setTimeout(() => {
-            timeControl.classed("expanded", false);
-          }, 300);
-        });
-
-        // Uppdatera slider vid animation
-        function updateTimeDisplay() {
-          const idx = allTimes.indexOf(currentTime);
-          slider.property("value", idx);
-          trigger.select(".graf-time-year").text(currentTime);
-        }
-
-        function playAnimation() {
-          if (isAnimating) return;
-          isAnimating = true;
-
-          playBtn.html("⏸");
-
-          let idx = 0;
-          currentTime = allTimes[0];
-          updateTimeDisplay();
-          if (updateBars) updateBars(true);
-
-          animationInterval = setInterval(() => {
-            idx++;
-            if (idx >= allTimes.length) {
-              stopAnimation();
-              return;
-            }
-            currentTime = allTimes[idx];
-            updateTimeDisplay();
-            if (updateBars) updateBars(true);
-          }, 500);
-        }
-
-        function stopAnimation() {
-          if (animationInterval) {
-            clearInterval(animationInterval);
-            animationInterval = null;
-          }
-          isAnimating = false;
-          playBtn.html("▶");
-        }
-
-      } else {
-        const el = subtitleWrapper.append("span").attr("class", "graf-subtitle-text");
-        const colored = colorizeSubtitle(subtitle);
-        colored ? el.html(colored) : el.text(subtitle);
-      }
-    } else if (subtitle) {
-      const el = subtitleWrapper.append("span").attr("class", "graf-subtitle-text");
-      const colored = colorizeSubtitle(subtitle);
-      colored ? el.html(colored) : el.text(subtitle);
-    }
-  }
-
-  // ==========================================================================
-  // INTERAKTIV HIGHLIGHT-VÄLJARE (via filterUtils)
-  // ==========================================================================
-  const mutedColor = "#d0d0d0";
-
-  const isHighlighted = (cat, groupKey) => {
-    return filterByColor
-      ? filterState.isHighlighted(groupKey || "_all")
-      : filterState.isHighlighted(cat);
+    const colored = colorizeSubtitle(subtitle);
+    if (colored) ram.subtitleEl.html(colored).style("display", null);
+    else ram.setSubtitle(subtitle);
   };
+  sattUndertitel();
 
+  const avlasning = ram.avlasning("Peka för värden");
+  const svg = ram.svg(autoWidth, chartHeight);
+
+  // ── Highlight-logik ──
+  const mutedColor = FARG.dampad;
+  const isHighlighted = (cat, groupKey) => filterByColor
+    ? filterState.isHighlighted(groupKey || "_all")
+    : filterState.isHighlighted(cat);
   const isStacked = color && !grouped;
-
   const getCategoryColor = (cat, groupKey = "_all") => {
-    // In stacked mode: always show the group color (muting via opacity instead)
     if (isStacked) return colorScale(groupKey);
     if (!isHighlighted(cat, groupKey)) return mutedColor;
     return colorScale(groupKey);
   };
-
   const getBarOpacity = (cat, groupKey = "_all") => {
     if (!isStacked) return 1;
     return isHighlighted(cat, groupKey) ? 1 : 0.3;
   };
 
+  let updateBars = null;
+
+  // Väljare i nedre raden
   let selectorCtrl = null;
   if (interactive) {
-    selectorCtrl = createSelectorPanel(header, {
+    selectorCtrl = createSelectorPanel(ram.controlsLeft, {
       filterState,
       allItems: filterByColor ? groups : categories,
       colorScale: (filterByColor || color) ? colorScale : () => colors[0],
-      triggerText: "Markera \u203a",
+      triggerText: "Markera",
       onUpdate: () => { if (updateBars) updateBars(); }
     });
   }
 
-  // Smart toggle: samma logik som selector-panelen
   const smartToggle = (item, allItems) => {
     const hl = filterState.getHighlight();
     const selectable = filterState.filterSet || allItems;
@@ -483,50 +213,31 @@ export function stapeldiagram(data, {
     }
   };
 
-  // Värde-display för hover
-  const valueDisplay = container.append("div")
-    .attr("class", "graf-value-display")
-    .html("<span style='opacity:0.35'>Peka för värden</span>");
-
-  // SVG-container
-  const svgContainer = container.append("div")
-    .attr("class", "graf-svg-container");
-
-  // Använd dynamisk höjd för horisontell
-  const chartHeight = horizontal ? dynamicHeight : height;
-
-  const svg = svgContainer.append("svg")
-    .attr("viewBox", `0 0 ${autoWidth} ${chartHeight}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .attr("class", "graf-svg");
-
-  // Hjälpfunktion för hover
+  // Avläsning vid hover
   const showValue = (category, values) => {
     const chips = values.map(v => {
       const label = v.label || "";
-      return `<span style="display:inline-flex;align-items:center;margin:0 8px"><span style="width:7px;height:7px;border-radius:50%;background:${v.color};margin-right:5px;flex-shrink:0"></span>${label ? `<span style="color:#666;margin-right:4px">${label}</span>` : ""}<b>${formatY(v.value)}</b></span>`;
+      return `<span style="display:inline-flex;align-items:center;margin-right:14px"><span style="width:7px;height:7px;border-radius:50%;background:${v.color};margin-right:5px;flex-shrink:0"></span>${label ? `<span style="margin-right:4px">${label}</span>` : ""}<b>${formatY(v.value)}</b></span>`;
     }).join("");
-    valueDisplay.html(`<span style="display:inline-flex;align-items:center;justify-content:center;width:100%"><b style="margin-right:8px">${category}</b><span style="opacity:0.2;margin-right:8px">│</span>${chips}</span>`);
+    avlasning.visa(`<b style="margin-right:10px">${category}</b>${chips}`);
   };
+  const hideValue = () => avlasning.rensa();
 
-  const hideValue = () => {
-    valueDisplay.html("<span style='opacity:0.35'>Peka för värden</span>");
-  };
+  // Måttets namn uppe till vänster
+  if (mattTitel) {
+    const pos = yTitelPos(horizontal ? axisLeft : marginLeft, marginTop);
+    yTitel(svg, { x: pos.x, y: pos.y, text: mattTitel });
+  }
 
   if (horizontal) {
     // =======================================================================
     // HORISONTELLT STAPELDIAGRAM (med valfri ranking-animation)
     // =======================================================================
-
-    // Initiala data (för senaste tidpunkten eller all data)
     let currentData = getDataForTime(currentTime);
     let sortedData = [...currentData].sort((a, b) => b[y] - a[y]);
     let sortedCategories = sortedData.map(d => d[x]);
-
-    // Alla kategorier (för konsekvent färgtilldelning)
     const allCategories = categories;
 
-    // Padding 0.33 ger ~2:1 ratio (bar:space) enligt Stephen Few
     const yScale = d3.scaleBand()
       .domain(sortedCategories)
       .range([marginTop, chartHeight - marginBottom])
@@ -534,65 +245,45 @@ export function stapeldiagram(data, {
 
     const xScale = d3.scaleLinear()
       .domain([valueNice.min, valueNice.max])
-      .range([axisLeft, autoWidth - marginRight]);
+      .range([axisLeft, plotRight]);
 
     const hasNegValues = dataMin < 0;
 
-    // Grupp för zebra-bakgrund (uppdateras vid animation)
     const zebraGroup = svg.append("g").attr("class", "zebra-group");
 
-    // Nollinje vid negativa värden
     if (hasNegValues) {
       svg.append("line")
         .attr("x1", xScale(0)).attr("x2", xScale(0))
         .attr("y1", marginTop).attr("y2", chartHeight - marginBottom)
-        .attr("stroke", "#999").attr("stroke-width", 1)
-        .attr("stroke-dasharray", "3,2");
+        .attr("stroke", FARG.noll).attr("stroke-width", 1);
     }
 
-    // X-axel (värden) - OWID-stil (ingen grid för horisontell - radavgränsare räcker)
+    // Värdeaxel nederst: bara etiketter
     svg.append("g")
       .attr("transform", `translate(0,${chartHeight - marginBottom})`)
       .call(d3.axisBottom(xScale).tickFormat(formatY).tickValues(valueNice.ticks).tickSize(0))
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick text")
-        .attr("fill", "#666")
-        .attr("font-size", "12px")
-        .attr("font-family", "'IBM Plex Sans', sans-serif"));
+        .attr("fill", FARG.text)
+        .attr("font-size", STORLEK.tick)
+        .attr("font-family", TYP.ui)
+        .style("font-variant-numeric", "tabular-nums"));
 
-    // X-label
-    if (xLabel) {
-      svg.append("text")
-        .attr("x", axisLeft + (autoWidth - marginRight - axisLeft) / 2)
-        .attr("y", hasTimeAnimation ? chartHeight - marginBottom + 28 : chartHeight - 8)
-        .attr("text-anchor", "middle")
-        .attr("class", "graf-axis-label")
-        .text(xLabel);
-    }
-
-    // Grupp för staplar och etiketter (för uppdatering)
     const barsGroup = svg.append("g").attr("class", "bars-group");
 
-    // Funktion för att rita/uppdatera staplar (med animation-stöd)
-    updateBars = function(animate = false) {
-      // Uppdatera data för aktuell tid
+    updateBars = function (animate = false) {
       currentData = getDataForTime(currentTime);
 
       if (isStacked) {
-        // =================================================================
-        // HORISONTELL STACKED
-        // =================================================================
-        // Sortera kategorier efter ordning i datan (behåll extern sortering)
+        // ── Horisontell staplad ──
         sortedCategories = categories;
         yScale.domain(sortedCategories);
 
-        // Diskreta radavgränsare: tunn hårlinje i mellanrummet mellan raderna
-        // (ersätter zebra-bakgrunden, som kunde misstas för en stapel)
         zebraGroup.selectAll("*").remove();
         for (let i = 0; i < sortedCategories.length - 1; i++) {
           const yMid = (yScale(sortedCategories[i]) + yScale.bandwidth() + yScale(sortedCategories[i + 1])) / 2;
           zebraGroup.append("line")
-            .attr("x1", axisLeft).attr("x2", autoWidth - marginRight)
+            .attr("x1", axisLeft).attr("x2", plotRight)
             .attr("y1", yMid).attr("y2", yMid)
             .attr("stroke", "#ededed").attr("stroke-width", 1);
         }
@@ -600,7 +291,6 @@ export function stapeldiagram(data, {
         const barHeight = yScale.bandwidth();
         barsGroup.selectAll("*").remove();
 
-        // Etiketter
         sortedCategories.forEach(cat => {
           const isHl = isHighlighted(cat, "_all");
           barsGroup.append("text")
@@ -608,14 +298,13 @@ export function stapeldiagram(data, {
             .attr("y", yScale(cat) + barHeight / 2)
             .attr("dy", "0.35em")
             .attr("text-anchor", "end")
-            .attr("font-family", "'IBM Plex Sans', sans-serif")
-            .attr("font-size", "13px")
-            .attr("font-weight", isHl ? "600" : "400")
-            .attr("fill", isHl ? "#1a1a1a" : "#999")
+            .attr("font-family", TYP.ui)
+            .attr("font-size", STORLEK.tickX)
+            .attr("font-weight", isHl ? 500 : 400)
+            .attr("fill", isHl ? FARG.ink : FARG.mjuk)
             .text(cat);
         });
 
-        // Stacked bars
         const stackedData = d3.stack()
           .keys(groups)
           .value((cat, key) => {
@@ -639,7 +328,7 @@ export function stapeldiagram(data, {
               .attr("opacity", baseOpacity)
               .attr("rx", 2)
               .style("cursor", "pointer")
-              .on("mouseenter", function() {
+              .on("mouseenter", function () {
                 d3.select(this).attr("opacity", Math.min(baseOpacity + 0.15, 1));
                 const catValues = groups.map(g => {
                   const item = data.find(item => item[x] === cat && item[color] === g);
@@ -647,33 +336,106 @@ export function stapeldiagram(data, {
                 });
                 showValue(cat, catValues);
               })
-              .on("mouseleave", function() {
+              .on("mouseleave", function () {
                 d3.select(this).attr("opacity", baseOpacity);
                 hideValue();
               })
-              .on("click", function() {
+              .on("click", function () {
                 smartToggle(cat, categories);
                 updateBars(false);
               });
           });
         });
 
-      } else {
-        // =================================================================
-        // HORISONTELL ENKEL / GROUPED (befintlig logik)
-        // =================================================================
-        sortedData = [...currentData].sort((a, b) => b[y] - a[y]);
-        sortedCategories = sortedData.map(d => d[x]);
-
-        // Uppdatera yScale domain
+      } else if (grouped && color) {
+        // ── Horisontell grupperad: en delstapel per grupp inom varje kategori ──
+        sortedCategories = categories;
         yScale.domain(sortedCategories);
+        const ySub = d3.scaleBand().domain(groups).range([0, yScale.bandwidth()]).padding(0.12);
+        const zeroX = xScale(0);
 
-        // Diskreta radavgränsare: tunn hårlinje i mellanrummet mellan raderna
         zebraGroup.selectAll("*").remove();
         for (let i = 0; i < sortedCategories.length - 1; i++) {
           const yMid = (yScale(sortedCategories[i]) + yScale.bandwidth() + yScale(sortedCategories[i + 1])) / 2;
           zebraGroup.append("line")
-            .attr("x1", axisLeft).attr("x2", autoWidth - marginRight)
+            .attr("x1", axisLeft).attr("x2", plotRight)
+            .attr("y1", yMid).attr("y2", yMid)
+            .attr("stroke", "#ededed").attr("stroke-width", 1);
+        }
+
+        barsGroup.selectAll("*").remove();
+        sortedCategories.forEach(cat => {
+          const anyHl = groups.some(g => isHighlighted(cat, g));
+          barsGroup.append("text")
+            .attr("x", axisLeft - 10)
+            .attr("y", yScale(cat) + yScale.bandwidth() / 2)
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "end")
+            .attr("font-family", TYP.ui)
+            .attr("font-size", STORLEK.tickX)
+            .attr("font-weight", anyHl ? 500 : 400)
+            .attr("fill", anyHl ? FARG.ink : FARG.mjuk)
+            .text(cat);
+
+          groups.forEach(g => {
+            const item = currentData.find(d => d[x] === cat && d[color] === g);
+            if (!item) return;
+            const v = item[y];
+            const valX = xScale(v);
+            const barColor = getCategoryColor(cat, g);
+            const isHl = isHighlighted(cat, g);
+            const by = yScale(cat) + ySub(g);
+            barsGroup.append("rect")
+              .attr("class", "bar-rect")
+              .attr("data-category", cat)
+              .attr("data-group", g)
+              .attr("x", Math.min(zeroX, valX))
+              .attr("y", by)
+              .attr("width", Math.max(0, Math.abs(valX - zeroX)))
+              .attr("height", ySub.bandwidth())
+              .attr("fill", barColor)
+              .attr("rx", 2)
+              .style("cursor", "pointer")
+              .on("mouseenter", function () {
+                d3.select(this).attr("opacity", 0.8);
+                const catValues = groups.map(gg => {
+                  const it = currentData.find(d => d[x] === cat && d[color] === gg);
+                  return { label: gg, value: it ? it[y] : 0, color: getCategoryColor(cat, gg) };
+                });
+                showValue(cat, catValues);
+              })
+              .on("mouseleave", function () {
+                d3.select(this).attr("opacity", 1);
+                hideValue();
+              })
+              .on("click", function () {
+                smartToggle(filterByColor ? g : cat, filterByColor ? groups : categories);
+                updateBars(false);
+              });
+            barsGroup.append("text")
+              .attr("x", v < 0 ? valX - 5 : valX + 5)
+              .attr("y", by + ySub.bandwidth() / 2)
+              .attr("dy", "0.35em")
+              .attr("text-anchor", v < 0 ? "end" : "start")
+              .attr("font-family", TYP.ui)
+              .attr("font-size", 11)
+              .attr("fill", isHl ? FARG.text : FARG.dampad)
+              .style("font-variant-numeric", "tabular-nums")
+              .text(formatY(v));
+          });
+        });
+
+      } else {
+        // ── Horisontell enkel (rankad) ──
+        sortedData = [...currentData].sort((a, b) => b[y] - a[y]);
+        sortedCategories = sortedData.map(d => d[x]);
+        yScale.domain(sortedCategories);
+
+        zebraGroup.selectAll("*").remove();
+        for (let i = 0; i < sortedCategories.length - 1; i++) {
+          const yMid = (yScale(sortedCategories[i]) + yScale.bandwidth() + yScale(sortedCategories[i + 1])) / 2;
+          zebraGroup.append("line")
+            .attr("x1", axisLeft).attr("x2", plotRight)
             .attr("y1", yMid).attr("y2", yMid)
             .attr("stroke", "#ededed").attr("stroke-width", 1);
         }
@@ -681,85 +443,71 @@ export function stapeldiagram(data, {
         const barHeight = yScale.bandwidth();
         const duration = animate ? 400 : 0;
 
-        // Data join för staplar
-        const barGroups = barsGroup.selectAll(".bar-group")
-          .data(sortedData, d => d[x]);
-
-        // Exit
+        const barGroups = barsGroup.selectAll(".bar-group").data(sortedData, d => d[x]);
         barGroups.exit().remove();
 
-        // Enter
         const barGroupsEnter = barGroups.enter()
           .append("g")
           .attr("class", "bar-group")
           .attr("transform", d => `translate(0, ${yScale(d[x])})`);
 
-        // Etikett (högerjusterad mot stapelstart)
         barGroupsEnter.append("text")
           .attr("class", "bar-label")
           .attr("x", axisLeft - 10)
           .attr("dy", "0.35em")
           .attr("text-anchor", "end")
-          .attr("font-family", "'IBM Plex Sans', sans-serif");
+          .attr("font-family", TYP.ui);
 
-        // Stapel
         barGroupsEnter.append("rect")
           .attr("class", "bar-rect")
           .attr("x", hasNegValues ? xScale(0) : axisLeft)
           .attr("rx", 3)
           .style("cursor", "pointer");
 
-        // Värde-etikett
         barGroupsEnter.append("text")
           .attr("class", "bar-value")
           .attr("dy", "0.35em")
           .attr("text-anchor", "start")
-          .attr("font-family", "'IBM Plex Sans', sans-serif");
+          .attr("font-family", TYP.ui)
+          .style("font-variant-numeric", "tabular-nums");
 
-        // Merge enter + update
         const allBarGroups = barGroupsEnter.merge(barGroups);
 
-        // Animera position
-        const transition = allBarGroups.transition().duration(duration)
+        allBarGroups.transition().duration(duration)
           .attr("transform", d => `translate(0, ${yScale(d[x])})`);
 
-        // Uppdatera innehåll
-        allBarGroups.each(function(d) {
+        allBarGroups.each(function (d) {
           const g = d3.select(this);
-          const catIndex = allCategories.indexOf(d[x]);
           const groupKey = color ? d[color] : "_all";
           const barColor = getCategoryColor(d[x], groupKey);
           const isHl = isHighlighted(d[x], groupKey);
 
-          // Etikett
           g.select(".bar-label")
             .attr("y", barHeight / 2)
-            .attr("fill", isHl ? "#1a1a1a" : "#999")
-            .attr("font-size", "13px")
-            .attr("font-weight", isHl ? "500" : "400")
+            .attr("fill", isHl ? FARG.ink : FARG.mjuk)
+            .attr("font-size", STORLEK.tickX)
+            .attr("font-weight", isHl ? 500 : 400)
             .text(d[x]);
 
-          // Stapel
           g.select(".bar-rect")
             .attr("data-category", d[x])
             .attr("data-group", groupKey)
             .attr("y", 0)
             .attr("height", barHeight)
             .attr("fill", barColor)
-            .on("mouseenter", function() {
+            .on("mouseenter", function () {
               d3.select(this).attr("opacity", 0.8);
               showValue(d[x], [{ label: hasTimeAnimation ? String(currentTime) : "", value: d[y], color: barColor }]);
             })
-            .on("mouseleave", function() {
+            .on("mouseleave", function () {
               d3.select(this).attr("opacity", 1);
               hideValue();
             })
-            .on("click", function() {
+            .on("click", function () {
               smartToggle(filterByColor ? groupKey : d[x], filterByColor ? groups : categories);
               updateBars(false);
             });
 
-          // Animera stapelbredd (hantera negativa värden)
           if (hasNegValues) {
             const zeroX = xScale(0);
             const valX = xScale(d[y]);
@@ -771,11 +519,10 @@ export function stapeldiagram(data, {
               .attr("width", Math.max(0, xScale(d[y]) - axisLeft));
           }
 
-          // Värde-etikett
           g.select(".bar-value")
             .attr("y", barHeight / 2)
-            .attr("fill", isHl ? "#666" : "#aaa")
-            .attr("font-size", "12px")
+            .attr("fill", isHl ? FARG.text : FARG.dampad)
+            .attr("font-size", STORLEK.tick)
             .attr("text-anchor", hasNegValues && d[y] < 0 ? "end" : "start")
             .text(formatY(d[y]));
 
@@ -784,16 +531,12 @@ export function stapeldiagram(data, {
         });
       }
 
-      // Uppdatera väljaren
-      if (selectorCtrl) {
-        selectorCtrl.update();
-      }
-    }
+      if (selectorCtrl) selectorCtrl.update();
+    };
 
-    // Initial rendering
     updateBars(false);
 
-    // Panel hover → chart highlight
+    // Panel-hover → markera stapel
     if (selectorCtrl) {
       const panelGrid = selectorCtrl.element.select(".graf-selector-grid");
       const matchAttrH = filterByColor ? "data-group" : "data-category";
@@ -806,13 +549,10 @@ export function stapeldiagram(data, {
         }
         const itemName = opt.querySelector(".opt-name")?.textContent;
         if (itemName) {
-          barsGroup.selectAll(".bar-rect").each(function() {
+          barsGroup.selectAll(".bar-rect").each(function () {
             const el = d3.select(this);
-            if (el.attr(matchAttrH) === itemName) {
-              el.attr("stroke", "#1a1a1a").attr("stroke-width", 2);
-            } else {
-              el.attr("stroke", "none");
-            }
+            if (el.attr(matchAttrH) === itemName) el.attr("stroke", FARG.ink).attr("stroke-width", 2);
+            else el.attr("stroke", "none");
           });
           if (filterByColor) {
             const total = d3.sum(getDataForTime(currentTime).filter(d => d[color] === itemName), d => d[y]);
@@ -834,59 +574,34 @@ export function stapeldiagram(data, {
       });
     }
 
-    // Tooltip for stacked horizontal
-    let stackedTooltip = null;
-    if (isStacked) {
-      container.style("position", "relative");
-      stackedTooltip = container.append("div")
-        .style("position", "absolute")
-        .style("display", "none")
-        .style("background", "#fff")
-        .style("border", "1px solid #1a1a1a")
-        .style("font-family", "'IBM Plex Sans', sans-serif")
-        .style("font-size", "11px")
-        .style("pointer-events", "none")
-        .style("z-index", "1000")
-        .style("box-shadow", "0 2px 8px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.08)")
-        .style("overflow", "hidden");
-    }
+    // Tooltip för staplad horisontell
+    const tooltip = isStacked ? skapaTooltip(ram.body) : null;
 
-    // Crosshair + highlight för horisontell
     const crosshair = svg.append("line")
       .attr("class", "crosshair")
-      .attr("x1", axisLeft)
-      .attr("x2", autoWidth - marginRight)
-      .attr("stroke", "#bbb")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "4,3")
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .attr("x1", axisLeft).attr("x2", plotRight)
+      .attr("stroke", "#9a9f9d").attr("stroke-width", 1).attr("stroke-dasharray", "3,3")
+      .style("opacity", 0).style("pointer-events", "none");
 
-    // Highlight-panel för kategori (subtil bakgrund)
     const highlightPanel = svg.insert("rect", ".bars-group")
       .attr("class", "highlight-panel")
-      .attr("fill", "#f5f5f5")
-      .attr("stroke", "none")
-      .attr("rx", 3)
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .attr("fill", "#f3f5f4").attr("stroke", "none").attr("rx", 3)
+      .style("opacity", 0).style("pointer-events", "none");
 
-    // Highlight-ram för enskilda staplar
     const highlightRect = svg.append("rect")
       .attr("class", "highlight-rect")
-      .attr("fill", "none")
-      .attr("stroke", "#1a1a1a")
-      .attr("stroke-width", 2)
-      .attr("rx", 3)
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .attr("fill", "none").attr("stroke", FARG.ink).attr("stroke-width", 1.5).attr("rx", 3)
+      .style("opacity", 0).style("pointer-events", "none");
+
+    const svgTillCss = (mx, my) => {
+      const s = svg.node().getBoundingClientRect(), b = ram.body.node().getBoundingClientRect();
+      return { x: s.left - b.left + mx * (s.width / autoWidth), y: s.top - b.top + my * (s.height / chartHeight) };
+    };
 
     svg.append("rect")
       .attr("class", "overlay")
-      .attr("x", axisLeft)
-      .attr("y", marginTop)
-      .attr("width", autoWidth - marginRight - axisLeft)
-      .attr("height", chartHeight - marginTop - marginBottom)
+      .attr("x", axisLeft).attr("y", marginTop)
+      .attr("width", plotRight - axisLeft).attr("height", chartHeight - marginTop - marginBottom)
       .attr("fill", "transparent")
       .style("cursor", "default")
       .on("mouseenter", () => crosshair.style("opacity", 1))
@@ -894,139 +609,95 @@ export function stapeldiagram(data, {
         crosshair.style("opacity", 0);
         highlightPanel.style("opacity", 0);
         highlightRect.style("opacity", 0);
-        if (stackedTooltip) {
-          stackedTooltip.style("display", "none");
+        if (tooltip) {
+          tooltip.dolj();
           barsGroup.selectAll("rect[data-category]").attr("stroke", "none");
         }
         hideValue();
       })
-      .on("mousemove", function(event) {
+      .on("mousemove", function (event) {
         const [mx, my] = d3.pointer(event);
         crosshair.attr("y1", my).attr("y2", my);
 
-        let closestCat = null;
-        let minDist = Infinity;
+        let closestCat = null, minDist = Infinity;
         for (const cat of sortedCategories) {
           const catY = yScale(cat) + yScale.bandwidth() / 2;
           const dist = Math.abs(my - catY);
-          if (dist < minDist) {
-            minDist = dist;
-            closestCat = cat;
-          }
+          if (dist < minDist) { minDist = dist; closestCat = cat; }
         }
 
         if (closestCat && minDist < yScale.bandwidth()) {
           const barY = yScale(closestCat);
 
-          if (isStacked && stackedTooltip) {
-            // Stacked: tooltip popup
+          if (isStacked && tooltip) {
             highlightPanel
-              .attr("x", 18)
-              .attr("y", barY - 4)
-              .attr("width", autoWidth - 36)
-              .attr("height", yScale.bandwidth() + 8)
+              .attr("x", 18).attr("y", barY - 4)
+              .attr("width", autoWidth - 36).attr("height", yScale.bandwidth() + 8)
               .style("opacity", 1);
             highlightRect.style("opacity", 0);
 
-            // Find which segment the mouse is over
             let hoveredGroup = null;
-            barsGroup.selectAll("rect[data-category]").each(function() {
+            barsGroup.selectAll("rect[data-category]").each(function () {
               const el = d3.select(this);
               if (el.attr("data-category") === closestCat) {
                 const rx = +el.attr("x"), rw = +el.attr("width");
-                if (mx >= rx && mx <= rx + rw) {
-                  hoveredGroup = el.attr("data-group");
-                }
+                if (mx >= rx && mx <= rx + rw) hoveredGroup = el.attr("data-group");
               }
             });
-
-            // Highlight hovered segment
-            barsGroup.selectAll("rect[data-category]").each(function() {
+            barsGroup.selectAll("rect[data-category]").each(function () {
               const el = d3.select(this);
-              if (el.attr("data-category") === closestCat && el.attr("data-group") === hoveredGroup) {
-                el.attr("stroke", "#fff").attr("stroke-width", 2);
-              } else {
-                el.attr("stroke", "none");
-              }
+              if (el.attr("data-category") === closestCat && el.attr("data-group") === hoveredGroup) el.attr("stroke", "#fff").attr("stroke-width", 2);
+              else el.attr("stroke", "none");
             });
 
-            // Build tooltip
-            const catValues = groups.map(g => {
+            const rader = groups.map(g => {
               const item = data.find(item => item[x] === closestCat && item[color] === g);
-              return { label: g, value: item ? item[y] : 0, color: getCategoryColor(closestCat, g) };
-            });
+              return { namn: g, value: item ? item[y] : 0, farg: getCategoryColor(closestCat, g), fokus: g === hoveredGroup };
+            }).filter(r => r.value !== 0).map(r => ({ ...r, varde: formatY(r.value) }));
 
-            let html = `<div style="font-size:12px;font-weight:700;color:#fff;background:#1a1a1a;padding:5px 10px;letter-spacing:0.02em">${closestCat}</div>`;
-            html += `<div style="display:flex;flex-direction:column">`;
-            for (const v of catValues) {
-              if (v.value === 0) continue;
-              const focused = v.label === hoveredGroup;
-              html += `<div style="display:flex;align-items:center;gap:6px;padding:3px 10px;line-height:1.3${focused ? ";background:#f0f0f0" : ""}">`;
-              html += `<span style="width:8px;height:8px;border-radius:2px;background:${v.color};flex-shrink:0"></span>`;
-              html += `<span style="color:${focused ? "#1a1a1a" : "#666"};flex:1;white-space:nowrap${focused ? ";font-weight:600" : ""}">${v.label}</span>`;
-              html += `<span style="font-weight:600;font-variant-numeric:tabular-nums;color:#1a1a1a;margin-left:8px">${formatY(v.value)}</span>`;
-              html += `</div>`;
-            }
-            html += `</div>`;
-
-            stackedTooltip.html(html).style("display", "block");
-
-            // Position tooltip
-            const svgRect = svgContainer.node().getBoundingClientRect();
-            const containerRect = container.node().getBoundingClientRect();
-            const tooltipRect = stackedTooltip.node().getBoundingClientRect();
-            const pixelX = mx * (svgRect.width / autoWidth) + svgRect.left - containerRect.left;
-            const pixelY = my * (svgRect.height / chartHeight) + svgRect.top - containerRect.top;
-
-            let tooltipX = pixelX + 15;
-            let tooltipY = pixelY - tooltipRect.height / 2;
-            if (tooltipX + tooltipRect.width > containerRect.width - 10) {
-              tooltipX = pixelX - tooltipRect.width - 15;
-            }
-            tooltipY = Math.max(10, Math.min(tooltipY, containerRect.height - tooltipRect.height - 10));
-
-            stackedTooltip.style("left", tooltipX + "px").style("top", tooltipY + "px");
+            const p = svgTillCss(mx, my);
+            tooltip.visa(tooltipHtml(closestCat, rader), { x: p.x, y: p.y });
           } else {
-            if (stackedTooltip) stackedTooltip.style("display", "none");
+            if (tooltip) tooltip.dolj();
             const item = currentData.find(d => d[x] === closestCat);
             if (item) {
               const groupKey = color ? item[color] : "_all";
-
               if (color) {
                 highlightPanel
-                  .attr("x", 18)
-                  .attr("y", barY - 4)
-                  .attr("width", autoWidth - 36)
-                  .attr("height", yScale.bandwidth() + 8)
+                  .attr("x", 18).attr("y", barY - 4)
+                  .attr("width", autoWidth - 36).attr("height", yScale.bandwidth() + 8)
                   .style("opacity", 1);
                 highlightRect.style("opacity", 0);
+                if (grouped) {
+                  showValue(closestCat, groups.map(g => {
+                    const it = currentData.find(d => d[x] === closestCat && d[color] === g);
+                    return { label: g, value: it ? it[y] : 0, color: getCategoryColor(closestCat, g) };
+                  }));
+                  return;
+                }
               } else {
                 const barWidth = Math.max(0, xScale(item[y]) - axisLeft);
                 highlightRect
-                  .attr("x", axisLeft - 2)
-                  .attr("y", barY - 2)
-                  .attr("width", barWidth + 4)
-                  .attr("height", yScale.bandwidth() + 4)
+                  .attr("x", axisLeft - 2).attr("y", barY - 2)
+                  .attr("width", barWidth + 4).attr("height", yScale.bandwidth() + 4)
                   .style("opacity", 1);
                 highlightPanel.style("opacity", 0);
               }
-
               showValue(closestCat, [{ label: hasTimeAnimation ? String(currentTime) : "", value: item[y], color: colorScale(groupKey) }]);
             }
           }
         } else {
           highlightPanel.style("opacity", 0);
           highlightRect.style("opacity", 0);
-          if (stackedTooltip) {
-            stackedTooltip.style("display", "none");
+          if (tooltip) {
+            tooltip.dolj();
             barsGroup.selectAll("rect[data-category]").attr("stroke", "none");
           }
         }
       })
-      .on("click", function(event) {
+      .on("click", function (event) {
         const [, my] = d3.pointer(event);
-        let closestCat = null;
-        let minDist = Infinity;
+        let closestCat = null, minDist = Infinity;
         for (const cat of sortedCategories) {
           const catY = yScale(cat) + yScale.bandwidth() / 2;
           const dist = Math.abs(my - catY);
@@ -1045,107 +716,58 @@ export function stapeldiagram(data, {
 
   } else {
     // =======================================================================
-    // VERTIKALT STAPELDIAGRAM (original)
+    // VERTIKALT STAPELDIAGRAM
     // =======================================================================
-
-    const innerWidth = autoWidth - axisLeft - marginRight;
+    const innerWidth = plotRight - axisLeft;
 
     const xScale = d3.scaleBand()
       .domain(categories)
-      .range([axisLeft, autoWidth - marginRight])
+      .range([axisLeft, plotRight])
       .padding(0.25);
 
     const xSubScale = grouped && color
-      ? d3.scaleBand()
-          .domain(groups)
-          .range([0, xScale.bandwidth()])
-          .padding(0.08)
+      ? d3.scaleBand().domain(groups).range([0, xScale.bandwidth()]).padding(0.08)
       : null;
 
     const yScale = d3.scaleLinear()
       .domain([0, valueNice.max])
       .range([height - marginBottom, marginTop]);
 
-    // X-axel
-    svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(xScale).tickSizeOuter(0))
-      .call(g => g.select(".domain").attr("stroke", "#1a1a1a"))
-      .call(g => g.selectAll(".tick line").remove())
-      .call(g => g.selectAll(".tick text")
-        .attr("fill", "#1a1a1a")
-        .attr("font-size", "13px")
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
-        .attr("transform", categories.length > 6 ? "rotate(-35)" : null)
-        .attr("text-anchor", categories.length > 6 ? "end" : "middle")
-        .attr("dy", categories.length > 6 ? "0.5em" : "0.71em"));
-
-    // X-label
-    if (xLabel) {
-      svg.append("text")
-        .attr("x", axisLeft + innerWidth / 2)
-        .attr("y", height - 6)
-        .attr("text-anchor", "middle")
-        .attr("class", "graf-axis-label")
-        .text(xLabel);
-    }
-
-    // Grid lines - OWID-stil (horisontella streckade linjer)
+    // Grid först (bakom staplarna)
+    const gridGroup = svg.append("g").attr("class", "grid-lines");
     if (showGrid) {
-      const gridGroup = svg.insert("g", ":first-child").attr("class", "grid-lines");
-      // Färre linjer: hoppa över varje tick om det blir för många
       const gridTicks = valueNice.ticks.length > 6
         ? valueNice.ticks.filter((_, i) => i % 2 === 0)
         : valueNice.ticks;
-      gridTicks.forEach(tickVal => {
-        const tickY = yScale(tickVal);
-        gridGroup.append("line")
-          .attr("x1", axisLeft)
-          .attr("x2", autoWidth - marginRight)
-          .attr("y1", tickY)
-          .attr("y2", tickY)
-          .attr("stroke", "#e0e0e0")
-          .attr("stroke-width", 1)
-          .attr("stroke-dasharray", "12,6");
-      });
+      ritaGrid(gridGroup, { ticks: gridTicks, scale: yScale, x1: axisLeft, x2: plotRight, noll: 0 });
     }
 
-    // Y-axel - OWID-stil: bara tick-labels, ingen axellinje
-    svg.append("g")
+    // Kategoriaxel
+    const xAxisG = svg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(xScale).tickSizeOuter(0).tickSize(0));
+    stilXAxel(xAxisG);
+    xAxisG.selectAll(".tick text")
+      .attr("transform", rotera ? "rotate(-35)" : null)
+      .attr("text-anchor", rotera ? "end" : "middle")
+      .attr("dy", rotera ? "0.5em" : "0.9em");
+
+    if (xLabel) xTitel(svg, { x: axisLeft + innerWidth / 2, y: height - 6, text: xLabel });
+
+    // Värdeaxel: bara etiketter
+    const yAxisG = svg.append("g")
       .attr("transform", `translate(${axisLeft},0)`)
-      .call(d3.axisLeft(yScale).tickFormat(formatY).tickValues(valueNice.ticks))
-      .call(g => g.select(".domain").remove())
-      .call(g => g.selectAll(".tick line").remove())
-      .call(g => g.selectAll(".tick text")
-        .attr("x", -8)
-        .attr("text-anchor", "end")
-        .attr("fill", "#666")
-        .attr("font-size", "12px")
-        .attr("font-family", "'IBM Plex Sans', sans-serif"));
+      .call(d3.axisLeft(yScale).tickFormat(formatY).tickValues(valueNice.ticks));
+    stilYAxel(yAxisG);
 
-    // Y-label
-    if (yLabel) {
-      svg.append("text")
-        .attr("x", axisLeft + 4)
-        .attr("y", marginTop - 10)
-        .attr("text-anchor", "start")
-        .attr("font-family", "'IBM Plex Sans', sans-serif")
-        .attr("font-size", "13px")
-        .attr("fill", "#1a1a1a")
-        .text(yLabel);
-    }
-
-    // Grupp för staplar (för uppdatering)
     const barsGroup = svg.append("g").attr("class", "bars-group");
 
-    // Funktion för att rita/uppdatera staplar
-    updateBars = function() {
+    updateBars = function () {
       barsGroup.selectAll("*").remove();
 
       if (grouped && color) {
         for (const group of groups) {
           const groupData = data.filter(d => d[color] === group);
-
           groupData.forEach(d => {
             const barColor = getCategoryColor(d[x], group);
             barsGroup.append("rect")
@@ -1158,7 +780,7 @@ export function stapeldiagram(data, {
               .attr("fill", barColor)
               .attr("rx", 2)
               .style("cursor", "pointer")
-              .on("mouseenter", function() {
+              .on("mouseenter", function () {
                 d3.select(this).attr("opacity", 0.8);
                 const catValues = groups.map(g => {
                   const item = data.find(item => item[x] === d[x] && item[color] === g);
@@ -1166,11 +788,11 @@ export function stapeldiagram(data, {
                 });
                 showValue(d[x], catValues);
               })
-              .on("mouseleave", function() {
+              .on("mouseleave", function () {
                 d3.select(this).attr("opacity", 1);
                 hideValue();
               })
-              .on("click", function() {
+              .on("click", function () {
                 smartToggle(filterByColor ? group : d[x], filterByColor ? groups : categories);
                 updateBars();
               });
@@ -1184,7 +806,7 @@ export function stapeldiagram(data, {
             return found ? found[y] : 0;
           })(categories);
 
-        stackedData.forEach((layerData, layerIdx) => {
+        stackedData.forEach((layerData) => {
           layerData.forEach((d, i) => {
             const cat = categories[i];
             const barColor = getCategoryColor(cat, layerData.key);
@@ -1200,7 +822,7 @@ export function stapeldiagram(data, {
               .attr("opacity", baseOpacity)
               .attr("rx", 2)
               .style("cursor", "pointer")
-              .on("mouseenter", function() {
+              .on("mouseenter", function () {
                 d3.select(this).attr("opacity", Math.min(baseOpacity + 0.15, 1));
                 const catValues = groups.map(g => {
                   const item = data.find(item => item[x] === cat && item[color] === g);
@@ -1208,11 +830,11 @@ export function stapeldiagram(data, {
                 });
                 showValue(cat, catValues);
               })
-              .on("mouseleave", function() {
+              .on("mouseleave", function () {
                 d3.select(this).attr("opacity", baseOpacity);
                 hideValue();
               })
-              .on("click", function() {
+              .on("click", function () {
                 smartToggle(filterByColor ? layerData.key : cat, filterByColor ? groups : categories);
                 updateBars();
               });
@@ -1231,31 +853,26 @@ export function stapeldiagram(data, {
             .attr("fill", barColor)
             .attr("rx", 2)
             .style("cursor", "pointer")
-            .on("mouseenter", function() {
+            .on("mouseenter", function () {
               d3.select(this).attr("opacity", 0.8);
               showValue(d[x], [{ label: yLabel || "Värde", value: d[y], color: barColor }]);
             })
-            .on("mouseleave", function() {
+            .on("mouseleave", function () {
               d3.select(this).attr("opacity", 1);
               hideValue();
             })
-            .on("click", function() {
+            .on("click", function () {
               smartToggle(d[x], categories);
               updateBars();
             });
         });
       }
 
-      // Uppdatera väljaren
-      if (selectorCtrl) {
-        selectorCtrl.update();
-      }
+      if (selectorCtrl) selectorCtrl.update();
     };
 
-    // Initial rendering
     updateBars();
 
-    // Panel hover → chart highlight
     if (selectorCtrl) {
       const panelGrid = selectorCtrl.element.select(".graf-selector-grid");
       const matchAttrV = filterByColor ? "data-group" : "data-category";
@@ -1268,13 +885,10 @@ export function stapeldiagram(data, {
         }
         const itemName = opt.querySelector(".opt-name")?.textContent;
         if (itemName) {
-          barsGroup.selectAll("rect[data-category]").each(function() {
+          barsGroup.selectAll("rect[data-category]").each(function () {
             const el = d3.select(this);
-            if (el.attr(matchAttrV) === itemName) {
-              el.attr("stroke", "#1a1a1a").attr("stroke-width", 2);
-            } else {
-              el.attr("stroke", "none");
-            }
+            if (el.attr(matchAttrV) === itemName) el.attr("stroke", FARG.ink).attr("stroke-width", 2);
+            else el.attr("stroke", "none");
           });
           if (filterByColor) {
             const total = d3.sum(data.filter(d => d[color] === itemName), d => d[y]);
@@ -1296,45 +910,26 @@ export function stapeldiagram(data, {
       });
     }
 
-    // Crosshair + highlight för vertikal stapeldiagram
     const crosshair = svg.append("line")
       .attr("class", "crosshair")
-      .attr("y1", marginTop)
-      .attr("y2", height - marginBottom)
-      .attr("stroke", "#bbb")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "4,3")
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .attr("y1", marginTop).attr("y2", height - marginBottom)
+      .attr("stroke", "#9a9f9d").attr("stroke-width", 1).attr("stroke-dasharray", "3,3")
+      .style("opacity", 0).style("pointer-events", "none");
 
-    // Highlight-panel för kategori (subtil bakgrund för grouped, ram för enkel)
     const highlightPanel = svg.insert("rect", ":first-child")
       .attr("class", "highlight-panel")
-      .attr("fill", "#f5f5f5")
-      .attr("stroke", "none")
-      .attr("rx", 3)
-      .style("opacity", 0)
-      .style("pointer-events", "none");
+      .attr("fill", "#f3f5f4").attr("stroke", "none").attr("rx", 3)
+      .style("opacity", 0).style("pointer-events", "none");
 
-    // Highlight-ram för enskilda staplar (endast för icke-grupperade)
     const highlightRect = svg.append("rect")
       .attr("class", "highlight-rect")
-      .attr("fill", "none")
-      .attr("stroke", "#1a1a1a")
-      .attr("stroke-width", 2)
-      .attr("rx", 2)
-      .style("opacity", 0)
-      .style("pointer-events", "none");
-
-    const isGrouped = (grouped && color) || (color && !grouped);
-    let currentHighlightCat = null;
+      .attr("fill", "none").attr("stroke", FARG.ink).attr("stroke-width", 1.5).attr("rx", 2)
+      .style("opacity", 0).style("pointer-events", "none");
 
     svg.append("rect")
       .attr("class", "overlay")
-      .attr("x", axisLeft)
-      .attr("y", marginTop)
-      .attr("width", autoWidth - marginRight - axisLeft)
-      .attr("height", height - marginTop - marginBottom)
+      .attr("x", axisLeft).attr("y", marginTop)
+      .attr("width", innerWidth).attr("height", height - marginTop - marginBottom)
       .attr("fill", "transparent")
       .style("cursor", "default")
       .on("mouseenter", () => crosshair.style("opacity", 1))
@@ -1342,173 +937,123 @@ export function stapeldiagram(data, {
         crosshair.style("opacity", 0);
         highlightPanel.style("opacity", 0);
         highlightRect.style("opacity", 0);
-        currentHighlightCat = null;
         hideValue();
       })
-      .on("mousemove", function(event) {
+      .on("mousemove", function (event) {
         const [mx] = d3.pointer(event);
         crosshair.attr("x1", mx).attr("x2", mx);
 
-        // Hitta närmaste kategori
-        let closestCat = null;
-        let minDist = Infinity;
+        let closestCat = null, minDist = Infinity;
         for (const cat of categories) {
           const catX = xScale(cat) + xScale.bandwidth() / 2;
           const dist = Math.abs(mx - catX);
-          if (dist < minDist) {
-            minDist = dist;
-            closestCat = cat;
-          }
+          if (dist < minDist) { minDist = dist; closestCat = cat; }
         }
 
         if (closestCat && minDist < xScale.bandwidth()) {
-          currentHighlightCat = closestCat;
           const barX = xScale(closestCat);
-
           if (color) {
-            // Grouped eller stacked: visa subtil panel över hela kategorin
             highlightPanel
-              .attr("x", barX - 4)
-              .attr("y", marginTop)
-              .attr("width", xScale.bandwidth() + 8)
-              .attr("height", height - marginBottom - marginTop)
+              .attr("x", barX - 4).attr("y", marginTop)
+              .attr("width", xScale.bandwidth() + 8).attr("height", height - marginBottom - marginTop)
               .style("opacity", 1);
             highlightRect.style("opacity", 0);
-
             const catValues = groups.map(g => {
               const item = data.find(item => item[x] === closestCat && item[color] === g);
               return { label: g, value: item ? item[y] : 0, color: colorScale(g) };
             });
             showValue(closestCat, catValues);
           } else {
-            // Enkel stapel: visa ram runt stapeln
             const item = data.find(d => d[x] === closestCat);
             if (item) {
               const barY = yScale(item[y]);
               const barHeight = yScale(0) - yScale(item[y]);
-
               highlightRect
-                .attr("x", barX - 2)
-                .attr("y", barY - 2)
-                .attr("width", xScale.bandwidth() + 4)
-                .attr("height", barHeight + 4)
+                .attr("x", barX - 2).attr("y", barY - 2)
+                .attr("width", xScale.bandwidth() + 4).attr("height", barHeight + 4)
                 .style("opacity", 1);
               highlightPanel.style("opacity", 0);
-
               showValue(closestCat, [{ label: "", value: item[y], color: colors[0] }]);
             }
           }
         } else {
           highlightPanel.style("opacity", 0);
           highlightRect.style("opacity", 0);
-          currentHighlightCat = null;
         }
       })
-      .on("click", function(event) {
+      .on("click", function (event) {
         const [mx, my] = d3.pointer(event);
         if (filterByColor) {
           let clickedGroup = null;
-          barsGroup.selectAll("rect[data-group]").each(function() {
+          barsGroup.selectAll("rect[data-group]").each(function () {
             const rect = d3.select(this);
             const bx = +rect.attr("x"), by = +rect.attr("y");
             const bw = +rect.attr("width"), bh = +rect.attr("height");
-            if (mx >= bx && mx <= bx + bw && my >= by && my <= by + bh) {
-              clickedGroup = rect.attr("data-group");
-            }
+            if (mx >= bx && mx <= bx + bw && my >= by && my <= by + bh) clickedGroup = rect.attr("data-group");
           });
-          if (clickedGroup) {
-            smartToggle(clickedGroup, groups);
-            updateBars();
-          }
+          if (clickedGroup) { smartToggle(clickedGroup, groups); updateBars(); }
         } else {
-          let closestCat = null;
-          let minDist = Infinity;
+          let closestCat = null, minDist = Infinity;
           for (const cat of categories) {
             const catX = xScale(cat) + xScale.bandwidth() / 2;
             const dist = Math.abs(mx - catX);
             if (dist < minDist) { minDist = dist; closestCat = cat; }
           }
-          if (closestCat && minDist < xScale.bandwidth()) {
-            smartToggle(closestCat, categories);
-            updateBars();
-          }
+          if (closestCat && minDist < xScale.bandwidth()) { smartToggle(closestCat, categories); updateBars(); }
         }
       });
   }
 
-  // Legend om color finns
+  // ── År (nedre raden, rullgardin) ──
+  if (hasTimeAnimation) {
+    valPill(ram.controlsLeft, {
+      label: "År", options: allTimes.map(String), activeIndex: allTimes.indexOf(currentTime), body: ram.body,
+      onSelect: (i) => {
+        currentTime = allTimes[i];
+        sattUndertitel();
+        if (updateBars) updateBars(true);
+      }
+    });
+  }
+
+  // ── Legend ──
   if (showLegend && color && groups.length > 1 && groups[0] !== "_all" && !(interactive && filterByColor)) {
     if (isStacked && horizontal) {
-      // HTML-legend ovanför diagrammet för stacked horisontell
-      const legendDiv = container.insert("div", ".graf-svg-container")
+      // HTML-legend ovanför diagrammet
+      const legendDiv = container.insert("div", ".graf-body")
+        .attr("class", "graf-legend")
         .style("display", "flex")
         .style("flex-wrap", "wrap")
-        .style("justify-content", "center")
         .style("gap", "4px 16px")
-        .style("padding", "0 0 8px 0")
-        .style("font-family", "'IBM Plex Sans', sans-serif")
-        .style("font-size", "12px");
-
+        .style("padding", "0.2rem 1.4rem 0.4rem")
+        .style("font-size", "12px")
+        .style("color", FARG.text);
       groups.forEach(group => {
         const item = legendDiv.append("span")
-          .style("display", "inline-flex")
-          .style("align-items", "center")
-          .style("gap", "5px");
-
+          .style("display", "inline-flex").style("align-items", "center").style("gap", "6px");
         item.append("span")
-          .style("width", "12px")
-          .style("height", "12px")
-          .style("border-radius", "2px")
-          .style("background", colorScale(group))
-          .style("flex-shrink", "0");
-
-        item.append("span")
-          .style("color", "#444")
-          .text(group);
+          .style("width", "10px").style("height", "10px").style("border-radius", "50%")
+          .style("background", colorScale(group)).style("flex-shrink", "0");
+        item.append("span").text(group);
       });
     } else {
-      // SVG-legend till höger (standard)
       const legend = svg.append("g")
-        .attr("transform", `translate(${autoWidth - marginRight + 20}, ${marginTop + 10})`);
-
+        .attr("transform", `translate(${plotRight + 20}, ${marginTop + 6})`);
       groups.forEach((group, i) => {
-        const g = legend.append("g")
-          .attr("transform", `translate(0, ${i * 24})`);
-
-        g.append("rect")
-          .attr("width", 18)
-          .attr("height", 18)
-          .attr("fill", colorScale(group))
-          .attr("rx", 2);
-
+        const g = legend.append("g").attr("transform", `translate(0, ${i * 22})`);
+        g.append("rect").attr("width", 12).attr("height", 12).attr("y", 1).attr("fill", colorScale(group)).attr("rx", 2);
         g.append("text")
-          .attr("x", 26)
-          .attr("y", 14)
-          .attr("font-size", "12px")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
-          .attr("fill", "#1a1a1a")
+          .attr("x", 18).attr("y", 11)
+          .attr("font-size", STORLEK.etikett)
+          .attr("font-family", TYP.ui)
+          .attr("fill", FARG.ink)
           .text(group);
       });
     }
   }
 
-  // Caption
-  if (caption) {
-    container.append("div")
-      .attr("class", "graf-caption")
-      .text(caption);
-  }
-
-  // Export-knapp och logga
   addExportButton(container, svg.node(), {
-    title,
-    subtitle,
-    caption,
-    width: autoWidth,
-    height: chartHeight,
-    altText,
-    info,
-    logo
+    title, subtitle, caption, width: autoWidth, height: chartHeight, altText, info, logo
   });
 
   return container.node();

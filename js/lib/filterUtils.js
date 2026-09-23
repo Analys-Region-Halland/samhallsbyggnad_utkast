@@ -130,194 +130,10 @@ export function createFilterState(data, { itemField, groupField = null, filter =
 }
 
 /**
- * Injicerar CSS for selector-paneler (en gang).
+ * CSS för selector-panelen ligger i style.scss (GRAFSYSTEM). Behålls som no-op
+ * för bakåtkompatibilitet.
  */
-export function injectSelectorCSS() {
-  if (document.getElementById("graf-selector-styles")) return;
-  const styles = document.createElement("style");
-  styles.id = "graf-selector-styles";
-  styles.textContent = `
-    .graf-selector {
-      position: relative;        /* ankare för overlay-panelen */
-      margin-top: 5px;
-      font-family: 'Inter', system-ui, sans-serif;
-      user-select: none;
-    }
-    .graf-selector-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      color: var(--accent, #00664D);
-      cursor: pointer;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--accent, #00664D) 9%, #fff);
-      border: 1px solid color-mix(in srgb, var(--accent, #00664D) 26%, transparent);
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .graf-selector-trigger:hover {
-      background: color-mix(in srgb, var(--accent, #00664D) 15%, #fff);
-      border-color: color-mix(in srgb, var(--accent, #00664D) 46%, transparent);
-    }
-    .graf-selector-panel {
-      display: none;
-      position: absolute;        /* OVERLAY — ligger utanpå grafen, knuffar inget */
-      top: calc(100% + 7px);
-      left: 0;
-      z-index: 30;
-      padding: 11px 13px;
-      background: #fff;
-      border: 1px solid color-mix(in srgb, var(--accent, #00664D) 18%, #d6d6d6);
-      border-radius: 13px;
-      box-shadow: 0 18px 44px -18px rgba(20, 31, 25, 0.34), 0 2px 8px rgba(20, 31, 25, 0.07);
-      width: max-content;
-      max-width: min(480px, 86vw);
-    }
-    .graf-selector.expanded .graf-selector-panel {
-      display: block;
-    }
-    /* Flex-wrap av chips — kan ALDRIG överlappa (till skillnad mot kolumner/grid
-       med nowrap-namn), och ingen scroll. Varje chip tar sin naturliga bredd. */
-    .graf-selector-grid {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 7px;
-    }
-    .graf-selector-group-header {
-      flex-basis: 100%;
-      width: 100%;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-top: 9px;
-      margin-bottom: 4px;
-      padding-bottom: 3px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: opacity 0.12s;
-    }
-    .graf-selector-group-header:first-child {
-      margin-top: 0;
-    }
-    .graf-selector-group-header:hover {
-      opacity: 0.6;
-    }
-    .graf-selector-group-header .group-indicator {
-      font-size: 8px;
-    }
-    .graf-selector-option {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      line-height: 1.1;
-      cursor: pointer;
-      background: rgba(20, 31, 25, 0.045);
-      border: 1px solid transparent;
-      white-space: nowrap;
-      transition: background 0.14s, border-color 0.14s;
-    }
-    .graf-selector-option:hover {
-      background: color-mix(in srgb, var(--accent, #00664D) 13%, #fff);
-    }
-    .graf-selector-option.selected {
-      background: color-mix(in srgb, var(--accent, #00664D) 14%, #fff);
-      border-color: color-mix(in srgb, var(--accent, #00664D) 42%, transparent);
-    }
-    .graf-selector-option .opt-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      border: 1.5px solid currentColor;
-      background: transparent;
-      box-sizing: border-box;
-      flex-shrink: 0;
-    }
-    .graf-selector-option.selected .opt-dot {
-      background: currentColor;
-    }
-    .graf-selector-option .opt-name {
-      color: #44524D;
-      white-space: nowrap;
-    }
-    .graf-selector-option.selected .opt-name {
-      font-weight: 600;
-      color: #141F19;
-    }
-    .graf-selector-option.hidden .opt-dot {
-      background: transparent !important;
-      border-color: #ccc !important;
-      border-style: dashed;
-    }
-    .graf-selector-option.hidden .opt-name {
-      text-decoration: line-through;
-      color: #aaa !important;
-      font-weight: 400 !important;
-    }
-    .graf-selector-option.hidden .opt-restore {
-      font-size: 9px;
-      color: #aaa;
-      margin-left: 2px;
-    }
-    .graf-selector-option .opt-remove {
-      margin-left: 3px;
-      font-size: 12px;
-      color: #c4c4c4;
-      cursor: pointer;
-      flex-shrink: 0;
-      line-height: 1;
-      opacity: 0;
-      transition: opacity 0.15s, color 0.15s;
-    }
-    .graf-selector-option:hover .opt-remove {
-      opacity: 1;
-    }
-    .graf-selector-option .opt-remove:hover {
-      color: #d33;
-    }
-    .graf-selector-columns {
-      column-gap: 20px;
-    }
-    .graf-selector-columns .graf-selector-option {
-      break-inside: avoid;
-    }
-    .graf-selector-hidden-row {
-      margin-top: 3px;
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 10px;
-      color: #999;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 2px 8px;
-    }
-    .graf-selector-hidden-row .hidden-label {
-      color: #bbb;
-      font-size: 9px;
-      letter-spacing: 0.02em;
-    }
-    .graf-selector-hidden-row .hidden-item {
-      cursor: pointer;
-      color: #999;
-      text-decoration: line-through;
-      transition: color 0.1s;
-    }
-    .graf-selector-hidden-row .hidden-item:hover {
-      color: #333;
-      text-decoration: none;
-    }
-  `;
-  document.head.appendChild(styles);
-}
+export function injectSelectorCSS() {}
 
 /**
  * Skapar en selector-panel (trigger + expand-panel med grid).
@@ -349,9 +165,16 @@ export function createSelectorPanel(header, {
   const selector = header.append("div")
     .attr("class", "graf-selector");
 
-  const selectorTrigger = selector.append("span")
+  const selectorTrigger = selector.append("button")
+    .attr("type", "button")
     .attr("class", "graf-selector-trigger")
-    .text(triggerText);
+    .attr("aria-haspopup", "true")
+    .attr("aria-expanded", "false");
+  selectorTrigger.append("span").attr("class", "graf-selector-ikon")
+    .html('<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>');
+  selectorTrigger.append("span").attr("class", "graf-selector-text")
+    .text(String(triggerText).replace(/s*[›>]s*$/, ""));
+  const selectorAntal = selectorTrigger.append("span").attr("class", "graf-selector-antal");
 
   const selectorPanel = selector.append("div")
     .attr("class", "graf-selector-panel");
@@ -364,27 +187,36 @@ export function createSelectorPanel(header, {
     .attr("class", "graf-selector-hidden-row")
     .style("display", "none");
 
-  // Hover for expand/collapse. Panelen är en overlay med en liten lucka mellan
-  // trigger och panel — mouseenter på hela selektorn (panelen ingår) avbryter
-  // stängningen, så man kan föra muspekaren ner i panelen utan att den stängs.
-  let hoverTimeout = null;
-  selectorTrigger.on("mouseenter", () => {
-    clearTimeout(hoverTimeout);
+  // Klick öppnar/stänger. Stängs vid klick utanför eller Escape.
+  const stang = () => {
+    selector.classed("expanded", false);
+    selectorTrigger.attr("aria-expanded", "false");
+    document.removeEventListener("pointerdown", utanfor, true);
+    document.removeEventListener("keydown", tangent, true);
+  };
+  const utanfor = (e) => { if (!selector.node().contains(e.target)) stang(); };
+  const tangent = (e) => { if (e.key === "Escape") stang(); };
+  selectorTrigger.on("click", (event) => {
+    event.stopPropagation();
+    if (selector.classed("expanded")) { stang(); return; }
     selector.classed("expanded", true);
-  });
-  selector.on("mouseenter", () => {
-    clearTimeout(hoverTimeout);
-  });
-  selector.on("mouseleave", () => {
-    clearTimeout(hoverTimeout);
-    hoverTimeout = setTimeout(() => {
-      selector.classed("expanded", false);
-    }, 200);
+    selectorTrigger.attr("aria-expanded", "true");
+    setTimeout(() => {
+      document.addEventListener("pointerdown", utanfor, true);
+      document.addEventListener("keydown", tangent, true);
+    }, 0);
   });
 
   function update() {
     grid.selectAll("*").remove();
     const { groupMap } = filterState;
+    // Antal markerade i knappen (tomt när alla visas)
+    {
+      const hl = filterState.getHighlight();
+      const selectable = filterState.filterSet || allItems;
+      const antal = hl ? hl.filter(i => selectable.includes(i) && !filterState.isHidden(i)).length : 0;
+      selectorAntal.text(antal > 0 && antal < selectable.length ? String(antal) : "");
+    }
 
     if (groupMap && groupMap.size > 0) {
       for (const [groupName, members] of groupMap) {

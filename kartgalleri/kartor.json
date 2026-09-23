@@ -1,0 +1,212 @@
+[
+  {
+    "id": "befolkningstillvaxt-rutor",
+    "titel": "Befolkningstillväxt per 100-metersruta",
+    "beskrivning": "Var befolkningen växte och minskade 2000–2024.",
+    "kapitel": "befolkning",
+    "src": "kartgalleri/befolkningstillvaxt-rutor.html",
+    "ankare": "befolkning/#karta-befolkningstillvaxt-rutor",
+    "tumnagel": "kartgalleri/tumnaglar/befolkningstillvaxt-rutor.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "tatorter-forandring",
+    "titel": "Befolkningsförändring per tätort, 2000–2024",
+    "beskrivning": "Tillväxt och minskning i varje tätort.",
+    "kapitel": "befolkning",
+    "src": "kartgalleri/tatorter-forandring.html",
+    "ankare": "befolkning/#karta-tatorter-forandring",
+    "tumnagel": "kartgalleri/tumnaglar/tatorter-forandring.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "bostadsbyggandet",
+    "titel": "Var bostadshusen har byggts",
+    "beskrivning": "Bostadshus efter byggår i rutor om 250 meter.",
+    "kapitel": "bostader",
+    "src": "kartgalleri/bostadsbyggandet.html",
+    "ankare": "bostader/#karta-bostadsbyggandet",
+    "tumnagel": "kartgalleri/tumnaglar/bostadsbyggandet.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "energi-produktion",
+    "titel": "Var elen produceras",
+    "beskrivning": "Vindkraftverk efter status, havsbaserade projekt, vattenkraft, kraftvärme, kärnkraft och solparker i Halland med 30 km omland.",
+    "kapitel": "energi",
+    "src": "kartgalleri/energi-produktion.html",
+    "ankare": "energi/#karta-energi-produktion",
+    "tumnagel": "kartgalleri/tumnaglar/energi-produktion.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "energi-natet",
+    "titel": "Elnätet och elområdena",
+    "beskrivning": "Kraftledningar efter spänning, stationer, gränsen mellan elområde 3 och 4 samt lokalnätens koncessionsområden.",
+    "kapitel": "energi",
+    "src": "kartgalleri/energi-natet.html",
+    "ankare": "energi/#karta-energi-natet",
+    "tumnagel": "kartgalleri/tumnaglar/energi-natet.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "energi-laddning",
+    "titel": "Publik laddning för elfordon",
+    "beskrivning": "Publika laddstationer för personbilar efter laddeffekt och laddstationer för tunga fordon.",
+    "kapitel": "energi",
+    "src": "kartgalleri/energi-laddning.html",
+    "ankare": "energi/#karta-energi-laddning",
+    "tumnagel": "kartgalleri/tumnaglar/energi-laddning.jpg",
+    "ordning": 3
+  },
+  {
+    "id": "pendlingsfloden",
+    "titel": "Pendlingsflödena i och kring Halland",
+    "beskrivning": "Pendling mellan kommuner, 2024. Välj kommun för att se dess flöden.",
+    "kapitel": "funktionell-geografi",
+    "src": "kartgalleri/pendlingsfloden.html",
+    "ankare": "funktionell-geografi/#karta-pendlingsfloden",
+    "tumnagel": "kartgalleri/tumnaglar/pendlingsfloden.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "marktacke",
+    "titel": "Marktäcket i Halland, 2023",
+    "beskrivning": "Nationella marktäckedata i tio huvudklasser, 10 m upplösning.",
+    "kapitel": "markanvandning-och-miljo",
+    "src": "kartgalleri/marktacke.html",
+    "ankare": "markanvandning-och-miljo/#karta-marktacke",
+    "tumnagel": "kartgalleri/tumnaglar/marktacke.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "tatorternas-arsringar",
+    "titel": "Tätorternas årsringar, 1980–2023",
+    "beskrivning": "SCB:s tätortsgränser i tio utgåvor.",
+    "kapitel": "markanvandning-och-miljo",
+    "src": "kartgalleri/tatorternas-arsringar.html",
+    "ankare": "markanvandning-och-miljo/#karta-tatorternas-arsringar",
+    "tumnagel": "kartgalleri/tumnaglar/tatorternas-arsringar.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "hallandstypologin",
+    "titel": "Hallandstypologin: sju klasser av stad och land",
+    "beskrivning": "Rutnätsbaserad klassificering av stad och land, 1×1 km.",
+    "kapitel": "oversikt",
+    "src": "kartgalleri/hallandstypologin.html",
+    "ankare": "oversikt/#karta-hallandstypologin",
+    "tumnagel": "kartgalleri/tumnaglar/hallandstypologin.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "befolkningstathet",
+    "titel": "Befolkningstäthet per km²",
+    "beskrivning": "Invånare per kvadratkilometer som punkter, värmekarta eller 3D-staplar.",
+    "kapitel": "oversikt",
+    "src": "kartgalleri/befolkningstathet.html",
+    "ankare": "oversikt/#karta-befolkningstathet",
+    "tumnagel": "kartgalleri/tumnaglar/befolkningstathet.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "deso-omradestyper",
+    "titel": "Hallands bostadsområden efter socioekonomiska förutsättningar",
+    "beskrivning": "SCB:s områdestyper och socioekonomiskt index.",
+    "kapitel": "socioekonomi",
+    "src": "kartgalleri/deso-omradestyper.html",
+    "ankare": "socioekonomi/#karta-deso-omradestyper",
+    "tumnagel": "kartgalleri/tumnaglar/deso-omradestyper.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "deso-inkomster",
+    "titel": "Inkomster och låg ekonomisk standard i Hallands bostadsområden",
+    "beskrivning": "Låg och hög ekonomisk standard och medianinkomst per DeSO.",
+    "kapitel": "socioekonomi",
+    "src": "kartgalleri/deso-inkomster.html",
+    "ankare": "socioekonomi/#karta-deso-inkomster",
+    "tumnagel": "kartgalleri/tumnaglar/deso-inkomster.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "deso-utbildning-arbete",
+    "titel": "Utbildning, arbete och födelseland i Hallands bostadsområden",
+    "beskrivning": "Eftergymnasial utbildning, sysselsättning och födelseland per DeSO.",
+    "kapitel": "socioekonomi",
+    "src": "kartgalleri/deso-utbildning-arbete.html",
+    "ankare": "socioekonomi/#karta-deso-utbildning-arbete",
+    "tumnagel": "kartgalleri/tumnaglar/deso-utbildning-arbete.jpg",
+    "ordning": 3
+  },
+  {
+    "id": "deso-segregation",
+    "titel": "Kluster av låg ekonomisk standard och utrikes födda",
+    "beskrivning": "Lokala kluster (LISA) och andel hyresrätter per DeSO.",
+    "kapitel": "socioekonomi",
+    "src": "kartgalleri/deso-segregation.html",
+    "ankare": "socioekonomi/#karta-deso-segregation",
+    "tumnagel": "kartgalleri/tumnaglar/deso-segregation.jpg",
+    "ordning": 4
+  },
+  {
+    "id": "valdeltagande",
+    "titel": "Valdeltagande per valdistrikt i riksdagsvalen 2014–2026",
+    "beskrivning": "Valdeltagande per valdistrikt och avvikelse mot kommunen.",
+    "kapitel": "socioekonomi",
+    "src": "kartgalleri/valdeltagande.html",
+    "ankare": "socioekonomi/#karta-valdeltagande",
+    "tumnagel": "kartgalleri/tumnaglar/valdeltagande.jpg",
+    "ordning": 5
+  },
+  {
+    "id": "vagnat",
+    "titel": "Vägnätets stråk",
+    "beskrivning": "Funktionell vägklass, prioriterat vägnät, TEN-T och tyngre transporter.",
+    "kapitel": "transporter",
+    "src": "kartgalleri/vagnat.html",
+    "ankare": "transporter/#karta-vagnat",
+    "tumnagel": "kartgalleri/tumnaglar/vagnat.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "trafikfloden",
+    "titel": "Trafikflöden på de statliga vägarna",
+    "beskrivning": "Årsmedeldygnstrafik och andel tunga fordon.",
+    "kapitel": "transporter",
+    "src": "kartgalleri/trafikfloden.html",
+    "ankare": "transporter/#karta-trafikfloden",
+    "tumnagel": "kartgalleri/tumnaglar/trafikfloden.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "jarnvag",
+    "titel": "Järnvägen i Halland",
+    "beskrivning": "Persontåg per dygn och sträcka, stationer efter avgångar.",
+    "kapitel": "transporter",
+    "src": "kartgalleri/jarnvag.html",
+    "ankare": "transporter/#karta-jarnvag",
+    "tumnagel": "kartgalleri/tumnaglar/jarnvag.jpg",
+    "ordning": 3
+  },
+  {
+    "id": "kollektivtrafik",
+    "titel": "Kollektivtrafikens utbud",
+    "beskrivning": "Turer per dygn på varje sträcka och trafikslag.",
+    "kapitel": "transporter",
+    "src": "kartgalleri/kollektivtrafik.html",
+    "ankare": "transporter/#karta-kollektivtrafik",
+    "tumnagel": "kartgalleri/tumnaglar/kollektivtrafik.jpg",
+    "ordning": 4
+  },
+  {
+    "id": "restider",
+    "titel": "Restider till stad, större stad och storstad",
+    "beskrivning": "Restid med kollektivtrafik och bil från varje befolkad ruta.",
+    "kapitel": "transporter",
+    "src": "kartgalleri/restider.html",
+    "ankare": "transporter/#karta-restider",
+    "tumnagel": "kartgalleri/tumnaglar/restider.jpg",
+    "ordning": 5
+  }
+]

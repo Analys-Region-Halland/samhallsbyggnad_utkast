@@ -1,0 +1,52 @@
+[
+  {
+    "id": "tillganglighet-rackvidd",
+    "titel": "Hur många når man inom en viss restid?",
+    "beskrivning": "Invånare som nås inom 15–60 minuter med gång, cykel, kollektivtrafik och bil.",
+    "kapitel": "service-och-tillganglighet",
+    "src": "kartgalleri/tillganglighet.html?id=tillganglighet-rackvidd",
+    "ankare": "service-och-tillganglighet/#service-och-tillganglighet-rackvidd",
+    "tumnagel": "kartgalleri/tumnaglar/tillganglighet-rackvidd.jpg",
+    "ordning": 1
+  },
+  {
+    "id": "tillganglighet-arbete",
+    "titel": "Hur stor arbetsmarknad når man?",
+    "beskrivning": "Arbetsplatser som nås från varje bebodd 250-metersruta.",
+    "kapitel": "service-och-tillganglighet",
+    "src": "kartgalleri/tillganglighet.html?id=tillganglighet-arbete",
+    "ankare": "service-och-tillganglighet/#service-och-tillganglighet-arbete",
+    "tumnagel": "kartgalleri/tumnaglar/tillganglighet-arbete.jpg",
+    "ordning": 2
+  },
+  {
+    "id": "tillganglighet-vardag",
+    "titel": "Vardagen inom en kvart",
+    "beskrivning": "Hur många av sex vardagsfunktioner som nås inom 15 minuter till fots eller med cykel.",
+    "kapitel": "service-och-tillganglighet",
+    "src": "kartgalleri/tillganglighet.html?id=tillganglighet-vardag",
+    "ankare": "service-och-tillganglighet/#service-och-tillganglighet-vardag",
+    "tumnagel": "kartgalleri/tumnaglar/tillganglighet-vardag.jpg",
+    "ordning": 3
+  },
+  {
+    "id": "tillganglighet-service",
+    "titel": "Hur långt är det till närmaste service?",
+    "beskrivning": "Restid till närmaste butik, skola, vårdcentral, apotek och sjukhus.",
+    "kapitel": "service-och-tillganglighet",
+    "src": "kartgalleri/tillganglighet.html?id=tillganglighet-service",
+    "ankare": "service-och-tillganglighet/#service-och-tillganglighet-service",
+    "tumnagel": "kartgalleri/tumnaglar/tillganglighet-service.jpg",
+    "ordning": 4
+  },
+  {
+    "id": "tatortsregioner",
+    "titel": "Hela den funktionella geografin",
+    "beskrivning": "Tätortsregioner, pendlingsflöden på vägnätet och orter, 2024.",
+    "kapitel": "funktionell-geografi",
+    "src": "funktionell-geografi/zonkarta/karta-zoner.html?embed",
+    "ankare": "funktionell-geografi/#funktionell-geografi-metoden-kartan",
+    "tumnagel": "kartgalleri/tumnaglar/tatortsregioner.jpg",
+    "ordning": 10
+  }
+]

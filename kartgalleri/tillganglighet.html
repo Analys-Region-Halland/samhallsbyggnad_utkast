@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="sv" class="kr-kartsida">
+<head>
+<meta charset="utf-8">
+<!-- Fristående vy av kapitel 05:s tillgänglighetskartor för kartgalleriet.
+     ?id=tillganglighet-rackvidd | -arbete | -vardag | -service
+     base pekar på kapitlets mapp så att kartor.js hämtar data som i kapitlet. -->
+<base href="../service-och-tillganglighet/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karta</title>
+<style>
+  :root { --accent: #2E4D96; }
+  .kr-js-karta, .kr-js-karta > .graf-container { position: absolute; inset: 0; margin: 0; max-width: none; border: 0; }
+  .kr-js-karta .graf-header, .kr-js-karta .graf-footer { display: none; }
+  .kr-js-karta .tk-karta { position: absolute !important; inset: 0; height: auto !important; border-top: 0; }
+</style>
+<link rel="stylesheet" href="../js/kartor/kartsystem.css">
+<script src="../js/kartor/kartsystem.js" defer></script>
+</head>
+<body>
+<div class="kr-js-karta"></div>
+<script type="module">
+  const id = new URLSearchParams(location.search).get("id") || "tillganglighet-rackvidd";
+  const { KARTOR } = await import("./kartor.js");
+  const bygg = KARTOR[id] || KARTOR["tillganglighet-rackvidd"];
+  const el = await bygg({ bas: "" });
+  document.querySelector(".kr-js-karta").appendChild(el);
+  document.title = (el.querySelector(".graf-title")?.textContent || "Karta") + " · Kartgalleri";
+</script>
+</body>
+</html>

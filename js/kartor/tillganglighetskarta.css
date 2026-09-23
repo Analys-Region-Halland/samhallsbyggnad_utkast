@@ -1,0 +1,54 @@
+/* =============================================================================
+   TILLGÄNGLIGHETSKARTA — js/kartor/tillganglighetskarta.js (klassprefix tk-)
+   Laddas av modulen själv, så att kartan fungerar både i kapitlet och fristående
+   i kartgalleriet. Legend, infopanel och val flyttas av kartsystemet
+   (js/kartor/kartsystem.js) in i kartans fasta panel.
+   ============================================================================= */
+.tk-karta { position: relative; width: 100%; border-top: 1px solid #eef0ef; background: #f4f5f4; overflow: hidden; }
+.tk-laddar { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 13px; color: #83888A; z-index: 1; }
+.tk-leg, .tk-info, .tk-ctrl { position: absolute; z-index: 3; font-family: 'IBM Plex Sans', system-ui, sans-serif; background: #fff;
+  border-radius: 10px; box-shadow: 0 1px 6px rgba(0, 0, 0, .18); color: #15202b; box-sizing: border-box; }
+.tk-leg { top: 10px; left: 10px; width: 226px; padding: 9px 12px 8px; }
+.tk-leg:empty, .tk-info:empty { display: none; }
+.tk-leg-t { font-weight: 700; font-size: 12.5px; line-height: 1.25; margin-bottom: 2px; }
+.tk-leg-u { font-size: 11px; color: #5f6b72; margin-bottom: 6px; line-height: 1.3; }
+.tk-leg-r { display: flex; align-items: center; gap: 8px; font-size: 11.5px; line-height: 1; padding: 2.5px 0; font-variant-numeric: tabular-nums; }
+.tk-leg-r i { display: inline-block; width: 14px; height: 11px; border-radius: 2px; flex: none; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.tk-leg-n { font-size: 10.5px; color: #5f6b72; margin-top: 5px; line-height: 1.3; }
+.tk-info { top: 10px; right: 10px; width: 272px; padding: 10px 12px 9px; font-size: 11.5px; line-height: 1.35; max-height: calc(100% - 20px); overflow: auto; }
+.tk-info-h { font-weight: 700; font-size: 14px; color: #004990; line-height: 1.2; }
+.tk-info-s { color: #5f6b72; font-size: 11px; margin: 1px 0 6px; padding-bottom: 6px; border-bottom: 1px solid #EEF0F0; }
+.tk-info-r { display: flex; justify-content: space-between; gap: 8px; padding: 1.5px 0; }
+.tk-info-r b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tk-info-k { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #5f6b72; margin: 7px 0 3px; }
+.tk-info-bar { display: grid; grid-template-columns: 112px 1fr 40px; align-items: center; gap: 6px; padding: 1.5px 0; font-size: 11px; }
+.tk-info-bar b { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.tk-info-bt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #39495a; }
+.tk-info-bb { height: 9px; background: #F1F3F2; border-radius: 2px; overflow: hidden; }
+.tk-info-bb i { display: block; height: 100%; border-radius: 2px; }
+.tk-info-f { margin-top: 6px; color: #5f6b72; font-size: 10.5px; line-height: 1.3; }
+.tk-ctrl { bottom: 10px; left: 10px; width: 226px; padding: 7px; display: flex; flex-direction: column; gap: 2px; max-height: calc(100% - 200px); overflow: auto; }
+.tk-lbl { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #5f6b72; padding: 3px 7px 2px; }
+.tk-lbl:not(:first-child) { margin-top: 3px; border-top: 1px solid #EEF0F0; padding-top: 7px; }
+.tk-grp { display: flex; flex-direction: column; gap: 1px; }
+.tk-grp.tk-rad { flex-direction: row; flex-wrap: wrap; gap: 2px; }
+.tk-grp.tk-rad button { width: auto; flex: 1 1 auto; text-align: center; padding: 5px 6px; }
+.tk-ctrl button { box-sizing: border-box; width: 100%; border: 0 !important; height: auto; background: transparent; color: #39495a; text-align: left;
+  padding: 5px 10px; border-radius: 6px; cursor: pointer; font: 600 12.5px/1.1 'IBM Plex Sans', system-ui, sans-serif; }
+.tk-ctrl button:hover:not(.active) { background: #E2F6FF; }
+.tk-ctrl button.active, .tk-ctrl button.active:hover { background: #004990 !important; color: #fff; }
+.tk-sel { margin: 2px 3px; padding: 5px 7px; border: 1px solid #D6D6D6; border-radius: 6px; font: 600 12.5px 'IBM Plex Sans', system-ui, sans-serif; color: #15202b; background: #fff; cursor: pointer; }
+.tk-tip { font: 600 12px/1.3 'IBM Plex Sans', system-ui, sans-serif; color: #15202b; white-space: nowrap; }
+.tk-tip-pop .maplibregl-popup-content { padding: 5px 9px; border-radius: 6px; box-shadow: 0 1px 5px rgba(0, 0, 0, .2); }
+.tk-tip-pop .maplibregl-popup-tip { display: none; }
+.tk-pop { font: 12.5px/1.4 'IBM Plex Sans', system-ui, sans-serif; min-width: 250px; color: #15202b; }
+.tk-pop table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.tk-pop th { font-size: 10px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: #5f6b72; text-align: right; padding: 0 0 2px 8px; }
+.tk-pop th:first-child { text-align: left; padding-left: 0; }
+.tk-pop td { padding: 1.5px 0; vertical-align: top; }
+.tk-pop td + td { text-align: right; white-space: nowrap; padding-left: 8px; font-weight: 600; }
+.tk-pop tr.akt td { color: #004990; font-weight: 700; }
+.tk-pop-h { font-weight: 700; font-size: 14px; color: #004990; line-height: 1.25; }
+.tk-pop-s { color: #5f6b72; font-size: 11.5px; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid #D6D6D6; }
+.tk-pop-f { margin-top: 5px; color: #5f6b72; font-size: 10.5px; }

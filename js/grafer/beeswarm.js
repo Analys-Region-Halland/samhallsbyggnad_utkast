@@ -1,32 +1,38 @@
 // =============================================================================
-// BEESWARM - Svärm-diagram för distribution med highlight
+// BEESWARM — svärmdiagram för fördelning över många enheter, med highlight.
+// Byggd på den gemensamma ramen (js/lib/grafRam.js). Estetiken: halvtransparenta
+// prickar med tunn mörk kontur, lätt överlapp för djup, följsam höjd som hugger
+// rutan efter svärmens band, korta vinklade leaders för etiketter.
 // =============================================================================
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
+import { skapaRam, TYP, FARG, STORLEK, SERIEFARGER, stilXAxel, xTitel } from "../lib/grafRam.js";
 
 export function beeswarm(data, {
   value = "värde",
   label = "namn",
   group = null,
   width = null,
-  height = null,  // null ⇒ följsam höjd: containern huggs efter svärmens faktiska band (mindre whitespace)
+  height = null,  // null ⇒ följsam höjd: containern huggs efter svärmens faktiska band
   title = null,
   subtitle = null,
   caption = null,
   xLabel = null,
-  colors = ["#00664D", "#004990", "#FF7E00", "#433C9D", "#2DB8F6", "#A51300"],
+  colors = SERIEFARGER,
   formatValue = d => d.toLocaleString("sv-SE"),
   filter = null,
   highlight = null,
   highlightLabels = true,
   radius = 6,        // bakgrundsprickarnas radie (highlight ritas större för hierarki)
   padding = 0,
-  overlap = 0.8,     // andel av radien som krockradien utgör (<1 ⇒ lätt, sofistikerat överlapp → djup via halvtransparens)
+  overlap = 0.8,     // andel av radien som krockradien utgör (<1 ⇒ lätt överlapp → djup)
   logScale = true,
-  showGrid = false,  // gridlines av default — riksmedian-linjen räcker som referens
+  showGrid = false,  // gridlines av default — referenslinjen räcker
   vline = null,
+  domain = null,        // [min, max] för x-axeln; null ⇒ 0 (linjär) eller data (log)
+  tickFormat = null,    // egen formatterare för x-axelns etiketter (linjär skala)
   altText = null,
   info = null,
   logo = null,
@@ -34,8 +40,8 @@ export function beeswarm(data, {
 } = {}) {
 
   const autoWidth = width || 780;
-  // Etikettzon: smalt band ovan/under svärmen för utplacerade highlight-etiketter.
-  // Skala efter antal highlightade noder så zonen inte reserverar tomrum i onödan.
+  // Etikettzon: smalt band ovan/under svärmen för utplacerade highlight-etiketter,
+  // skalad efter antal highlightade noder.
   const nHighlight = (highlight && group)
     ? data.filter(d => [].concat(highlight).includes(d[group])).length
     : 0;
@@ -45,130 +51,69 @@ export function beeswarm(data, {
   const marginBottom = (xLabel ? 44 : 20) + labelZoneHeight;
   const marginLeft = 32;
 
-  // Container
-  const container = d3.create("div")
-    .attr("class", "graf-container")
-    .style("position", "relative");
+  // ── Ram ──
+  const ram = skapaRam({ title, subtitle, caption });
+  const container = ram.container;
 
-  // Header
-  const header = container.append("div")
-    .attr("class", "graf-header");
-
-  if (title) {
-    header.append("div")
-      .attr("class", "graf-title")
-      .text(title);
-  }
-
-  if (subtitle) {
-    header.append("div")
-      .attr("class", "graf-subtitle")
-      .text(subtitle);
-  }
-
-  // ==========================================================================
-  // FILTERSTATE (via filterUtils)
-  // ==========================================================================
-  // Alla unika items och grupper
+  // ── Filterstate ──
   const allItems = [...new Set(data.map(d => d[label]))];
   const allGroups = group ? [...new Set(data.map(d => d[group]))] : [];
-
   const filterState = group
     ? createFilterState(data, { itemField: label, groupField: group, filter, highlight })
     : null;
+  const isHighlighted = (d) => !filterState || filterState.isHighlighted(d[label]);
 
-  const isHighlighted = (d) => {
-    if (!filterState) return true;
-    return filterState.isHighlighted(d[label]);
-  };
-
-  // Färgpalett
   const mutedColor = "#d0d0d0";
-  const mutedStroke = d3.color(mutedColor).darker(1.7).formatHex();   // mörkare outline → definition + djup
+  const mutedStroke = d3.color(mutedColor).darker(1.7).formatHex();
+  const groupColorScale = d3.scaleOrdinal().domain(allGroups).range(colors);
+  const getColor = (g) => groupColorScale(g);
   const strokeFor = (g) => d3.color(group ? getColor(g) : colors[0]).darker(0.9).formatHex();
 
-  // Färgskala: grupp → färg (stabil, oberoende av highlight-state)
-  const groupColorScale = d3.scaleOrdinal()
-    .domain(allGroups)
-    .range(colors);
-
-  const getColor = (groupName) => groupColorScale(groupName);
-
-  const colorScale = (groupName) => groupColorScale(groupName);
-
-  // ==========================================================================
-  // INTERAKTIV VÄLJARE (via filterUtils)
-  // ==========================================================================
+  // ── Väljare i nedre raden ──
   let selectorCtrl = null;
-
   if (interactive && group && filterState) {
-    selectorCtrl = createSelectorPanel(header, {
+    selectorCtrl = createSelectorPanel(ram.controlsLeft, {
       filterState,
       allItems,
       colorScale: groupColorScale,
-      triggerText: "Jämför geografier \u203a",
+      triggerText: "Markera",
       onUpdate: () => updateChart(),
-      onItemHover: (item) => {
-        const nodeData = nodes.find(n => n[label] === item);
-        if (nodeData) highlightPoint(nodeData, true);
-      },
-      onItemLeave: (item) => {
-        const nodeData = nodes.find(n => n[label] === item);
-        if (nodeData) highlightPoint(nodeData, false);
-      }
+      onItemHover: (item) => { const n = nodes.find(n => n[label] === item); if (n) highlightPoint(n, true); },
+      onItemLeave: (item) => { const n = nodes.find(n => n[label] === item); if (n) highlightPoint(n, false); }
     });
   }
 
-  // Värde-display
-  const valueDisplay = container.append("div")
-    .attr("class", "graf-value-display")
-    .html("<span style='opacity:0.35'>Peka för värden</span>");
+  const avlasning = ram.avlasning("Peka för värden");
 
   // SVG — viewBox sätts efter att svärmens band mätts (följsam höjd)
-  const svgContainer = container.append("div")
-    .attr("class", "graf-svg-container");
-
-  const svg = svgContainer.append("svg")
+  const svg = ram.svgWrap.append("svg")
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("class", "graf-svg");
 
-  // X-skala (logaritmisk eller linjär)
+  // ── X-skala ──
   const valueExtent = d3.extent(data, d => d[value]);
   const xScale = logScale
-    ? d3.scaleLog()
-        .domain([Math.max(1, valueExtent[0] * 0.8), valueExtent[1] * 1.1])
-        .range([marginLeft, autoWidth - marginRight])
-    : d3.scaleLinear()
-        .domain([0, valueExtent[1] * 1.05])
-        .range([marginLeft, autoWidth - marginRight]);
+    ? d3.scaleLog().domain(domain || [Math.max(1, valueExtent[0] * 0.8), valueExtent[1] * 1.1]).range([marginLeft, autoWidth - marginRight])
+    : d3.scaleLinear().domain(domain || [0, valueExtent[1] * 1.05]).range([marginLeft, autoWidth - marginRight]);
 
-  const highlightedR = radius + 2.5;  // Halland tydligt större än bakgrunden
+  const highlightedR = radius + 2.5;
   const backgroundR = radius;
 
   // ── Layout: simulera kring y=0, mät bandet, låt höjden hugga innehållet ──
   const swarmTop = marginTop + 10;
-
-  const nodes = data.map(d => ({
-    ...d,
-    x: xScale(d[value]),
-    y: 0,
-    baseRadius: radius
-  }));
+  const nodes = data.map(d => ({ ...d, x: xScale(d[value]), y: 0, baseRadius: radius }));
 
   const simulation = d3.forceSimulation(nodes)
     .force("x", d3.forceX(d => xScale(d[value])).strength(1))
     .force("y", d3.forceY(0).strength(0.2))
     .force("collide", d3.forceCollide(radius * overlap + padding).strength(1).iterations(3))
     .stop();
-
   for (let i = 0; i < 220; i++) simulation.tick();
 
-  // Svärmens faktiska vertikala band (centrerat kring 0)
   const yExtent = d3.extent(nodes, d => d.y);
   const bandMid = (yExtent[0] + yExtent[1]) / 2;
   const bandHeight = Math.max((yExtent[1] - yExtent[0]) + 2 * highlightedR, 80);
 
-  // swarmBottom/centerY/höjd: följsamt om height==null, annars fyll given höjd
   let swarmBottom, centerY;
   if (height == null) {
     swarmBottom = swarmTop + bandHeight;
@@ -183,209 +128,125 @@ export function beeswarm(data, {
       d.y = Math.max(swarmTop + radius, Math.min(swarmBottom - radius, d.y));
     });
   }
-
   svg.attr("viewBox", `0 0 ${autoWidth} ${height}`);
 
-  // X-axel med snygga tick-värden
+  // ── X-axel ──
+  const fmtTick = (d) => d >= 1000000 ? (d / 1000000) + " mn" : d >= 1000 ? (d / 1000) + " k" : d;
   let xAxis;
   if (logScale) {
-    // Logaritmisk: visa 1k, 10k, 100k, 1M etc
     const tickValues = [1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000, 500000, 1000000]
       .filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5);
-
-    xAxis = d3.axisBottom(xScale)
-      .tickValues(tickValues)
-      .tickFormat(d => {
-        if (d >= 1000000) return (d / 1000000) + " mn";
-        if (d >= 1000) return (d / 1000) + " k";
-        return d;
-      });
+    xAxis = d3.axisBottom(xScale).tickValues(tickValues).tickFormat(fmtTick).tickSize(0);
   } else {
-    // Linjär: automatiska ticks
-    xAxis = d3.axisBottom(xScale)
-      .ticks(8)
-      .tickFormat(d => {
-        if (d >= 1000000) return (d / 1000000).toFixed(0) + " mn";
-        if (d >= 1000) return (d / 1000).toFixed(0) + " k";
-        return d;
-      });
+    xAxis = d3.axisBottom(xScale).ticks(8).tickFormat(tickFormat || (d => d >= 1000000 ? (d / 1e6).toFixed(0) + " mn" : d >= 1000 ? (d / 1000).toFixed(0) + " k" : d)).tickSize(0);
   }
-
-  // X-axel position - längst ner med plats för xLabel under
   const xAxisY = height - (xLabel ? 38 : 16);
 
-  // Grid lines - streckade linjer från toppen ner till x-axeln
   if (showGrid) {
     const gridTickValues = logScale
-      ? [1000, 5000, 10000, 50000, 100000, 500000, 1000000]
-          .filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5)
+      ? [1000, 5000, 10000, 50000, 100000, 500000, 1000000].filter(v => v >= valueExtent[0] * 0.5 && v <= valueExtent[1] * 1.5)
       : xScale.ticks(5);
-
-    const gridGroup = svg.insert("g", ":first-child").attr("class", "grid-lines");
+    const gridGroup = svg.append("g").attr("class", "grid-lines");
     gridTickValues.forEach(tickVal => {
       const tickX = xScale(tickVal);
       if (tickX >= marginLeft && tickX <= autoWidth - marginRight) {
         gridGroup.append("line")
-          .attr("x1", tickX)
-          .attr("x2", tickX)
-          .attr("y1", swarmTop - 8)
-          .attr("y2", xAxisY)
-          .attr("stroke", "#e0e0e0")
-          .attr("stroke-width", 1)
-          .attr("stroke-dasharray", "12,6");
+          .attr("x1", tickX).attr("x2", tickX).attr("y1", swarmTop - 8).attr("y2", xAxisY)
+          .attr("stroke", FARG.grid).attr("stroke-width", 0.8).attr("stroke-dasharray", "4,4");
       }
     });
   }
 
-  // Vertikal referenslinje
-  if (vline !== null) {
-    const vlineConfig = typeof vline === "number" ? { value: vline } : vline;
-    const vlineX = xScale(vlineConfig.value);
-    const vlineColor = vlineConfig.color || "#666";
-    const vlineDashed = vlineConfig.dashed !== false;
-
+  // ── Vertikala referenslinjer (ett tal, ett objekt eller en lista av objekt) ──
+  const vlines = vline == null ? [] : (Array.isArray(vline) ? vline : [vline]).map(v => typeof v === "number" ? { value: v } : v);
+  const vlineBoxar = [];
+  for (const vc of vlines) {
+    const vlineX = xScale(vc.value);
+    // Förskjut etiketten en rad uppåt om den skulle krocka med en tidigare referenslinjes etikett
+    const bredd = Math.max(36, (vc.label || "").length * 5.8);
+    let lyft = 0;
+    while (vlineBoxar.some(b => b.lyft === lyft && Math.abs(b.x - vlineX) < (b.bredd + bredd) / 2 + 6)) lyft += 13;
+    vc._lyft = lyft;
+    vlineBoxar.push({ x: vlineX, bredd, lyft });
+    const vlineColor = vc.color || FARG.text;
     if (vlineX >= marginLeft && vlineX <= autoWidth - marginRight) {
       svg.append("line")
-        .attr("x1", vlineX).attr("x2", vlineX)
-        .attr("y1", swarmTop - 8).attr("y2", xAxisY)
+        .attr("x1", vlineX).attr("x2", vlineX).attr("y1", swarmTop - 8).attr("y2", xAxisY)
         .attr("stroke", vlineColor).attr("stroke-width", 1)
-        .attr("stroke-dasharray", vlineDashed ? "4,3" : "none")
-        .attr("stroke-opacity", 0.6);
-
-      if (vlineConfig.label) {
-        const hasVal = vlineConfig.value != null && vlineConfig.showValue !== false;
-        const vlineText = svg.append("text")
-          .attr("x", vlineX)
-          .attr("y", hasVal ? swarmTop - 25 : swarmTop - 14)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
-          .attr("font-size", "10px").attr("font-weight", "500")
-          .attr("fill", vlineColor);
-        vlineText.append("tspan")
-          .attr("x", vlineX)
-          .text(vlineConfig.label);
-        // Siffran på egen rad under etiketten
-        if (hasVal) {
-          vlineText.append("tspan")
-            .attr("x", vlineX)
-            .attr("dy", "1.15em")
-            .attr("font-weight", "400")
-            .attr("fill-opacity", 0.7)
-            .text(formatValue(vlineConfig.value));
-        }
+        .attr("stroke-dasharray", vc.dashed !== false ? "4,3" : "none").attr("stroke-opacity", 0.6);
+      if (vc.label) {
+        const hasVal = vc.value != null && vc.showValue !== false;
+        const t = svg.append("text")
+          .attr("x", vlineX).attr("y", (hasVal ? swarmTop - 25 : swarmTop - 14) - (vc._lyft || 0))
+          .attr("text-anchor", "middle").attr("font-family", TYP.ui)
+          .attr("font-size", 10.5).attr("font-weight", 500).attr("fill", vlineColor);
+        t.append("tspan").attr("x", vlineX).text(vc.label);
+        if (hasVal) t.append("tspan").attr("x", vlineX).attr("dy", "1.15em").attr("font-weight", 400).attr("fill-opacity", 0.7).text(formatValue(vc.value));
       }
     }
   }
 
-  // X-axel
-  svg.append("g")
-    .attr("transform", `translate(0,${xAxisY})`)
-    .call(xAxis)
-    .call(g => g.select(".domain").remove())
-    .call(g => g.selectAll(".tick line").remove())
-    .call(g => g.selectAll(".tick text")
-      .attr("fill", "#666")
-      .attr("font-size", "12px")
-      .attr("font-family", "'IBM Plex Sans', sans-serif"));
+  const xAxisG = svg.append("g").attr("class", "x-axis").attr("transform", `translate(0,${xAxisY})`).call(xAxis);
+  stilXAxel(xAxisG);
+  xAxisG.select(".domain").remove();
+  xAxisG.selectAll(".tick text").attr("fill", FARG.text).attr("font-size", STORLEK.tick);
 
-  if (xLabel) {
-    svg.append("text")
-      .attr("x", autoWidth / 2)
-      .attr("y", height - 8)
-      .attr("text-anchor", "middle")
-      .attr("font-family", "'IBM Plex Sans', sans-serif")
-      .attr("font-size", "12px")
-      .attr("fill", "#1a1a1a")
-      .text(xLabel);
-  }
+  if (xLabel) xTitel(svg, { x: autoWidth / 2, y: height - 8, text: xLabel });
 
-  // ==========================================================================
-  // GRUPPER FÖR PUNKTER OCH ETIKETTER (för uppdatering)
-  // ==========================================================================
+  // ── Grupper ──
   const dotsGroup = svg.append("g").attr("class", "dots-group");
   const labelsGroup = svg.append("g").attr("class", "beeswarm-labels");
-
-  // Spara label-data för hover-effekter
   let currentLabelData = { top: [], bottom: [] };
 
-  // ==========================================================================
-  // HIGHLIGHT PUNKT VID HOVER (från panel eller annan källa)
-  // ==========================================================================
+  const visaVarde = (nodeData, dotColor) => {
+    avlasning.visa(
+      `<span style="display:inline-flex;align-items:center;gap:6px">` +
+      `<span style="width:8px;height:8px;border-radius:50%;background:${dotColor}"></span>` +
+      `<b>${nodeData[label]}</b><span style="color:#d5d8d7">│</span><b>${formatValue(nodeData[value])}</b></span>`
+    );
+  };
+
+  // ── Highlight-punkt vid hover ──
   function highlightPoint(nodeData, show) {
     if (!nodeData) return;
-
     const dotEl = dotsGroup.select(`circle[data-label="${nodeData[label]}"]`);
     if (dotEl.empty()) return;
 
     if (show) {
       const isHl = isHighlighted(nodeData);
-      const dotColor = isHl ? getColor(nodeData[group]) : "#555";
+      const dotColor = isHl ? (group ? getColor(nodeData[group]) : colors[0]) : "#555";
+      dotEl.attr("r", highlightedR + 3).attr("fill-opacity", 0.95)
+        .attr("stroke", FARG.ink).attr("stroke-width", 2.5).attr("stroke-opacity", 1);
 
-      dotEl
-        .attr("r", highlightedR + 3)
-        .attr("fill-opacity", 0.95)
-        .attr("stroke", "#1a1a1a")
-        .attr("stroke-width", 2.5)
-        .attr("stroke-opacity", 1);
-
-      // Kolla om det finns en permanent etikett
       const existingLabel = labelsGroup.select(`.label-text[data-label="${nodeData[label]}"]`);
-
       if (!existingLabel.empty()) {
-        // Highlighta befintlig etikett och connector
-        existingLabel.attr("font-weight", 700).attr("font-size", "13px");
-        labelsGroup.selectAll(`.label-connector[data-label="${nodeData[label]}"]`)
-          .attr("stroke-width", 2)
-          .attr("stroke-opacity", 0.7);
+        existingLabel.attr("font-weight", 700).attr("font-size", 13);
+        labelsGroup.selectAll(`.label-connector[data-label="${nodeData[label]}"]`).attr("stroke-width", 2).attr("stroke-opacity", 0.7);
       } else {
-        // Visa temporär hover-etikett
         labelsGroup.selectAll(".hover-label-single").remove();
-
-        const labelY = nodeData.y <= centerY
-          ? nodeData.y - highlightedR - 10
-          : nodeData.y + highlightedR + 14;
-
+        const labelY = nodeData.y <= centerY ? nodeData.y - highlightedR - 10 : nodeData.y + highlightedR + 14;
         labelsGroup.append("text")
           .attr("class", "hover-label-single")
-          .attr("x", nodeData.x)
-          .attr("y", labelY)
-          .attr("text-anchor", "middle")
-          .attr("font-size", "10px")
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
-          .attr("font-weight", 600)
-          .attr("fill", dotColor)
-          .text(nodeData[label]);
+          .attr("x", nodeData.x).attr("y", labelY).attr("text-anchor", "middle")
+          .attr("font-size", 10.5).attr("font-family", TYP.ui).attr("font-weight", 600)
+          .attr("fill", dotColor).text(nodeData[label]);
       }
-
-      const colorDot = `<span style="width:8px;height:8px;border-radius:50%;background:${dotColor};margin-right:5px"></span>`;
-      valueDisplay.html(`<span style="display:inline-flex;align-items:center;justify-content:center;width:100%">${colorDot}<b style="margin-right:6px">${nodeData[label]}</b><span style="opacity:0.2;margin-right:6px">│</span><b>${formatValue(nodeData[value])}</b></span>`);
+      visaVarde(nodeData, dotColor);
     } else {
       const isHl = isHighlighted(nodeData);
-      dotEl
-        .attr("r", isHl ? highlightedR : backgroundR)
+      dotEl.attr("r", isHl ? highlightedR : backgroundR)
         .attr("fill-opacity", isHl ? 0.9 : 0.42)
         .attr("stroke", isHl ? strokeFor(nodeData[group]) : mutedStroke)
         .attr("stroke-width", isHl ? 1.25 : 0.6)
         .attr("stroke-opacity", isHl ? 1 : 0.4);
-
-      // Återställ permanent etikett om den finns
-      labelsGroup.selectAll(`.label-text[data-label="${nodeData[label]}"]`)
-        .attr("font-weight", 600)
-        .attr("font-size", "11px");
-      labelsGroup.selectAll(`.label-connector[data-label="${nodeData[label]}"]`)
-        .attr("stroke-width", 1)
-        .attr("stroke-opacity", 0.4);
-
-      // Ta bort temporär hover-etikett
+      labelsGroup.selectAll(`.label-text[data-label="${nodeData[label]}"]`).attr("font-weight", 600).attr("font-size", 11);
+      labelsGroup.selectAll(`.label-connector[data-label="${nodeData[label]}"]`).attr("stroke-width", 0.75).attr("stroke-opacity", 0.55);
       labelsGroup.selectAll(".hover-label-single").remove();
-
-      valueDisplay.html("<span style='opacity:0.35'>Peka för värden</span>");
+      avlasning.rensa();
     }
   }
 
-  // ==========================================================================
-  // UPPDATERINGSFUNKTION - Ritar om punkter och etiketter
-  // ==========================================================================
+  // ── Uppdatering: punkter och etiketter ──
   function updateChart() {
     dotsGroup.selectAll("*").remove();
     labelsGroup.selectAll("*").remove();
@@ -393,191 +254,116 @@ export function beeswarm(data, {
     const highlightedNodes = nodes.filter(d => isHighlighted(d));
     const backgroundNodes = nodes.filter(d => !isHighlighted(d));
 
-    // Rita bakgrundspunkter först
     dotsGroup.selectAll(".dot-bg")
       .data(backgroundNodes)
       .join("circle")
       .attr("class", "dot-bg")
       .attr("data-label", d => d[label])
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y)
-      .attr("r", backgroundR)
-      .attr("fill", mutedColor)
-      .attr("fill-opacity", 0.42)
-      .attr("stroke", mutedStroke)
-      .attr("stroke-width", 0.6)
-      .attr("stroke-opacity", 0.4)
+      .attr("cx", d => d.x).attr("cy", d => d.y).attr("r", backgroundR)
+      .attr("fill", mutedColor).attr("fill-opacity", 0.42)
+      .attr("stroke", mutedStroke).attr("stroke-width", 0.6).attr("stroke-opacity", 0.4)
       .style("cursor", "pointer")
-      .on("mouseenter", function(event, d) {
-        highlightPoint(d, true);
-      })
-      .on("mouseleave", function(event, d) {
-        highlightPoint(d, false);
-      });
+      .on("mouseenter", (event, d) => highlightPoint(d, true))
+      .on("mouseleave", (event, d) => highlightPoint(d, false));
 
-    // Rita highlighted punkter
     dotsGroup.selectAll(".dot-highlight")
       .data(highlightedNodes)
       .join("circle")
       .attr("class", "dot-highlight")
       .attr("data-label", d => d[label])
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y)
-      .attr("r", highlightedR)
-      .attr("fill", d => group ? getColor(d[group]) : colors[0])
-      .attr("fill-opacity", 0.9)
-      .attr("stroke", d => strokeFor(d[group]))
-      .attr("stroke-width", 1.25)
+      .attr("cx", d => d.x).attr("cy", d => d.y).attr("r", highlightedR)
+      .attr("fill", d => group ? getColor(d[group]) : colors[0]).attr("fill-opacity", 0.9)
+      .attr("stroke", d => strokeFor(d[group])).attr("stroke-width", 1.25)
       .style("cursor", "pointer")
-      .on("mouseenter", function(event, d) {
-        highlightPoint(d, true);
-      })
-      .on("mouseleave", function(event, d) {
-        highlightPoint(d, false);
-      });
+      .on("mouseenter", (event, d) => highlightPoint(d, true))
+      .on("mouseleave", (event, d) => highlightPoint(d, false));
 
-    // ================================================================
-    // ETIKETTER - NOLL ÖVERLAPP GARANTERAT
-    // Global placering med smart utrymmesutnyttjande
-    // ================================================================
+    // ── Etiketter: noll överlapp garanterat, global placering ──
     if (highlightLabels && highlightedNodes.length > 0 && highlightedNodes.length <= 25) {
       const labelFontSize = 11;
-      const labelPadding = 6;  // Min avstånd mellan etiketter
-      const connectorPadding = 4;  // Min avstånd connector-etikett
-
-      // Alla placerade etiketter (för kollisionskontroll)
+      const labelPadding = 6;
+      const connectorPadding = 4;
       const placedLabels = [];
 
-      // Seed: riksmedian-/vline-etiketten är ett hinder så kommun-etiketterna ruttar runt den
-      if (vline !== null) {
-        const vc = typeof vline === "number" ? { value: vline } : vline;
+      // Seed: referenslinjernas etiketter är hinder
+      for (const vc of vlines) {
         const vx = xScale(vc.value);
         if (vc.label && vx >= marginLeft && vx <= autoWidth - marginRight) {
           const hasVal = vc.value != null && vc.showValue !== false;
           const valStr = hasVal ? formatValue(vc.value) : "";
           const wTxt = Math.max(vc.label.length, valStr.length);
           placedLabels.push({
-            labelX: vx,
-            labelY: hasVal ? swarmTop - 19 : swarmTop - 14,
-            labelWidth: Math.max(36, wTxt * 5.8),
-            labelHeight: hasVal ? 26 : 14,
-            isObstacle: true
+            labelX: vx, labelY: (hasVal ? swarmTop - 19 : swarmTop - 14) - (vc._lyft || 0),
+            labelWidth: Math.max(36, wTxt * 5.8), labelHeight: hasVal ? 26 : 14, isObstacle: true
           });
         }
       }
 
-      // Alla connectors (för kollisionskontroll)
-      const placedConnectors = [];
-
-      // Tillgängliga zoner — knutna till axelns läge så etiketter aldrig krockar med x-axeln
       const topZoneY = { min: 8, max: swarmTop - 12 };
       const bottomZoneY = { min: swarmBottom + 13, max: xAxisY - 14 };
 
-      // Hjälpfunktion: Kollar om en rektangel överlappar med befintliga etiketter
       function labelsOverlap(x, y, w, h, exclude = null) {
-        const pad = labelPadding;
         for (const lbl of placedLabels) {
           if (lbl === exclude) continue;
-          const overlapX = Math.abs(x - lbl.labelX) < (w + lbl.labelWidth) / 2 + pad;
-          const overlapY = Math.abs(y - lbl.labelY) < (h + lbl.labelHeight) / 2 + pad;
+          const overlapX = Math.abs(x - lbl.labelX) < (w + lbl.labelWidth) / 2 + labelPadding;
+          const overlapY = Math.abs(y - lbl.labelY) < (h + lbl.labelHeight) / 2 + labelPadding;
           if (overlapX && overlapY) return true;
         }
         return false;
       }
 
-      // Hjälpfunktion: Kollar om en linje korsar en rektangel
+      // Liang–Barsky: klipp segmentet mot rektangeln
       function lineIntersectsRect(x1, y1, x2, y2, rx, ry, rw, rh, pad = 0) {
-        const left = rx - rw / 2 - pad;
-        const right = rx + rw / 2 + pad;
-        const top = ry - rh / 2 - pad;
-        const bottom = ry + rh / 2 + pad;
-
-        // Liang–Barsky: klipp segmentet mot rektangeln. Funkar exakt även för
-        // diagonala leaders (gamla koden var konservativ och svarade alltid "träff").
+        const left = rx - rw / 2 - pad, right = rx + rw / 2 + pad;
+        const top = ry - rh / 2 - pad, bottom = ry + rh / 2 + pad;
         let t0 = 0, t1 = 1;
         const dx = x2 - x1, dy = y2 - y1;
         const clip = (p, q) => {
-          if (p === 0) return q >= 0;          // parallell mot kanten — inne om q >= 0
+          if (p === 0) return q >= 0;
           const r = q / p;
           if (p < 0) { if (r > t1) return false; if (r > t0) t0 = r; }
-          else       { if (r < t0) return false; if (r < t1) t1 = r; }
+          else { if (r < t0) return false; if (r < t1) t1 = r; }
           return true;
         };
-        if (clip(-dx, x1 - left) && clip(dx, right - x1) &&
-            clip(-dy, y1 - top) && clip(dy, bottom - y1)) {
-          return t0 <= t1;   // någon del av segmentet ligger inne i rektangeln
-        }
+        if (clip(-dx, x1 - left) && clip(dx, right - x1) && clip(-dy, y1 - top) && clip(dy, bottom - y1)) return t0 <= t1;
         return false;
       }
 
-      // Hjälpfunktion: Kollar om en connector-path överlappar etiketter
       function connectorHitsLabel(segments, excludeLabel) {
         for (const seg of segments) {
           for (const lbl of placedLabels) {
             if (lbl === excludeLabel) continue;
-            if (lineIntersectsRect(seg.x1, seg.y1, seg.x2, seg.y2,
-                lbl.labelX, lbl.labelY, lbl.labelWidth, lbl.labelHeight, connectorPadding)) {
-              return lbl;
-            }
+            if (lineIntersectsRect(seg.x1, seg.y1, seg.x2, seg.y2, lbl.labelX, lbl.labelY, lbl.labelWidth, lbl.labelHeight, connectorPadding)) return lbl;
           }
         }
         return null;
       }
 
-      // Skapa lista med punkter att placera etiketter för
-      const labelCandidates = highlightedNodes.map(d => {
-        const name = d[label];
-        return {
-          ...d,
-          name: name,
-          labelWidth: Math.max(36, name.length * 6.2),
-          labelHeight: 14,
-          color: group ? getColor(d[group]) : colors[0],
-          nodeRadius: highlightedR,
-          // Naturlig preferens baserat på punkt-position
-          preferTop: d.y <= centerY
-        };
-      });
-
-      // Sortera: placera från vänster till höger (mer förutsägbart)
+      const labelCandidates = highlightedNodes.map(d => ({
+        ...d,
+        name: d[label],
+        labelWidth: Math.max(36, String(d[label]).length * 6.2),
+        labelHeight: 14,
+        color: group ? getColor(d[group]) : colors[0],
+        nodeRadius: highlightedR,
+        preferTop: d.y <= centerY
+      }));
       labelCandidates.sort((a, b) => a.x - b.x);
 
-      // ============================================================
-      // PLACERA VARJE ETIKETT
-      // ============================================================
       for (const lp of labelCandidates) {
-        let bestPos = null;
-        let bestScore = Infinity;
-
-        // Generera kandidatpositioner
+        let bestPos = null, bestScore = Infinity;
         const candidates = [];
-
-        // Räkna hur trångt det är i varje zon vid denna x-position
-        const topLabelsNearby = placedLabels.filter(l =>
-          l.labelY < centerY && Math.abs(l.labelX - lp.x) < 100
-        ).length;
-        const bottomLabelsNearby = placedLabels.filter(l =>
-          l.labelY > centerY && Math.abs(l.labelX - lp.x) < 100
-        ).length;
-
-        // Bestäm vilken zon som ska testas först
-        const topFirst = lp.preferTop
-          ? topLabelsNearby <= bottomLabelsNearby
-          : topLabelsNearby < bottomLabelsNearby;
-
-        // Y-nivåer att testa (olika avstånd från svärm)
+        const topLabelsNearby = placedLabels.filter(l => l.labelY < centerY && Math.abs(l.labelX - lp.x) < 100).length;
+        const bottomLabelsNearby = placedLabels.filter(l => l.labelY > centerY && Math.abs(l.labelX - lp.x) < 100).length;
+        const topFirst = lp.preferTop ? topLabelsNearby <= bottomLabelsNearby : topLabelsNearby < bottomLabelsNearby;
         const topYLevels = [swarmTop - 13, swarmTop - 27, swarmTop - 41];
         const bottomYLevels = [swarmBottom + 15, swarmBottom + 29, swarmBottom + 43];
-
-        // X-offsets att testa
         const xOffsets = [0, -30, 30, -60, 60, -90, 90];
 
-        // Lägg till kandidater i prioritetsordning
         const addCandidates = (yLevels, isTop) => {
           for (const baseY of yLevels) {
             for (const xOff of xOffsets) {
-              const x = Math.max(marginLeft + lp.labelWidth / 2 + 5,
-                         Math.min(autoWidth - marginRight - lp.labelWidth / 2 - 5, lp.x + xOff));
+              const x = Math.max(marginLeft + lp.labelWidth / 2 + 5, Math.min(autoWidth - marginRight - lp.labelWidth / 2 - 5, lp.x + xOff));
               const y = isTop
                 ? Math.max(topZoneY.min, Math.min(topZoneY.max, baseY))
                 : Math.max(bottomZoneY.min, Math.min(bottomZoneY.max, baseY));
@@ -585,288 +371,149 @@ export function beeswarm(data, {
             }
           }
         };
+        if (topFirst) { addCandidates(topYLevels, true); addCandidates(bottomYLevels, false); }
+        else { addCandidates(bottomYLevels, false); addCandidates(topYLevels, true); }
 
-        if (topFirst) {
-          addCandidates(topYLevels, true);
-          addCandidates(bottomYLevels, false);
-        } else {
-          addCandidates(bottomYLevels, false);
-          addCandidates(topYLevels, true);
-        }
-
-        // Testa varje kandidatposition
         for (const cand of candidates) {
-          // Kolla etikett-överlapp
-          if (labelsOverlap(cand.x, cand.y, lp.labelWidth, lp.labelHeight)) {
-            continue;
-          }
-
-          // Beräkna enkel connector-path
+          if (labelsOverlap(cand.x, cand.y, lp.labelWidth, lp.labelHeight)) continue;
           const startX = lp.x;
           const startY = cand.isTop ? lp.y - lp.nodeRadius - 2 : lp.y + lp.nodeRadius + 2;
           const endX = cand.x;
           const endY = cand.isTop ? cand.y + 7 : cand.y - 9;
-
-          // Rak, vinklad leader — kortast möjliga väg punkt → etikett
           const segments = [{ x1: startX, y1: startY, x2: endX, y2: endY }];
-
-          // Kolla om connectorn träffar någon etikett
-          const hitLabel = connectorHitsLabel(segments, null);
-          if (hitLabel) {
-            continue;  // Skippa denna kandidat
-          }
-
-          // Beräkna score (lägre = bättre)
+          if (connectorHitsLabel(segments, null)) continue;
           const distX = Math.abs(cand.x - lp.x);
           const distY = Math.abs(cand.y - (cand.isTop ? swarmTop : swarmBottom));
           const wrongSideBonus = (cand.isTop === lp.preferTop) ? 0 : 20;
           const score = distX * 0.5 + distY * 0.3 + wrongSideBonus;
-
-          if (score < bestScore) {
-            bestScore = score;
-            bestPos = { ...cand, segments };
-          }
+          if (score < bestScore) { bestScore = score; bestPos = { ...cand, segments }; }
         }
 
-        // Om ingen ren position hittades, försök med connector-routing runt hinder
+        // Rutta runt hinder
         if (!bestPos) {
           for (const cand of candidates) {
-            if (labelsOverlap(cand.x, cand.y, lp.labelWidth, lp.labelHeight)) {
-              continue;
-            }
-
+            if (labelsOverlap(cand.x, cand.y, lp.labelWidth, lp.labelHeight)) continue;
             const startX = lp.x;
             const startY = cand.isTop ? lp.y - lp.nodeRadius - 2 : lp.y + lp.nodeRadius + 2;
             const endX = cand.x;
             const endY = cand.isTop ? cand.y + 7 : cand.y - 9;
-
-            // Hitta blockerande etikett
             const simpleSegments = [{ x1: startX, y1: startY, x2: endX, y2: endY }];
-
             const blocker = connectorHitsLabel(simpleSegments, null);
             if (!blocker) {
-              // Denna position funkade faktiskt
-              const distX = Math.abs(cand.x - lp.x);
-              const distY = Math.abs(cand.y - (cand.isTop ? swarmTop : swarmBottom));
-              const score = distX * 0.5 + distY * 0.3;
-              if (score < bestScore) {
-                bestScore = score;
-                bestPos = { ...cand, segments: simpleSegments };
-              }
+              const score = Math.abs(cand.x - lp.x) * 0.5 + Math.abs(cand.y - (cand.isTop ? swarmTop : swarmBottom)) * 0.3;
+              if (score < bestScore) { bestScore = score; bestPos = { ...cand, segments: simpleSegments }; }
               continue;
             }
-
-            // Försök rutta runt blockern
             const bLeft = blocker.labelX - blocker.labelWidth / 2 - 8;
             const bRight = blocker.labelX + blocker.labelWidth / 2 + 8;
-
-            // Välj sida att gå runt (mot etikettens slutposition)
-            const goRight = endX >= startX;
-            const jogX = goRight ? bRight : bLeft;
-
-            // Skapa path som går runt
+            const jogX = endX >= startX ? bRight : bLeft;
             const jogY = cand.isTop
               ? Math.max(blocker.labelY + blocker.labelHeight / 2 + 6, startY - 10)
               : Math.min(blocker.labelY - blocker.labelHeight / 2 - 6, startY + 10);
-
             const routedSegments = [
               { x1: startX, y1: startY, x2: startX, y2: jogY },
               { x1: startX, y1: jogY, x2: jogX, y2: jogY },
               { x1: jogX, y1: jogY, x2: jogX, y2: endY },
               { x1: jogX, y1: endY, x2: endX, y2: endY }
             ];
-
-            // Kolla om den ruttade pathen är fri
             if (!connectorHitsLabel(routedSegments, null)) {
-              const distX = Math.abs(cand.x - lp.x);
-              const distY = Math.abs(cand.y - (cand.isTop ? swarmTop : swarmBottom));
-              const routingPenalty = 15;  // Lite straffpoäng för komplicerad path
-              const score = distX * 0.5 + distY * 0.3 + routingPenalty;
-
-              if (score < bestScore) {
-                bestScore = score;
-                bestPos = { ...cand, segments: routedSegments };
-              }
+              const score = Math.abs(cand.x - lp.x) * 0.5 + Math.abs(cand.y - (cand.isTop ? swarmTop : swarmBottom)) * 0.3 + 15;
+              if (score < bestScore) { bestScore = score; bestPos = { ...cand, segments: routedSegments }; }
             }
           }
         }
 
-        // Sista utväg: tvinga in etiketten någonstans
         if (!bestPos) {
           const fallbackY = lp.preferTop ? topYLevels[0] : bottomYLevels[0];
           bestPos = {
-            x: lp.x,
-            y: fallbackY,
-            isTop: lp.preferTop,
-            segments: [{
-              x1: lp.x,
-              y1: lp.preferTop ? lp.y - lp.nodeRadius - 2 : lp.y + lp.nodeRadius + 2,
-              x2: lp.x,
-              y2: lp.preferTop ? fallbackY + 7 : fallbackY - 9
-            }]
+            x: lp.x, y: fallbackY, isTop: lp.preferTop,
+            segments: [{ x1: lp.x, y1: lp.preferTop ? lp.y - lp.nodeRadius - 2 : lp.y + lp.nodeRadius + 2, x2: lp.x, y2: lp.preferTop ? fallbackY + 7 : fallbackY - 9 }]
           };
         }
 
-        // Spara placerad etikett
-        lp.labelX = bestPos.x;
-        lp.labelY = bestPos.y;
-        lp.isTop = bestPos.isTop;
+        lp.labelX = bestPos.x; lp.labelY = bestPos.y; lp.isTop = bestPos.isTop;
         lp.connectorSegments = bestPos.segments;
         placedLabels.push(lp);
       }
 
-      // Spara för hover-effekter (hinder räknas inte som riktiga etiketter)
       const realLabels = placedLabels.filter(l => !l.isObstacle);
-      const topLabels = realLabels.filter(l => l.isTop);
-      const bottomLabels = realLabels.filter(l => !l.isTop);
-      currentLabelData = { top: topLabels, bottom: bottomLabels };
+      currentLabelData = { top: realLabels.filter(l => l.isTop), bottom: realLabels.filter(l => !l.isTop) };
 
-      // ============================================================
-      // RITA CONNECTORS OCH ETIKETTER
-      // ============================================================
       for (const lp of placedLabels) {
-        // Bygg path från segments
         if (lp.connectorSegments && lp.connectorSegments.length > 0) {
           let pathD = `M ${lp.connectorSegments[0].x1} ${lp.connectorSegments[0].y1}`;
-          for (const seg of lp.connectorSegments) {
-            pathD += ` L ${seg.x2} ${seg.y2}`;
-          }
-
+          for (const seg of lp.connectorSegments) pathD += ` L ${seg.x2} ${seg.y2}`;
           labelsGroup.append("path")
-            .attr("class", "label-connector")
-            .attr("data-label", lp.name)
-            .attr("d", pathD)
-            .attr("fill", "none")
-            .attr("stroke", "#9aa0a6")   // neutral hårlinje — texten bär färgen, linjen ska recedera
-            .attr("stroke-width", 0.75)
-            .attr("stroke-opacity", 0.55);
+            .attr("class", "label-connector").attr("data-label", lp.name)
+            .attr("d", pathD).attr("fill", "none")
+            .attr("stroke", "#9aa0a6").attr("stroke-width", 0.75).attr("stroke-opacity", 0.55);
         }
       }
-
       for (const lp of placedLabels) {
-        if (lp.isObstacle) continue;   // seed-hindret ritas inte ut
+        if (lp.isObstacle) continue;
         labelsGroup.append("text")
-          .attr("class", "label-text")
-          .attr("data-label", lp.name)
-          .attr("x", lp.labelX)
-          .attr("y", lp.labelY)
-          .attr("text-anchor", "middle")
-          .attr("font-size", `${labelFontSize}px`)
-          .attr("font-family", "'IBM Plex Sans', sans-serif")
-          .attr("font-weight", 600)
-          .attr("fill", lp.color)
-          .text(lp.name);
+          .attr("class", "label-text").attr("data-label", lp.name)
+          .attr("x", lp.labelX).attr("y", lp.labelY).attr("text-anchor", "middle")
+          .attr("font-size", labelFontSize).attr("font-family", TYP.ui).attr("font-weight", 600)
+          .attr("fill", lp.color).text(lp.name);
       }
     }
 
-    // Uppdatera väljaren
     if (selectorCtrl) selectorCtrl.update();
   }
 
-  // Initial rendering
   updateChart();
 
-  // ==========================================================================
-  // CROSSHAIR
-  // ==========================================================================
+  // ── Crosshair ──
   const crosshair = svg.append("line")
     .attr("class", "crosshair")
-    .attr("y1", swarmTop - 8)
-    .attr("y2", xAxisY)
-    .attr("stroke", "#bbb")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "4,3")
-    .style("opacity", 0)
-    .style("pointer-events", "none");
+    .attr("y1", swarmTop - 8).attr("y2", xAxisY)
+    .attr("stroke", "#9a9f9d").attr("stroke-width", 1).attr("stroke-dasharray", "3,3")
+    .style("opacity", 0).style("pointer-events", "none");
 
   const highlightRing = svg.append("circle")
     .attr("class", "highlight-ring")
-    .attr("fill", "none")
-    .attr("stroke", "#1a1a1a")
-    .attr("stroke-width", 2)
-    .style("opacity", 0)
-    .style("pointer-events", "none");
+    .attr("fill", "none").attr("stroke", FARG.ink).attr("stroke-width", 2)
+    .style("opacity", 0).style("pointer-events", "none");
 
   let hoveredNode = null;
 
   svg.append("rect")
     .attr("class", "overlay")
-    .attr("x", marginLeft)
-    .attr("y", marginTop)
-    .attr("width", autoWidth - marginLeft - marginRight)
-    .attr("height", height - marginTop - marginBottom)
-    .attr("fill", "transparent")
-    .style("cursor", "default")
+    .attr("x", marginLeft).attr("y", marginTop)
+    .attr("width", autoWidth - marginLeft - marginRight).attr("height", height - marginTop - marginBottom)
+    .attr("fill", "transparent").style("cursor", "default")
     .on("mouseenter", () => crosshair.style("opacity", 1))
     .on("mouseleave", () => {
       crosshair.style("opacity", 0);
       highlightRing.style("opacity", 0);
-      if (hoveredNode) {
-        highlightPoint(hoveredNode, false);
-        hoveredNode = null;
-      }
-      valueDisplay.html("<span style='opacity:0.35'>Peka för värden</span>");
+      if (hoveredNode) { highlightPoint(hoveredNode, false); hoveredNode = null; }
+      avlasning.rensa();
     })
-    .on("mousemove", function(event) {
+    .on("mousemove", function (event) {
       const [mx, my] = d3.pointer(event);
       crosshair.attr("x1", mx).attr("x2", mx);
-
-      let closest = null;
-      let minDist = Infinity;
+      let closest = null, minDist = Infinity;
       for (const node of nodes) {
-        const dist = Math.sqrt((mx - node.x) ** 2 + (my - node.y) ** 2);
-        if (dist < minDist) {
-          minDist = dist;
-          closest = node;
-        }
+        const dist = Math.hypot(mx - node.x, my - node.y);
+        if (dist < minDist) { minDist = dist; closest = node; }
       }
-
       if (closest && minDist < 50) {
         const isHl = isHighlighted(closest);
-        const dotColor = isHl ? getColor(closest[group]) : "#888";
-
-        highlightRing
-          .attr("cx", closest.x)
-          .attr("cy", closest.y)
-          .attr("r", (isHl ? highlightedR : backgroundR) + 3)
-          .attr("stroke", dotColor)
-          .style("opacity", 1);
-
-        if (hoveredNode && hoveredNode !== closest) {
-          highlightPoint(hoveredNode, false);
-        }
-        if (hoveredNode !== closest) {
-          highlightPoint(closest, true);
-        }
+        const dotColor = isHl ? (group ? getColor(closest[group]) : colors[0]) : "#888";
+        highlightRing.attr("cx", closest.x).attr("cy", closest.y)
+          .attr("r", (isHl ? highlightedR : backgroundR) + 3).attr("stroke", dotColor).style("opacity", 1);
+        if (hoveredNode && hoveredNode !== closest) highlightPoint(hoveredNode, false);
+        if (hoveredNode !== closest) highlightPoint(closest, true);
         hoveredNode = closest;
       } else {
         highlightRing.style("opacity", 0);
-        if (hoveredNode) {
-          highlightPoint(hoveredNode, false);
-          hoveredNode = null;
-        }
-        valueDisplay.html("<span style='opacity:0.35'>Peka för värden</span>");
+        if (hoveredNode) { highlightPoint(hoveredNode, false); hoveredNode = null; }
+        avlasning.rensa();
       }
     });
 
-  // Caption
-  if (caption) {
-    container.append("div")
-      .attr("class", "graf-caption")
-      .text(caption);
-  }
-
-  // Export och logga
-  addExportButton(container, svg.node(), {
-    title,
-    subtitle,
-    caption,
-    width: autoWidth,
-    height,
-    altText,
-    info,
-    logo
-  });
+  addExportButton(container, svg.node(), { title, subtitle, caption, width: autoWidth, height, altText, info, logo });
 
   return container.node();
 }

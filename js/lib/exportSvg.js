@@ -42,10 +42,10 @@ export function createExportSvg(chartSvg, {
     const titleEl = document.createElementNS(svgNS, "text");
     titleEl.setAttribute("x", "14");
     titleEl.setAttribute("y", "22");
-    titleEl.setAttribute("font-size", "16px");
-    titleEl.setAttribute("font-weight", "600");
-    titleEl.setAttribute("font-family", "'IBM Plex Sans', -apple-system, sans-serif");
-    titleEl.setAttribute("fill", "#1a1a1a");
+    titleEl.setAttribute("font-size", "18px");
+    titleEl.setAttribute("font-weight", "500");
+    titleEl.setAttribute("font-family", "'Source Serif 4', Georgia, serif");
+    titleEl.setAttribute("fill", "#1f2422");
     titleEl.textContent = title;
     exportSvg.appendChild(titleEl);
     yOffset += titleHeight;
@@ -59,7 +59,7 @@ export function createExportSvg(chartSvg, {
     subtitleEl.setAttribute("font-size", "12px");
     subtitleEl.setAttribute("font-weight", "400");
     subtitleEl.setAttribute("font-family", "'IBM Plex Sans', -apple-system, sans-serif");
-    subtitleEl.setAttribute("fill", "#666666");
+    subtitleEl.setAttribute("fill", "#5b5b5b");
     subtitleEl.textContent = subtitle;
     exportSvg.appendChild(subtitleEl);
     yOffset += subtitleHeight;
@@ -113,7 +113,7 @@ export function createExportSvg(chartSvg, {
     captionEl.setAttribute("font-size", "10px");
     captionEl.setAttribute("font-weight", "400");
     captionEl.setAttribute("font-family", "'IBM Plex Sans', -apple-system, sans-serif");
-    captionEl.setAttribute("fill", "#888888");
+    captionEl.setAttribute("fill", "#8a8f8d");
     captionEl.textContent = caption;
     exportSvg.appendChild(captionEl);
   }
@@ -190,12 +190,12 @@ export function downloadSvg(svgString, filename = "graf") {
 }
 
 /**
- * Lägger till export-knapp och info-knapp i en graf-container
+ * Lägger till verktyg (logotyp, info, ladda ner) i grafens .graf-tools.
+ * Utseendet styrs av style.scss (GRAFSYSTEM); här sätts bara struktur.
  */
 export function addExportButton(container, chartSvg, options) {
   const { title = "graf", altText = null, info = null, logo = null } = options;
 
-  // Skapa filename från titel
   const filename = (title || "graf")
     .toLowerCase()
     .replace(/[åä]/g, "a")
@@ -204,231 +204,63 @@ export function addExportButton(container, chartSvg, options) {
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
-  // Lägg till knappar i header
   let header = container.select(".graf-header");
   if (header.empty()) {
-    header = container.insert("div", ":first-child")
-      .attr("class", "graf-header");
+    header = container.insert("div", ":first-child").attr("class", "graf-header");
   }
+  let tools = header.select(".graf-tools");
+  if (tools.empty()) tools = header.append("div").attr("class", "graf-tools");
+  tools.selectAll("*").remove();
 
-  // Gör header relativt positionerad för knapparna
-  header.style("position", "relative");
-
-  // Om altText finns, sätt som aria-describedby på SVG:en
   if (altText) {
     const svgEl = container.select(".graf-svg");
-    if (!svgEl.empty()) {
-      svgEl.attr("aria-label", altText);
-      svgEl.attr("role", "img");
-    }
+    if (!svgEl.empty()) svgEl.attr("aria-label", altText).attr("role", "img");
   }
 
-  // Container för logga + knappar (höger sida av header, i nivå med titel)
-  const rightContainer = header.append("div")
-    .style("position", "absolute")
-    .style("right", "1.25rem")
-    .style("top", "0.9rem")
-    .style("display", "flex")
-    .style("gap", "10px")
-    .style("align-items", "center");
-
-  // Logga (om den finns)
   if (logo) {
-    rightContainer.append("img")
-      .attr("src", logo)
-      .attr("alt", "")
-      .attr("class", "graf-logo")
-      .style("height", "26px")
-      .style("width", "auto");
+    tools.append("img").attr("src", logo).attr("alt", "").attr("class", "graf-logo");
   }
 
-  // Knapp-container
-  const btnContainer = rightContainer.append("div")
-    .style("display", "flex")
-    .style("gap", "4px")
-    .style("align-items", "center");
+  const knappar = tools.append("div").attr("class", "graf-tools-knappar");
 
-  // Gemensam knappstil
-  const buttonStyle = (btn) => {
-    btn
-      .style("width", "26px")
-      .style("height", "26px")
-      .style("background", "#fff")
-      .style("border", "2px solid #1a1a1a")
-      .style("border-radius", "0")
-      .style("cursor", "pointer")
-      .style("padding", "0")
-      .style("display", "flex")
-      .style("align-items", "center")
-      .style("justify-content", "center")
-      .style("transition", "background 0.15s, transform 0.1s")
-      .on("mouseenter", function() {
-        d3.select(this).style("background", "#f0f0f0");
-      })
-      .on("mouseleave", function() {
-        d3.select(this).style("background", "#fff");
-      })
-      .on("mousedown", function() {
-        d3.select(this).style("transform", "scale(0.95)");
-      })
-      .on("mouseup", function() {
-        d3.select(this).style("transform", "scale(1)");
-      });
-  };
+  const IKON_INFO = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.8" r="0.6" fill="currentColor"/></svg>';
+  const IKON_NER = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+  const IKON_KRYSS = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
 
-  // Info-knapp - endast om info finns
   if (info) {
-    const infoBtn = btnContainer.append("button")
-      .attr("class", "graf-info-btn")
-      .attr("aria-label", "Visa information om grafen")
-      .style("font-family", "'IBM Plex Sans', sans-serif")
-      .style("font-size", "14px")
-      .style("font-weight", "600")
-      .style("color", "#1a1a1a")
-      .text("i");
+    const infoBtn = knappar.append("button")
+      .attr("type", "button")
+      .attr("class", "graf-ikonknapp graf-info-btn")
+      .attr("aria-label", "Om denna graf")
+      .attr("data-tip", "Om denna graf")
+      .html(IKON_INFO);
 
-    buttonStyle(infoBtn);
-
-    // Custom tooltip
-    const tooltip = btnContainer.append("div")
-      .attr("class", "graf-btn-tooltip")
-      .style("position", "absolute")
-      .style("top", "calc(100% + 8px)")
-      .style("right", "0")
-      .style("background", "#1a1a1a")
-      .style("color", "#fff")
-      .style("padding", "6px 10px")
-      .style("font-family", "'IBM Plex Sans', sans-serif")
-      .style("font-size", "11px")
-      .style("font-weight", "500")
-      .style("white-space", "nowrap")
-      .style("opacity", "0")
-      .style("pointer-events", "none")
-      .style("transition", "opacity 0.15s")
-      .style("z-index", "200")
-      .text("Om denna graf");
-
-    infoBtn
-      .on("mouseenter.tooltip", function() {
-        tooltip.style("opacity", "1");
-        d3.select(this).style("background", "#f0f0f0");
-      })
-      .on("mouseleave.tooltip", function() {
-        tooltip.style("opacity", "0");
-        d3.select(this).style("background", "#fff");
-      });
-
-    // Skapa info-panel (ljust tema, scrollbar vid lång text)
     const infoPanel = container.append("div")
       .attr("class", "graf-info-panel")
-      .style("position", "absolute")
-      .style("top", "0")
-      .style("left", "0")
-      .style("right", "0")
-      .style("max-height", "60%")
-      .style("overflow-y", "auto")
-      .style("background", "rgba(255, 255, 255, 0.97)")
-      .style("color", "#2c2826")
-      .style("padding", "1.1rem 1.4rem")
-      .style("padding-right", "2.8rem")
-      .style("font-family", "'IBM Plex Sans', sans-serif")
-      .style("font-size", "12.5px")
-      .style("line-height", "1.65")
-      .style("z-index", "100")
-      .style("display", "none")
-      .style("border-bottom", "3px solid #00664D")
-      .style("box-shadow", "0 4px 16px rgba(0,0,0,0.10)");
-
-    // Inre wrapper för att tvinga rätt textfärg på alla barn
-    infoPanel.append("div")
-      .style("color", "#2c2826")
-      .html(info);
-
-    // Inject scoped styles för p/strong/em inuti panelen
-    infoPanel.insert("style", ":first-child")
-      .text(`.graf-info-panel p { margin: 0 0 0.5em 0; color: #2c2826; }
-.graf-info-panel strong { color: #00664D; font-weight: 600; }
-.graf-info-panel em { font-style: italic; color: #555; }`);
-
-    // Stäng-knapp
+      .style("display", "none");
+    infoPanel.append("div").html(info);
     infoPanel.append("button")
-      .style("position", "absolute")
-      .style("top", "10px")
-      .style("right", "12px")
-      .style("width", "22px")
-      .style("height", "22px")
-      .style("background", "transparent")
-      .style("border", "1px solid #ccc")
-      .style("border-radius", "3px")
-      .style("color", "#666")
-      .style("cursor", "pointer")
-      .style("font-size", "14px")
-      .style("line-height", "1")
-      .style("display", "flex")
-      .style("align-items", "center")
-      .style("justify-content", "center")
-      .html("\u00d7")
-      .on("mouseenter", function() { d3.select(this).style("border-color", "#00664D").style("color", "#00664D"); })
-      .on("mouseleave", function() { d3.select(this).style("border-color", "#ccc").style("color", "#666"); })
-      .on("click", function(event) {
-        event.stopPropagation();
-        infoPanel.style("display", "none");
-      });
+      .attr("type", "button")
+      .attr("class", "graf-ikonknapp graf-info-stang")
+      .attr("aria-label", "Stäng")
+      .html(IKON_KRYSS)
+      .on("click", (event) => { event.stopPropagation(); infoPanel.style("display", "none"); });
 
-    // Toggle info-panel vid klick
-    infoBtn.on("click", function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      const isVisible = infoPanel.style("display") === "block";
-      infoPanel.style("display", isVisible ? "none" : "block");
+    infoBtn.on("click", (event) => {
+      event.preventDefault(); event.stopPropagation();
+      infoPanel.style("display", infoPanel.style("display") === "block" ? "none" : "block");
     });
   }
 
-  // Export-knapp med nedladdningsikon
-  const exportBtn = btnContainer.append("button")
-    .attr("class", "graf-export-btn")
-    .attr("aria-label", "Spara graf som SVG")
-    .html(`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>`);
+  const exportBtn = knappar.append("button")
+    .attr("type", "button")
+    .attr("class", "graf-ikonknapp graf-export-btn")
+    .attr("aria-label", "Ladda ner som SVG")
+    .attr("data-tip", "Ladda ner SVG")
+    .html(IKON_NER);
 
-  buttonStyle(exportBtn);
-
-  // Custom tooltip för export
-  const exportTooltip = btnContainer.append("div")
-    .attr("class", "graf-btn-tooltip")
-    .style("position", "absolute")
-    .style("top", "calc(100% + 8px)")
-    .style("right", "0")
-    .style("background", "#1a1a1a")
-    .style("color", "#fff")
-    .style("padding", "6px 10px")
-    .style("font-family", "'IBM Plex Sans', sans-serif")
-    .style("font-size", "11px")
-    .style("font-weight", "500")
-    .style("white-space", "nowrap")
-    .style("opacity", "0")
-    .style("pointer-events", "none")
-    .style("transition", "opacity 0.15s")
-    .style("z-index", "200")
-    .text("Ladda ner SVG");
-
-  exportBtn
-    .on("mouseenter.tooltip", function() {
-      exportTooltip.style("opacity", "1");
-      d3.select(this).style("background", "#f0f0f0");
-    })
-    .on("mouseleave.tooltip", function() {
-      exportTooltip.style("opacity", "0");
-      d3.select(this).style("background", "#fff");
-    });
-
-  exportBtn.on("click", function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
+  exportBtn.on("click", (event) => {
+    event.preventDefault(); event.stopPropagation();
     try {
       const svgString = createExportSvg(chartSvg, options);
       downloadSvg(svgString, filename);
