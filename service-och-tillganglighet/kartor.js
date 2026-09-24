@@ -10,6 +10,7 @@
 //        från kartgalleriet). Datafilerna hämtas relativt den.
 // =============================================================================
 import { tillganglighetskarta, fmtSv } from "../js/kartor/tillganglighetskarta.js";
+import { isokronkarta } from "../js/kartor/isokronkarta.js";
 
 export const fsNamn = { WALK: "Gång", BICYCLE: "Cykel", TRANSIT: "Kollektivtrafik", TRANSIT50: "Kollektivtrafik, typisk avgång", TRANSITB: "Kollektivtrafik med cykel", CAR: "Bil" };
 const kommunOrdning = ["Kungsbacka", "Varberg", "Falkenberg", "Halmstad", "Laholm", "Hylte"];
@@ -180,8 +181,31 @@ export async function vardagKarta({ bas = "" } = {}) {
   });
 }
 
+// ── Isokroner: hur långt hinner man inom 15–60 min från tolv orter ───────────
+// Förberäknade ytor (bearbetning_data/tg_07–08), en fil per ort som hämtas när
+// orten väljs. Ingen rubrikrad i galleriet; undertiteln skrivs av modulen.
+const urlVal = (nycklar) => {
+  try {
+    const p = new URLSearchParams(location.search);
+    return Object.fromEntries(nycklar.filter((k) => p.get(k)).map((k) => [k, p.get(k)]));
+  } catch (_) { return {}; }
+};
+export function isokronKarta({ bas = "", start = {} } = {}) {
+  return isokronkarta({
+    orter: bas + "data/05-isokron-orter.json",
+    bas: bas + "data/05-isokron-bas.geojson",
+    katalog: bas + "data/isokroner/",
+    // Djuplänk i kartgalleriet: ?ort=halmstad&fs=TRANSIT&avg=typisk
+    start: { ort: "varberg", fs: "ALLA", avg: "snabb", ...start, ...urlVal(["ort", "fs", "avg"]) },
+    title: "Hur långt hinner man på en timme?",
+    caption: "Källa: egen beräkning med r5r (R5) på OpenStreetMap och GTFS Sverige 2 (Samtrafiken, tidtabell tisdag 13 oktober 2026). Invånare: SCB 2025, Hallands 250-metersrutor och grannlänens 1 km-rutor. Medianhallänningen: hälften av länets invånare når fler, hälften färre. Bakgrundskarta: CARTO och OpenStreetMap.",
+    hojd: 700
+  });
+}
+
 // Registret som kartgalleriet (kartgalleri/karta.html?id=…) använder
 export const KARTOR = {
+  "tillganglighet-isokroner": isokronKarta,
   "tillganglighet-rackvidd": rackviddKarta,
   "tillganglighet-arbete": arbeteKarta,
   "tillganglighet-vardag": vardagKarta,

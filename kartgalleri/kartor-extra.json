@@ -10,6 +10,16 @@
     "ordning": 1
   },
   {
+    "id": "tillganglighet-isokroner",
+    "titel": "Hur långt hinner man på en timme?",
+    "beskrivning": "Isokroner för 15–60 minuter med gång, cykel, kollektivtrafik och bil från tolv orter, även över länsgränsen.",
+    "kapitel": "service-och-tillganglighet",
+    "src": "kartgalleri/tillganglighet.html?id=tillganglighet-isokroner",
+    "ankare": "service-och-tillganglighet/#service-och-tillganglighet-rackvidd",
+    "tumnagel": "kartgalleri/tumnaglar/tillganglighet-isokroner.jpg",
+    "ordning": 1.5
+  },
+  {
     "id": "tillganglighet-arbete",
     "titel": "Hur stor arbetsmarknad når man?",
     "beskrivning": "Arbetsplatser som nås från varje bebodd 250-metersruta.",
@@ -48,5 +58,15 @@
     "ankare": "funktionell-geografi/#funktionell-geografi-metoden-kartan",
     "tumnagel": "kartgalleri/tumnaglar/tatortsregioner.jpg",
     "ordning": 10
+  },
+  {
+    "id": "pendlingsrelationer",
+    "titel": "Pendlingsrelationerna och hur de har förändrats",
+    "beskrivning": "Pendlare mellan kommunerna 2024 och förändringen sedan 2000. Välj Hela Halland eller en kommun.",
+    "kapitel": "funktionell-geografi",
+    "src": "kartgalleri/pendlingsrelationer.html",
+    "ankare": "funktionell-geografi/#funktionell-geografi-granser-kommuner",
+    "tumnagel": "kartgalleri/tumnaglar/pendlingsrelationer.jpg",
+    "ordning": 1
   }
 ]

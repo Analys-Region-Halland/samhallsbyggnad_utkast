@@ -21,7 +21,19 @@
 //                              // "time" = en panel per år i facetValues
 //     facetValues: null,       // vilka år som får en panel (default första och sista)
 //     facetCols: null,         // antal panelkolumner (default: alla på en rad, högst 4)
-//     subtitle: "…" | (ctx) => "…"   // funktion får { ar, matt, andel } och
+//     diverging: false,        // true = negativa delar staplas åt vänster från noll
+//                              // (antal-läget), t.ex. komponenter som kan vara negativa
+//     totalField: null,        // fält med ett totalvärde som skrivs vid stapelns slut
+//                              // (t.ex. ett officiellt totaltal som inte är summan)
+//     totalLabel: null,        // (värde, rad) => text för totaletiketten
+//     measuresInYTitle: false, // true = measures väljs i y-titelns rullgardin (enhet)
+//                              // i stället för i nedre raden; measures[i].formatX
+//                              // formaterar axel, etiketter och tooltip
+//     nivaer: null,            // nivåval länet/kommunerna, "Visa: Kommunerna ▾" (se
+//                              // nivaKonfig i grafRam.js). Måttnyckeln för standard/snitt
+//                              // är "andel"/"antal" vid toggle, annars measures[i].key ?? label.
+//                              // Utan standard: Andel → Alla, Antal → Kommunerna.
+//     subtitle: "…" | (ctx) => "…"   // funktion får { ar, matt, andel, niva } och
 //                              // anropas om vid varje val, så undertiteln alltid
 //                              // beskriver det som visas
 //     title, caption, logo, info, altText
@@ -35,7 +47,8 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import { addExportButton } from "../lib/exportSvg.js";
 import { skapaRam, stilXAxel, ritaGrid, yTitel, valPill, skapaTooltip, tooltipHtml,
-         FARG, TYP, STORLEK, SERIEFARGER, matText, fmtTal, pekarPos, axelFmt, medEnhet, ritbredd } from "../lib/grafRam.js";
+         FARG, TYP, STORLEK, SERIEFARGER, matText, fmtTal, pekarPos, axelFmt, medEnhet, ritbredd,
+         nivaKonfig, nivaValjare } from "../lib/grafRam.js";
 
 // Sorterar år och perioder ("2000–2005") efter startår, och vid samma startår
 // det kortare spannet först, så att en helperiod ("2000–2025") hamnar sist.
@@ -69,6 +82,10 @@ export function stapladeStaplar(initialData, {
   valueMax = null,          // fast övre gräns för värdeaxeln i antal-/grupperat läge (ger plats åt etiketter)
   facet = null,
   facetValues = null,
+  diverging = false,
+  totalField = null,
+  totalLabel = null,
+  measuresInYTitle = false,
   facetCols = null,
   enhetAntal = "antal",    // enhet i undertiteln när Antal visas (t.ex. "kilometer")
   width = null,
@@ -82,7 +99,8 @@ export function stapladeStaplar(initialData, {
   altText = null,
   info = null,
   logo = null,
-  minLabelWidth = 34
+  minLabelWidth = 34,
+  nivaer = null
 } = {}) {
 
   // ── State ──
@@ -95,6 +113,17 @@ export function stapladeStaplar(initialData, {
     : [];
   if (timeOrder) allYears.sort((a, b) => timeOrder.indexOf(a) - timeOrder.indexOf(b));
   let currentYear = allYears.length ? (timeDefault != null && allYears.includes(timeDefault) ? timeDefault : allYears[allYears.length - 1]) : null;
+
+  // ── Nivåval (länet/kommunerna), bara med option nivaer ──
+  const nivaCfg = nivaer ? nivaKonfig(nivaer, { serier: allaRader.map(d => d[y]) }) : null;
+  const harToggle = toggle && xAntal && !grouped && !measuresInYTitle;
+  const mattNyckel = () => harToggle ? (visaAndel ? "andel" : "antal")
+    : measures && measures[measureIdx] ? (measures[measureIdx].key ?? measures[measureIdx].label) : null;
+  const nivaReserv = () => (visaAndel && !grouped && !measuresInYTitle) ? "alla" : "kommuner";
+  let niva = nivaCfg ? nivaCfg.standard(mattNyckel(), nivaReserv()) : "alla";
+  let nivaCtrl = null;
+  const nivaFilter = (rows) => nivaCfg ? rows.filter(r => nivaCfg.visas(r[y], niva)) : rows;
+  const foljNiva = () => { if (nivaCtrl) niva = nivaCtrl.folj(mattNyckel(), nivaReserv()); };
 
   // Små multiplar kräver bredd: på smal skärm blir panelerna en väljare i stället
   const W = width || ritbredd(820);
@@ -117,13 +146,18 @@ export function stapladeStaplar(initialData, {
   const fmtAndel = d => `${d.toFixed(0)} %`;
   const fmtAndel1 = d => `${d.toFixed(1).replace(".", ",")} %`;
   const fmtAntal = d => fmtTal(d);
+  // Nya optioner (diverging, totalField, measuresInYTitle) använder måttets egen
+  // formatterare för etiketter och tooltip; övriga anrop behåller sitt beteende.
+  const nyStil = diverging || !!totalField || measuresInYTitle;
+  const fmtMatt = () => (measures && measures[measureIdx] && measures[measureIdx].formatX) || formatX || fmtAntal;
 
   const undertext = () => {
     let t;
     if (typeof subtitle === "function") {
-      t = subtitle({ ar: facetTid ? tidPaneler : currentYear, matt: measures ? measures[measureIdx].label : null, andel: visaAndel });
+      t = subtitle({ ar: facetTid ? tidPaneler : currentYear, matt: measures ? measures[measureIdx].label : null, andel: visaAndel, niva });
     } else if (measures && !facetMatt && measures[measureIdx].subtitle) t = measures[measureIdx].subtitle;
     else t = subtitle;
+    if (nivaCfg && typeof subtitle !== "function") t = nivaCfg.text(t, niva);
     // Med Andel/Antal-växel står enheten i undertiteln och byts vid växling
     return toggle && xAntal && !grouped ? medEnhet(t, visaAndel, { antal: enhetAntal }) : t;
   };
@@ -145,13 +179,16 @@ export function stapladeStaplar(initialData, {
 
   // ── Paneler: en utan facet, annars en per mått eller år ──
   function paneler() {
-    if (facetMatt) return measures.map(m => ({
+    let pan;
+    if (facetMatt) pan = measures.map(m => ({
       namn: m.label,
       data: time && currentYear != null ? m.data.filter(r => r[time] === currentYear) : m.data
     }));
-    if (facetTid) return tidPaneler.map(t => ({ namn: String(t), data: data.filter(r => r[time] === t) }));
-    const d = time && currentYear != null ? data.filter(r => r[time] === currentYear) : data;
-    return [{ namn: null, data: d }];
+    else if (facetTid) pan = tidPaneler.map(t => ({ namn: String(t), data: data.filter(r => r[time] === t) }));
+    else pan = [{ namn: null, data: time && currentYear != null ? data.filter(r => r[time] === currentYear) : data }];
+    if (!nivaCfg) return pan;
+    // Nivåval: visade rader + de dolda länsraderna (till tooltip och referens)
+    return pan.map(p => ({ ...p, data: nivaFilter(p.data), lanData: niva === "kommuner" ? p.data.filter(r => nivaCfg.arLan(r[y])) : [] }));
   }
 
   function ordning(d) {
@@ -179,13 +216,23 @@ export function stapladeStaplar(initialData, {
         return { grupp: g, andel: r ? +r[x] : 0, antal: (r && xAntal) ? +r[xAntal] : null };
       });
       const total = xAntal ? d3.sum(seg, s => s.antal || 0) : null;
+      const totVal = totalField && rader.length ? rader[0][totalField] : null;
       let ack = 0;
+      if (diverging && !grouped && !visaAndel) {
+        let pos = 0, neg = 0;
+        seg.forEach(s => {
+          s.v = s.antal || 0;
+          if (s.v >= 0) { s.x0 = pos; s.x1 = pos + s.v; pos = s.x1; }
+          else { s.x1 = neg; s.x0 = neg + s.v; neg = s.x0; }
+        });
+        return { key: k, seg, total, totVal, sum: pos, min: neg, tom: !rader.length };
+      }
       if (grouped) {
         seg.forEach(s => { s.v = +s.andel; s.x0 = Math.min(0, s.v); s.x1 = Math.max(0, s.v); });
         return { key: k, seg, total, sum: d3.max(seg, s => s.v), min: d3.min(seg, s => s.v), tom: !rader.length };
       }
       seg.forEach(s => { s.v = visaAndel ? s.andel : (s.antal || 0); s.x0 = ack; s.x1 = ack + s.v; ack = s.x1; });
-      return { key: k, seg, total, sum: ack, min: 0, tom: !rader.length };
+      return { key: k, seg, total, totVal, sum: ack, min: 0, tom: !rader.length };
     });
   }
 
@@ -196,14 +243,20 @@ export function stapladeStaplar(initialData, {
     const ys = [];
     pan.forEach(p => ordning(p.data).forEach(k => { if (!ys.includes(k)) ys.push(k); }));
     pan.forEach(p => { p.rader = byggRader(p.data, ys); });
+    // Kommunvyn: dolda länsrader (tooltip) och länssnittet som referens där länet är ett snitt
+    pan.forEach(p => { p.lanRader = p.lanData && p.lanData.length ? byggRader(p.lanData, [...new Set(p.lanData.map(r => r[y]))]) : []; });
+    const refAktiv = !!nivaCfg && niva === "kommuner" && nivaCfg.arSnitt(mattNyckel()) && !grouped && !(visaAndel && !grouped);
+    pan.forEach(p => { p.ref = refAktiv ? (p.lanRader.find(r => nivaCfg.snittSerier.includes(r.key) && !r.tom) || null) : null; });
 
     const nP = pan.length;
     const cols = Math.min(nP, facetCols || (nP <= 4 ? nP : 3));
     const radP = Math.ceil(nP / cols);
     const maxLabel = Math.max(0, ...ys.map(k => matText(String(k), { size: 13, weight: 600 })));
     const labelW = 16 + maxLabel + 12;
+    const totTxt = (r) => r.totVal == null ? "" : (totalLabel ? totalLabel(r.totVal, r) : fmtMatt()(r.totVal));
+    const totW = totalField ? 10 + Math.max(0, ...pan.flatMap(p => p.rader).map(r => matText(totTxt(r), { size: 12.5, weight: 700 }))) : 0;
     const panelGap = nP > 1 ? 22 : 0;
-    const panelW = (W - labelW - marginRight - panelGap * (cols - 1)) / cols;
+    const panelW = (W - labelW - marginRight - totW - panelGap * (cols - 1)) / cols;
     const radH = grouped ? barHeight * groups.length + 2 * (groups.length - 1) : barHeight;
     // Paneltitlar radbryts om de inte ryms i panelens bredd
     const titelRader = (t) => {
@@ -221,27 +274,44 @@ export function stapladeStaplar(initialData, {
 
     const andelSkala = visaAndel && !grouped;
     const alla = pan.flatMap(p => p.rader);
-    const xMax = andelSkala ? 100 : (valueMax ?? (d3.max(alla, r => r.sum) || 1));
-    const xMin = grouped ? Math.min(0, d3.min(alla, r => r.min) || 0) : 0;
+    const xMax = andelSkala ? 100 : (valueMax ?? (d3.max(alla.concat(pan.map(p => p.ref).filter(Boolean)), r => r.sum) || 1));
+    const xMin = (grouped || (diverging && !visaAndel)) ? Math.min(0, d3.min(alla, r => r.min) || 0) : 0;
     const xs0 = d3.scaleLinear().domain([xMin, xMax]).nice(andelSkala ? 1 : 5).range([0, panelW]);
+    // Diverging: en liten negativ del ska inte ge en hel negativ tickenhet;
+    // bara övre gränsen rundas, den nedre följer datan.
+    if (diverging && !visaAndel && !grouped && xMin < 0) {
+      xs0.domain([xMin * 1.05, xs0.domain()[1]]);
+    }
     if (andelSkala) xs0.domain([0, 100]);
-    const ticks = andelSkala ? (panelW < 260 ? [0, 50, 100] : [0, 20, 40, 60, 80, 100]) : xs0.ticks(panelW < 260 ? 3 : 5);
-    const fmt = formatX || (andelSkala ? fmtAndel : fmtAntal);
+    const fmt = (measures && measures[measureIdx] && measures[measureIdx].formatX) || formatX || (andelSkala ? fmtAndel : fmtAntal);
+    // Grupperat med negativa värden: etiketten till vänster om den mest negativa
+    // stapeln får inte gå in i kategorinamnen, så skalan förlängs vid behov.
+    if (grouped && xMin < 0) {
+      const [m0, M0] = xs0.domain();
+      const k = (matText(fmt(xMin), { size: 12 }) + 10) / panelW;
+      if (xs0(xMin) < k * panelW && k < 0.5) xs0.domain([(xMin - k * M0) / (1 - k), M0]);
+    }
+    const ticks = andelSkala ? (panelW < 260 ? [0, 50, 100] : [0, 20, 40, 60, 80, 100])
+      : xs0.ticks(panelW < 260 ? 3 : 5).filter(t => t >= xs0.domain()[0] - 1e-9);
 
     // y-titel (Andel/Antal)
     if (ytit) ytit.g.remove();
     const yt = { x: labelW, y: marginTop - 12 };
-    if (toggle && xAntal && !grouped) {
+    if (measuresInYTitle && measures && measures.length > 1) {
+      ytit = yTitel(svg, { ...yt, text: measures[measureIdx].label, options: measures.map(m => m.label),
+        activeIndex: measureIdx, body: ram.body,
+        onSelect: (i) => { measureIdx = i; data = measures[i].data; foljNiva(); ram.setSubtitle(undertext()); rita(); } });
+    } else if (toggle && xAntal && !grouped) {
       ytit = yTitel(svg, { ...yt, text: visaAndel ? "Andel" : "Antal", options: ["Andel", "Antal"],
         activeIndex: visaAndel ? 0 : 1, body: ram.body,
-        onSelect: (i) => { visaAndel = i === 0; ram.setSubtitle(undertext()); rita(); } });
+        onSelect: (i) => { visaAndel = i === 0; foljNiva(); ram.setSubtitle(undertext()); rita(); } });
     } else {
       ytit = yTitel(svg, { ...yt, text: xLabel || (visaAndel ? "Andel" : "Antal") });
     }
 
     const gP = gPaneler.selectAll("g.panel").data(pan, p => p.namn ?? "_").join(
       enter => { const g = enter.append("g").attr("class", "panel");
-        g.append("g").attr("class", "graf-grid"); g.append("g").attr("class", "graf-rader");
+        g.append("g").attr("class", "graf-grid"); g.append("g").attr("class", "graf-ref").attr("pointer-events", "none"); g.append("g").attr("class", "graf-rader");
         g.append("g").attr("class", "graf-xaxel"); g.append("text").attr("class", "panel-titel"); return g; },
       update => update, exit => exit.remove());
 
@@ -258,7 +328,7 @@ export function stapladeStaplar(initialData, {
         .attr("fill", FARG.ink).text(null);
       if (p.namn && nP > 1) titelRader(p.namn).forEach((r, i) => pt.append("tspan").attr("x", 0).attr("dy", i ? "1.25em" : 0).text(r));
 
-      ritaGrid(g.select(".graf-grid"), { ticks, scale: xs, x1: y0 - 4, x2: y0 + plotH + 4, noll: grouped ? 0 : null, horisontell: false });
+      ritaGrid(g.select(".graf-grid"), { ticks, scale: xs, x1: y0 - 4, x2: y0 + plotH + 4, noll: (grouped || (diverging && !visaAndel)) ? 0 : null, horisontell: false });
       g.select(".graf-xaxel").attr("transform", `translate(0,${y0 + plotH + 4})`)
         .call(d3.axisBottom(xs).tickValues(ticks).tickFormat(axelFmt(fmt)).tickSize(4))
         .call(ax => stilXAxel(ax));
@@ -308,28 +378,67 @@ export function stapladeStaplar(initialData, {
       } else {
         segs.select("text.inl")
           .attr("x", s => (xs(s.x0) + xs(s.x1)) / 2).attr("y", barHeight / 2).attr("dy", "0.35em")
-          .text(s => (xs(s.x1) - xs(s.x0)) >= minLabelWidth ? (visaAndel ? fmtAndel(s.andel) : fmtAntal(s.antal)) : "");
+          .text(s => (xs(s.x1) - xs(s.x0)) >= minLabelWidth ? (visaAndel ? fmtAndel(s.andel) : (nyStil ? fmtMatt()(s.antal) : fmtAntal(s.antal))) : "");
+      }
+
+      // Totaletikett vid stapelns slut (totalField)
+      rows.selectAll("text.total").data(d => totalField && !d.tom && d.totVal != null ? [d] : []).join("text")
+        .attr("class", "total")
+        .attr("x", d => xs(Math.max(0, d.sum)) + 6).attr("y", radH / 2).attr("dy", "0.35em")
+        .attr("text-anchor", "start").attr("font-family", TYP.ui).attr("font-size", 12.5)
+        .attr("font-weight", 700).attr("fill", FARG.ink).style("font-variant-numeric", "tabular-nums")
+        .text(d => totTxt(d));
+      // Länssnittet i kommunvyn: grå streckad linje med namn och värde ovanför
+      const gRef = g.select(".graf-ref");
+      gRef.selectAll("*").remove();
+      if (p.ref) {
+        const rx = xs(p.ref.sum);
+        const txt = `${p.ref.key} ${fmtMatt()(p.ref.sum)}`;
+        const tw = matText(txt, { size: 11.5, weight: 600 });
+        // håll etiketten fri från y-titeln (första panelen) och paneltiteln
+        const upptaget = titelH > 0 ? matText(p.namn || "", { size: 12.5, weight: 600 }) + 10
+          : (pi === 0 ? matText(ytit ? ytit.g.select("text").text() : "", { size: STORLEK.yTitel, weight: 500 }) + 24 : 0);
+        let lx = rx, anchor = "middle";
+        if (rx + tw / 2 > panelW) { lx = rx; anchor = "end"; }
+        if ((anchor === "end" ? rx - tw : rx - tw / 2) < upptaget) { lx = Math.max(rx + 5, upptaget); anchor = "start"; }
+        gRef.append("line").attr("x1", rx).attr("x2", rx).attr("y1", y0 - 3).attr("y2", y0 + plotH + 4)
+          .attr("stroke", FARG.mjuk).attr("stroke-width", 1.3).attr("stroke-dasharray", "5,4");
+        gRef.append("text").attr("class", "graf-ref-etikett").attr("x", lx).attr("y", y0 - 7).attr("text-anchor", anchor)
+          .attr("font-family", TYP.ui).attr("font-size", 11.5).attr("font-weight", 600).attr("fill", FARG.mjuk)
+          .style("font-variant-numeric", "tabular-nums").text(txt);
       }
 
       segs.on("mouseenter", function (event, s) {
         gPaneler.selectAll("g.rad").style("opacity", d => d.key === s.rad.key ? 1 : 0.35);
         const delar = [s.rad.key, s.panel, time && currentYear != null && !facetTid ? currentYear : null].filter(v => v != null && v !== "");
-        const rubrik = `${delar.join(" · ")}${s.rad.total != null ? ` <span style="font-weight:400;color:${FARG.mjuk}">${fmtAntal(s.rad.total)} totalt</span>` : ""}`;
+        const totTooltip = nyStil ? (s.rad.totVal != null ? fmtMatt()(s.rad.totVal) : null) : (s.rad.total != null ? fmtAntal(s.rad.total) : null);
+        const rubrik = `${delar.join(" · ")}${totTooltip != null ? ` <span style="font-weight:400;color:${FARG.mjuk}">${totTooltip} totalt</span>` : ""}`;
+        const vardeTxt = z => grouped ? fmt(z.v) : (nyStil && !visaAndel) ? fmtMatt()(z.antal) : (xAntal ? `${fmtAndel1(z.andel)} (${fmtAntal(z.antal)})` : fmtAndel1(z.andel));
         const rader = s.rad.seg.map(z => ({
           namn: z.grupp, farg: farg(z.grupp), fokus: z.grupp === s.grupp,
-          varde: grouped ? fmt(z.v) : (xAntal ? `${fmtAndel1(z.andel)} (${fmtAntal(z.antal)})` : fmtAndel1(z.andel))
+          varde: vardeTxt(z)
         }));
-        tooltip.visa(tooltipHtml(rubrik, rader), pekarPos(event, ram.body));
+        // Kommunvyn: länets värde för samma del står kvar i tooltipen (summa eller snitt)
+        const lanTxt = (p.lanRader || []).filter(r => !r.tom).map(r => {
+          const z = r.seg.find(q => q.grupp === s.grupp);
+          return z ? `${r.key}: ${vardeTxt(z)}` : null;
+        }).filter(Boolean);
+        tooltip.visa(tooltipHtml(rubrik, rader, { extra: lanTxt.length ? lanTxt.join("<br>") : null }), pekarPos(event, ram.body));
       }).on("mousemove", (event) => tooltip.flytta(pekarPos(event, ram.body)))
         .on("mouseleave", () => { gPaneler.selectAll("g.rad").style("opacity", 1); tooltip.dolj(); });
     });
   }
 
   // ── Reglage i nedre raden (bara för dimensioner som inte redan är paneler) ──
-  if (measures && measures.length > 1 && !facetMatt) {
+  // Nivåvalet först: "Visa: Kommunerna ▾"
+  if (nivaCfg) {
+    nivaCtrl = nivaValjare(ram.controlsLeft, nivaCfg, { body: ram.body, start: niva,
+      onSelect: (n) => { niva = n; ram.setSubtitle(undertext()); rita(); } });
+  }
+  if (measures && measures.length > 1 && !facetMatt && !measuresInYTitle) {
     valPill(ram.controlsLeft, {
       label: measureLabel, options: measures.map(m => m.label), activeIndex: 0, body: ram.body,
-      onSelect: (i) => { measureIdx = i; data = measures[i].data; ram.setSubtitle(undertext()); rita(); }
+      onSelect: (i) => { measureIdx = i; data = measures[i].data; foljNiva(); ram.setSubtitle(undertext()); rita(); }
     });
   }
   if (time && allYears.length > 1 && !facetTid) {

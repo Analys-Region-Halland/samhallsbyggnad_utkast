@@ -15,7 +15,8 @@ import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
   stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
-  valPill, skapaTooltip, tooltipHtml, matText, axelFmt, autoFmt, ritbredd, arSmal, glesaTicks } from "../lib/grafRam.js";
+  valPill, skapaTooltip, tooltipHtml, matText, axelFmt, autoFmt, ritbredd, arSmal, glesaTicks,
+  nivaKonfig, nivaValjare } from "../lib/grafRam.js";
 
 // Snyggt intervall och max för värdeaxeln
 function niceScale(dataMax, targetTicks = 5) {
@@ -36,7 +37,38 @@ function niceScale(dataMax, targetTicks = 5) {
   return { max, interval, ticks };
 }
 
-export function stapeldiagram(data, {
+// ── Nivåval (option nivaer, se nivaKonfig i grafRam.js) ──
+// Stapeldiagrammet bygger skalor och kategorier en gång, så vid byte av nivå
+// ritas figuren om med de rader som hör till nivån och ersätter den gamla i
+// sidan (id, figurnummer och klasser från toc.js följer med). Utan nivaer
+// anropas grundfunktionen precis som förut.
+export function stapeldiagram(data, opts = {}) {
+  const { nivaer = null, ...rest } = opts;
+  const falt = rest.x ?? "kategori";
+  const cfg = nivaer ? nivaKonfig(nivaer, { serier: data.map(d => d[falt]) }) : null;
+  if (!cfg) return stapeldiagramBas(data, rest);
+  let niva = cfg.standard(null, "kommuner");
+  const bygg = () => {
+    const sub = typeof rest.subtitle === "function" ? rest.subtitle({ niva }) : cfg.text(rest.subtitle, niva);
+    const el = stapeldiagramBas(data.filter(d => cfg.visas(d[falt], niva)), {
+      ...rest, subtitle: sub,
+      _nivaKontroll: (parent, body) => nivaValjare(parent, cfg, { body, start: niva, onSelect: (n) => {
+        niva = n;
+        const ny = bygg();
+        // id, figurnummer (toc.js) och klasser följer med; data-syn inte, så att
+        // synpunktsknappen (synpunkt.js) läggs på den nya rutan
+        for (const a of [...el.attributes]) if (a.name !== "class" && a.name !== "data-syn") ny.setAttribute(a.name, a.value);
+        ny.className = el.className;
+        ny.style.cssText = el.style.cssText;
+        el.replaceWith(ny);
+      } })
+    });
+    return el;
+  };
+  return bygg();
+}
+
+function stapeldiagramBas(data, {
   x = "kategori",
   y = "värde",
   color = null,
@@ -62,7 +94,8 @@ export function stapeldiagram(data, {
   filterBy = "x",         // "x" = filtrera kategorier, "color" = filtrera grupper
   groupOrder = null,      // explicit ordning för color-grupper (stapling, färg, legend)
   valueMax = null,        // fast övre gräns för värdeaxeln (t.ex. 100 för staplade andelar)
-  showLegend = true       // false = dölj separat legendruta (färgade namn i undertiteln räcker)
+  showLegend = true,      // false = dölj separat legendruta (färgade namn i undertiteln räcker)
+  _nivaKontroll = null    // intern: nivåväljaren läggs först i nedre raden
 } = {}) {
   if (!formatY) formatY = autoFmt(data.map(d => d[y]));
 
@@ -182,6 +215,7 @@ export function stapeldiagram(data, {
   const ram = skapaRam({ title, subtitle, caption });
   const container = ram.container;
   container.attr("data-base-width", autoWidth);
+  if (_nivaKontroll) _nivaKontroll(ram.controlsLeft, ram.body);
 
   // Undertitel: färgade gruppnamn, eller aktuellt år vid årsval
   const yearRangeMatch = (hasTimeAnimation && subtitle)

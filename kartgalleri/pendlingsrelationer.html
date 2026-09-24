@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sv" class="kr-kartsida">
+<head>
+<meta charset="utf-8">
+<!-- Fristående vy av kapitel 03:s relationskarta (pendlingsrelationerna) för
+     kartgalleriet. Listan under kartan döljs här; den finns i kapitlet.
+     base pekar på kapitlets mapp så att data/ hämtas som i kapitlet. -->
+<base href="../funktionell-geografi/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karta</title>
+<style>
+  :root { --accent: #1A7BB0; }
+  .kr-js-karta, .kr-js-karta > .graf-container { position: absolute; inset: 0; margin: 0; max-width: none; border: 0; }
+  .kr-js-karta .graf-header, .kr-js-karta .graf-footer, .kr-js-karta .pr-lista { display: none; }
+  .kr-js-karta .tk-karta { position: absolute !important; inset: 0; height: auto !important; border-top: 0; }
+</style>
+<link rel="stylesheet" href="../js/kartor/kartsystem.css">
+<script src="../js/kartor/kartsystem.js" defer></script>
+</head>
+<body>
+<div class="kr-js-karta"></div>
+<script type="module">
+  const { relationskarta } = await import("../js/kartor/relationskarta.js");
+  const el = relationskarta({ data: "data/pendling-relationer.json", title: "Pendlingsrelationerna och hur de har förändrats", lista: false });
+  document.querySelector(".kr-js-karta").appendChild(el);
+  document.title = "Pendlingsrelationerna · Kartgalleri";
+</script>
+</body>
+</html>

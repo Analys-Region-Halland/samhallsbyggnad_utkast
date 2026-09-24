@@ -247,11 +247,15 @@
           "titel": "Service: skola, vård och handel"
         },
         {
+          "id": "bredband",
+          "titel": "Digital tillgänglighet: bredband och mobiltäckning"
+        },
+        {
           "id": "kallor",
           "titel": "Källor"
         }
       ],
-      "beskrivning": "Hur mycket kan en hallänning nå inom rimlig restid? Kapitlet räknar från varje bebodd 250-metersruta hur många människor och arbetsplatser som nås och hur långt det är till skola, vård och butik, till fots, med cykel, med kollektivtrafik och med bil."
+      "beskrivning": "Hur mycket kan en hallänning nå inom rimlig restid? Kapitlet räknar från varje bebodd 250-metersruta hur många människor och arbetsplatser som nås och hur långt det är till skola, vård och butik, till fots, med cykel, med kollektivtrafik och med bil. Därtill visar det hur väl länet når ut med bredband och mobiltäckning."
     },
     {
       "id": "markanvandning-och-miljo",

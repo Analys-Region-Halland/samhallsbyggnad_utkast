@@ -128,7 +128,12 @@ function galleri({ poster = [], kapitel = [], bas = "", typ = "karta" } = {}) {
   const ram = h("div", { class: "kr-vis-ram" });
   const forhand = h("img", { class: "kr-vis-forhand", alt: "" });
   const iframe = h("iframe", { class: "kr-vis-iframe", title: T.iframe, allow: "fullscreen", allowfullscreen: true });
-  ram.append(forhand, iframe);
+  // Laddningsövergång: tunt streck i kapitelfärgen + en ring som bara syns
+  // om laddningen dröjer; miniatyren ligger kvar som suddig färgton under.
+  const laddare = h("div", { class: "kr-vis-laddare", role: "status" },
+    h("span", { class: "kr-vis-laddare-bar" }), h("span", { class: "kr-vis-laddare-ring" }),
+    h("span", { class: "kr-vis-laddare-text" }, typ === "karta" ? "Laddar kartan" : "Laddar grafen"));
+  ram.append(forhand, iframe, laddare);
   const visKicker = h("span", { class: "kr-vis-kicker" });
   const visTitel = h("h2", { class: "kr-vis-titel", id: `kr-vis-titel-${typ}` });
   const visBesk = h("p", { class: "kr-vis-besk" });
@@ -184,7 +189,9 @@ function galleri({ poster = [], kapitel = [], bas = "", typ = "karta" } = {}) {
     nasta.disabled = pos >= s.length - 1;
     iframe.title = `${T.iframe}: ${k.titel}`;
     // Förhandsbilden syns direkt; kartan tonar in när den är klar
-    ram.classList.remove("kr-klar");
+    ram.classList.remove("kr-klar", "kr-laddar");
+    void ram.offsetWidth;
+    ram.classList.add("kr-laddar");
     forhand.src = bas + k.tumnagel;
     const url = bas + k.src + (typ === "karta" ? (k.src.includes("?") ? "&" : "?") + "galleri" : "");
     iframe.src = url;

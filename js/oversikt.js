@@ -106,7 +106,7 @@ export function oversikt({ data, geo, orter = [], kartor = [], grafer = [] }) {
         h("dl", { class: "kr-hero-siffror" },
           siffra(String(kapitel.length), "Kapitel"),
           siffra(String(antalAvsnitt), "Avsnitt"),
-          siffra(String(galleri.antal), "Interaktiva kartor"),
+          siffra(String(galleri.antal), "Kartor"),
           siffra(String(ggalleri.antal), "Grafer"),
           siffra(r.uppdaterad_kort || r.uppdaterad, "Uppdaterad"))),
       h("figure", { class: "kr-hero-figur" },
@@ -132,19 +132,33 @@ export function oversikt({ data, geo, orter = [], kartor = [], grafer = [] }) {
       h("div", { class: "kr-rad-avsnitt-inner" }, lista));
 
     const vaxla = h("button", { type: "button", class: "kr-rad-vaxla", "aria-expanded": "false", "aria-controls": panelId },
-      h("span", {}, `${avsnitt.length} avsnitt`), h("span", { class: "kr-rad-vaxla-glyf", html: SVG.chevron }));
+      h("span", {}, "Innehåll"), h("span", { class: "kr-rad-vaxla-n" }, `${avsnitt.length} avsnitt`),
+      h("span", { class: "kr-rad-vaxla-glyf", html: SVG.chevron }));
 
     // Vad kapitlet innehåller (kapitel.json: beskrivning; ingressen som reserv)
     const beskrivning = h("p", { class: "kr-rad-beskrivning" }, k.beskrivning || k.ingress);
 
+    // Utforska: två jämbördiga rutor, kartorna (kapitlets första karta) och
+    // graferna (mosaik av fyra minigrafer spridda över kapitlet). Öppnar galleriet.
     const kk = kartorPer.get(k.id) || [];
-    const gg = ggalleri.antalPer.get(k.id) || 0;
-    const kartknapp = kk.length
-      ? h("button", { type: "button", class: "kr-rad-kartor", onclick: () => galleri.oppna(k.id),
-          "aria-label": `Visa kapitlets ${kk.length} ${kk.length === 1 ? "karta" : "kartor"} i kartgalleriet` },
-          h("img", { src: kk[0].tumnagel, alt: "", loading: "lazy", decoding: "async", width: "480", height: "320" }),
-          h("span", { class: "kr-rad-kartor-etikett" }, h("span", { html: SVG.rutnat }), `${kk.length} ${kk.length === 1 ? "karta" : "kartor"}`))
-      : null;
+    const gl = ggalleri.lista.filter((g) => g.kapitel === k.id);
+    const urval = gl.length <= 4 ? gl : [0, 1, 2, 3].map((i) => gl[Math.floor(i * gl.length / 4)]);
+    const ruta = ({ typ, n, en, fler, ikonSvg, bild, oppna, galleriNamn }) => h("button", {
+        type: "button", class: `kr-ruta kr-ruta--${typ}`, onclick: oppna,
+        "aria-label": `Visa kapitlets ${n} ${n === 1 ? en : fler} i ${galleriNamn}` },
+      h("span", { class: "kr-ruta-bild" }, bild),
+      h("span", { class: "kr-ruta-text" },
+        h("span", { class: "kr-ruta-ikon", html: ikonSvg }),
+        h("span", { class: "kr-ruta-namn" }, fler[0].toUpperCase() + fler.slice(1)),
+        h("span", { class: "kr-ruta-n" }, String(n)),
+        h("span", { class: "kr-ruta-pil", html: SVG.pil })));
+    const tum = (src, cls) => h("img", { class: cls, src, alt: "", loading: "lazy", decoding: "async" });
+    const utforska = (kk.length || gl.length) ? h("div", { class: "kr-rad-utforska" },
+      kk.length ? ruta({ typ: "kartor", n: kk.length, en: "karta", fler: "kartor", ikonSvg: SVG.rutnat, galleriNamn: "kartgalleriet",
+        bild: tum(kk[0].tumnagel, "kr-ruta-karta"), oppna: () => galleri.oppna(k.id) }) : null,
+      gl.length ? ruta({ typ: "grafer", n: gl.length, en: "graf", fler: "grafer", ikonSvg: SVG.staplar, galleriNamn: "grafgalleriet",
+        bild: h("span", { class: `kr-ruta-mosaik kr-ruta-mosaik--${urval.length}` }, ...urval.map((g) => h("span", {}, tum(g.tumnagel)))),
+        oppna: () => ggalleri.oppna(k.id) }) : null) : null;
 
     const rad = h("li", { class: "kr-rad", style: `--accent:${k.farg}`, id: `kapitel-${k.id}` },
       h("div", { class: "kr-rad-num", "aria-hidden": "true" }, tva(k.nummer)),
@@ -153,12 +167,9 @@ export function oversikt({ data, geo, orter = [], kartor = [], grafer = [] }) {
         h("h2", { class: "kr-rad-titel" }, h("a", { href: `${k.id}/` }, k.titel)),
         beskrivning,
         h("div", { class: "kr-rad-meta" },
-          avsnitt.length ? vaxla : null,
-          h("a", { class: "kr-rad-las", href: `${k.id}/` }, h("span", {}, "Läs kapitlet"), h("span", { class: "kr-rad-las-pil", html: SVG.pil })),
-          gg ? h("button", { type: "button", class: "kr-rad-grafer", onclick: () => ggalleri.oppna(k.id),
-              "aria-label": `Visa kapitlets ${gg} grafer i grafgalleriet` },
-            h("span", { html: SVG.staplar }), `${gg} ${gg === 1 ? "graf" : "grafer"}`) : null)),
-      kartknapp,
+          h("a", { class: "kr-rad-las", href: `${k.id}/` }, h("span", {}, "Läs hela kapitlet"), h("span", { class: "kr-rad-las-pil", html: SVG.pil })),
+          avsnitt.length ? vaxla : null)),
+      utforska,
       panel);
 
     vaxla.addEventListener("click", () => {

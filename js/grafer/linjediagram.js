@@ -14,7 +14,8 @@ import { createFilterState, createSelectorPanel } from "../lib/filterUtils.js";
 import {
   skapaRam, TYP, FARG, STORLEK, SERIEFARGER,
   stilYAxel, stilXAxel, ritaGrid, xTitel, yTitel, yTitelPos,
-  skapaTooltip, tooltipHtml, matText, axelFmt, ritbredd, arSmal } from "../lib/grafRam.js";
+  skapaTooltip, tooltipHtml, matText, axelFmt, ritbredd, arSmal,
+  nivaKonfig, nivaValjare } from "../lib/grafRam.js";
 
 // Direktetiketter: längre namn än ETIKETT_MAX bryts på två rader
 let ETIKETT_MAX = 170;
@@ -108,12 +109,24 @@ export function linjediagram(initialData, {
   interactive = false,      // regionväljare i nedre raden
   maxHighlights = 6,
   rescaleY = false,         // omskalera y efter synliga serier
-  measures = null           // [{key, label, filterLabel?, description?, subtitle?, data, yLabel?, yMin?, hline?, formatY?}]
+  measures = null,          // [{key, label, filterLabel?, description?, subtitle?, data, yLabel?, yMin?, hline?, formatY?}]
+  nivaer = null             // nivåval länet/kommunerna (se nivaKonfig i grafRam.js); null = inget val
 } = {}) {
 
   // ── Måttläge (mutabelt) ──
-  let data = measures ? measures[0].data : initialData;
+  // rawData = måttets hela data; data = det som visas på vald nivå
+  let rawData = measures ? measures[0].data : initialData;
   let currentMeasureIdx = 0;
+  const mattNyckel = (i) => measures && measures[i] ? (measures[i].key ?? measures[i].label) : null;
+  const nivaCfg = color && nivaer
+    ? nivaKonfig(nivaer, { serier: (measures ? measures.flatMap(m => m.data) : initialData).map(d => d[color]) })
+    : null;
+  let niva = nivaCfg ? nivaCfg.standard(mattNyckel(0)) : "alla";
+  const nivaFilter = (rows) => nivaCfg ? rows.filter(d => nivaCfg.visas(d[color], niva)) : rows;
+  // Kommunvyn: länet som grå streckad referens när länet är ett snitt (inte en summa)
+  const refRader = () => (nivaCfg && niva === "kommuner" && nivaCfg.arSnitt(mattNyckel(currentMeasureIdx)))
+    ? rawData.filter(d => nivaCfg.snittSerier.includes(d[color])) : [];
+  let data = nivaFilter(rawData);
   const applyMeasure = (m) => {
     if (!m) return;
     if (m.formatY) formatY = m.formatY;
@@ -122,7 +135,12 @@ export function linjediagram(initialData, {
     if (m.yLabel || m.filterLabel || m.label) yLabel = m.yLabel || m.filterLabel || m.label;
   };
   if (measures) applyMeasure(measures[0]);
-  const measureSubtitle = (m) => (m && m.subtitle) ? m.subtitle : subtitle;
+  const measureSubtitle0 = (m) => (m && m.subtitle) ? m.subtitle : subtitle;
+  const measureSubtitle = (m) => {
+    const t = measureSubtitle0(m);
+    if (typeof t === "function") return t({ niva, matt: m ? m.label : null });
+    return nivaCfg ? nivaCfg.text(t, niva) : t;
+  };
 
   // ── Layout ──
   const autoWidth = width || ritbredd(780);
@@ -149,15 +167,16 @@ export function linjediagram(initialData, {
   const tooltip = skapaTooltip(ram.body);
 
   // ── Tidsintervall ──
-  let allXValues = [...new Set(data.map(d => d[x]))].sort((a, b) => a - b);
+  let allXValues = [...new Set(rawData.map(d => d[x]))].sort((a, b) => a - b);
   let currentStartYear = allXValues[0];
   let currentEndYear = allXValues[allXValues.length - 1];
 
   // ── Grupper och filter ──
   let groups = color ? d3.group(data, d => d[color]) : new Map([["_all", data]]);
-  let allKeys = [...groups.keys()];
+  // Nycklar ur måttets hela data, så att färger och väljare inte skiftar med nivån
+  let allKeys = color ? [...d3.group(rawData, d => d[color]).keys()] : [...groups.keys()];
   const filterState = color
-    ? createFilterState(data, { itemField: color, groupField: null, filter, highlight })
+    ? createFilterState(rawData, { itemField: color, groupField: null, filter, highlight })
     : null;
   const isHighlighted = (key) => !filterState || filterState.isHighlighted(key);
 
@@ -174,7 +193,9 @@ export function linjediagram(initialData, {
   const colorScale = (key) => getColor(key);
 
   // ── Skalor ──
-  const computeYNice = (rows) => {
+  const computeYNice = (rows0) => {
+    const ref = refRader();
+    const rows = ref.length ? rows0.concat(ref.filter(d => d[x] >= currentStartYear && d[x] <= currentEndYear)) : rows0;
     const dataMax = d3.max(rows, d => d[y]);
     const dataMinVal = d3.min(rows, d => d[y]);
     if (yMin === "auto") return niceScaleRange(dataMinVal, dataMax, 5);
@@ -320,6 +341,23 @@ export function linjediagram(initialData, {
     labelsGroup.selectAll("*").remove();
     const endpoints = [];
 
+    // länssnittet som grå streckad referens (kommunvyn, mått där länet är ett snitt)
+    const ref = refRader();
+    if (ref.length) {
+      for (const [key, values] of d3.group(ref, d => d[color])) {
+        const rows = serieData(values);
+        if (rows.length < 2) continue;
+        linesGroup.append("path")
+          .datum(rows)
+          .attr("class", "line-ref").attr("data-key", key)
+          .attr("fill", "none").attr("stroke", FARG.mjuk)
+          .attr("stroke-width", 1.4).attr("stroke-dasharray", "5,4")
+          .attr("d", line);
+        const last = sistaVarde(rows);
+        endpoints.push({ key, xPos: xScale(last[x]), yPos: yScale(last[y]), yVal: last[y], color: FARG.mjuk, rader: etikettRader(key).length });
+      }
+    }
+
     // bakgrundslinjer först
     for (const [key, values] of groups) {
       if (isHighlighted(key)) continue;
@@ -427,22 +465,38 @@ export function linjediagram(initialData, {
     if (!measures || idx === currentMeasureIdx || idx < 0 || idx >= measures.length) return;
     currentMeasureIdx = idx;
     const m = measures[idx];
-    data = m.data;
+    rawData = m.data;
+    // nivån följer måttets standard tills läsaren själv har valt nivå
+    if (nivaCtrl) niva = nivaCtrl.folj(mattNyckel(idx));
+    data = nivaFilter(rawData);
     applyMeasure(m);
     ram.setSubtitle(measureSubtitle(m));
 
     groups = color ? d3.group(data, d => d[color]) : new Map([["_all", data]]);
-    allKeys = [...groups.keys()];
+    allKeys = color ? [...d3.group(rawData, d => d[color]).keys()] : [...groups.keys()];
 
-    allXValues = [...new Set(data.map(d => d[x]))].sort((a, b) => a - b);
+    allXValues = [...new Set(rawData.map(d => d[x]))].sort((a, b) => a - b);
     currentStartYear = Math.max(currentStartYear, allXValues[0]);
     currentEndYear = Math.min(currentEndYear, allXValues[allXValues.length - 1]);
+    omskala();
+  }
 
+  // ── Byte av nivå (länet/kommunerna) ──
+  function switchNiva(n) {
+    niva = n;
+    data = nivaFilter(rawData);
+    groups = color ? d3.group(data, d => d[color]) : new Map([["_all", data]]);
+    ram.setSubtitle(measureSubtitle(measures ? measures[currentMeasureIdx] : null));
+    omskala();
+  }
+
+  // Ny skala och ny rendering efter byte av mått eller nivå
+  function omskala() {
     yNice = computeYNice(data);
     yScale.domain([yNice.min, yNice.max]);
     axisLeft = marginLeft + tickWidth();
     xScale.range([axisLeft, plotRight]).domain(xDomain());
-    if (yt) yt.set(yLabel || "", idx);
+    if (yt) yt.set(yLabel || "", currentMeasureIdx);
     renderYAxis(false);
     renderXAxis(false);
     updateRange();
@@ -452,6 +506,12 @@ export function linjediagram(initialData, {
     renderHline();
     renderVline();
     updateChart();
+  }
+
+  // ── Nivåväljare (nedre raden, först): Kommunerna / Halland / Alla ──
+  let nivaCtrl = null;
+  if (nivaCfg) {
+    nivaCtrl = nivaValjare(ram.controlsLeft, nivaCfg, { body: ram.body, start: niva, onSelect: (n) => switchNiva(n) });
   }
 
   // ── Regionväljare (nedre raden, vänster) ──
@@ -465,7 +525,7 @@ export function linjediagram(initialData, {
       onUpdate: () => { rescaleYAxis(true); updateChart(); },
       onItemHover: (item) => {
         const hoverColor = isHighlighted(item) ? colorScale(item) : "#555";
-        linesGroup.selectAll("path").each(function () {
+        linesGroup.selectAll("path:not(.line-ref)").each(function () {
           const el = d3.select(this);
           if (el.attr("data-key") === item) el.attr("stroke-width", 2.8).attr("stroke-opacity", 1).attr("stroke", hoverColor);
           else el.attr("stroke-opacity", 0.12);
@@ -489,7 +549,7 @@ export function linjediagram(initialData, {
         }
       },
       onItemLeave: () => {
-        linesGroup.selectAll("path").each(function () {
+        linesGroup.selectAll("path:not(.line-ref)").each(function () {
           const el = d3.select(this);
           const key = el.attr("data-key");
           if (el.classed("line-highlight")) el.attr("stroke-width", 2.2).attr("stroke-opacity", 1).attr("stroke", colorScale(key));
@@ -518,7 +578,7 @@ export function linjediagram(initialData, {
   let lastFocusedKey = null;
 
   const resetLineStyle = () => {
-    linesGroup.selectAll("path").each(function () {
+    linesGroup.selectAll("path:not(.line-ref)").each(function () {
       const el = d3.select(this);
       const key = el.attr("data-key");
       if (el.classed("line-highlight")) el.attr("stroke-width", 2.2).attr("stroke-opacity", 1).attr("stroke", colorScale(key));
@@ -570,7 +630,7 @@ export function linjediagram(initialData, {
       d3.select(this).style("cursor", focusedKey && filterState ? "pointer" : "default");
 
       // linjestil vid fokus
-      linesGroup.selectAll("path").each(function () {
+      linesGroup.selectAll("path:not(.line-ref)").each(function () {
         const el = d3.select(this);
         const key = el.attr("data-key");
         if (!focusedKey) {
@@ -590,6 +650,13 @@ export function linjediagram(initialData, {
         namn: v.key || (yLabel || ""), varde: formatY(v.value), farg: v.color,
         fokus: v.key === focusedKey && !focusedIsGray
       }));
+      // Kommunvyn: länets värde finns kvar i tooltipen (summa eller snitt)
+      if (nivaCfg && niva === "kommuner") {
+        for (const [key, rows] of d3.group(rawData.filter(d => nivaCfg.arLan(d[color])), d => d[color])) {
+          const p = rows.find(d => d[x] === closestX);
+          if (p && p[y] != null && !Number.isNaN(+p[y])) rader.push({ namn: key, varde: formatY(p[y]), farg: /^Riket/.test(key) ? "#999999" : "#555555", dampad: true });
+        }
+      }
       let extra = null;
       if (focusedIsGray && focusedKey) {
         const g = allValues.find(v => v.key === focusedKey);

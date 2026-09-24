@@ -445,6 +445,126 @@ export function valPill(parent, { label = null, options, activeIndex = 0, onSele
   return { el: btn, set(i) { aktiv = i; varde.text(typeof options[i] === "string" ? options[i] : options[i].label); } };
 }
 
+// =============================================================================
+// NIVÅVAL — länet och kommunerna i samma graf (grafregel 6.4)
+//
+// När länet (en summa av kommunerna) ritas bland kommunerna i faktiska tal
+// trycker länets skala ihop kommunerna. Med optionen `nivaer` får grafen en
+// väljare nere till vänster, "Visa: Kommunerna ▾", med tre lägen:
+//   kommuner  bara kommunerna (och andra delområden, t.ex. typologiklasser)
+//   lan       bara länet (och riket om det finns i grafen)
+//   alla      allt, som tidigare
+// Båda nivåerna finns kvar; skalan räknas om vid varje byte.
+//
+//   nivaer: true                        // länet känns igen på namnet
+//   nivaer: ["Hallands län", "Riket"]   // vilka serier/rader som är länsnivå
+//   nivaer: {
+//     lan: [...] | (namn) => bool,      // länsnivåns serier (default Halland/Hallands län/Riket)
+//     standard: "kommuner" | { antal: "kommuner", per1000: "alla" },  // per mått (key eller label)
+//     alltid: ["Riket"],                // serier som syns på alla nivåer (jämförelse i relativa mått)
+//     snitt: true | ["per1000"],        // mått där länet är ett snitt: visas som grå
+//                                       // streckad referens i kommunvyn (aldrig för summor)
+//     geo: { alla, kommuner, lan },     // geografin i undertiteln: frasen geo.alla byts
+//                                       // mot vald nivås fras (default "Halland och kommunerna",
+//                                       // med riket "kommunerna, Halland och riket"); saknas
+//                                       // frasen läggs nivåns fras till sist. geo: false = av.
+//                                       // En undertitel som är en funktion får { niva } och
+//                                       // sköter geografin själv.
+//     namn: { kommuner, lan, alla },    // etiketter i rullgardinen
+//     val: ["kommuner", "lan", "alla"], // vilka lägen som erbjuds
+//     label: "Visa"
+//   }
+// Standardvyn följer måttet (Antal → Kommunerna, Andel → Alla) tills läsaren
+// själv har valt nivå; därefter ligger valet fast.
+// =============================================================================
+const NIVA_LAN_STD = /^(Halland|Hallands län|Riket)(\s*\(.*\))?$/;
+const nivaNyckel = (n) => {
+  const s = String(n ?? "").toLowerCase();
+  if (s.startsWith("kommun")) return "kommuner";
+  if (s === "lan" || s === "län" || s === "länet" || s.startsWith("halland")) return "lan";
+  if (s === "alla") return "alla";
+  return null;
+};
+
+export function nivaKonfig(nivaer, { serier = [] } = {}) {
+  if (!nivaer) return null;
+  const c = nivaer === true ? {} : (Array.isArray(nivaer) || typeof nivaer === "function") ? { lan: nivaer } : { ...nivaer };
+  // alltid: serier som syns på alla nivåer (t.ex. riket som jämförelse i relativa mått)
+  const alltid = [].concat(c.alltid || []);
+  const arLan0 = typeof c.lan === "function" ? c.lan
+    : Array.isArray(c.lan) ? (s) => c.lan.includes(s)
+    : (s) => NIVA_LAN_STD.test(String(s));
+  const arLan = (s) => !alltid.includes(s) && arLan0(s);
+  const unika = [...new Set(serier)];
+  const lanSerier = unika.filter(arLan);
+  if (!lanSerier.length || lanSerier.length === unika.length) return null;   // inget att välja mellan
+  const medRiket = lanSerier.some(s => /^Riket/.test(String(s)));
+  const lanNamn = medRiket ? "Halland och riket" : "Halland";
+  const namn = { kommuner: "Kommunerna", lan: lanNamn, alla: "Alla", ...(c.namn || {}) };
+  const geo = { alla: medRiket ? "kommunerna, Halland och riket" : "Halland och kommunerna", kommuner: "Hallands kommuner", lan: lanNamn, ...(c.geo || {}) };
+  const val = (c.val || ["kommuner", "lan", "alla"]).map(nivaNyckel).filter(Boolean);
+  const snitt = c.snitt === true ? true : [].concat(c.snitt || []);
+  const giltig = (n) => val.includes(n) ? n : val[0];
+  return {
+    val, namn, geo, arLan, lanSerier, etikett: c.label || "Visa",
+    // Referensserien i kommunvyn: länet, inte riket
+    snittSerier: lanSerier.filter(s => !/^Riket/.test(String(s))),
+    visas(serie, niva) {
+      if (niva === "alla" || alltid.includes(serie)) return true;
+      return niva === "lan" ? arLan(serie) : !arLan(serie);
+    },
+    standard(matt, reserv = "kommuner") {
+      const s = c.standard;
+      if (s == null) return giltig(reserv);
+      if (typeof s === "string") return giltig(nivaNyckel(s) || reserv);
+      if (typeof s === "function") return giltig(nivaNyckel(s(matt)) || reserv);
+      return giltig(nivaNyckel(s[matt]) || nivaNyckel(s.default) || reserv);
+    },
+    arSnitt(matt) { return snitt === true || snitt.includes(matt); },
+    // Geografin i en undertitel (regel 6.4): står frasen geo.alla i texten byts
+    // den mot vald nivås fras; annars läggs nivåns fras till som en egen mening
+    // ("… 2000–2025. Hallands kommuner."). geo: false stänger av tillägget.
+    text(t, niva) {
+      if (!t || typeof t !== "string") return t;
+      const fras = geo.alla, ers0 = geo[niva];
+      if (ers0 == null) return t;
+      const stor = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+      const i = t.toLowerCase().indexOf(String(fras).toLowerCase());
+      if (i >= 0) {
+        if (niva === "alla") return t;
+        const meningStart = i === 0 || /[.:!?]\s*$/.test(t.slice(0, i));
+        return t.slice(0, i) + (meningStart ? stor(ers0) : ers0) + t.slice(i + fras.length);
+      }
+      if (c.geo === false) return t;
+      const bas = t.replace(/\s+$/, "");
+      return `${bas}${/[.!?]$/.test(bas) ? "" : "."} ${stor(ers0)}.`;
+    }
+  };
+}
+
+// Väljaren "Visa: Kommunerna ▾" i nedre raden. Håller nivån och om läsaren
+// själv har valt (då följer nivån inte längre måttets standard).
+export function nivaValjare(parent, cfg, { body, start, onSelect } = {}) {
+  let niva = cfg.val.includes(start) ? start : cfg.val[0];
+  let valdAvLasare = false;
+  const pill = valPill(parent, {
+    label: cfg.etikett, options: cfg.val.map(v => cfg.namn[v]),
+    activeIndex: cfg.val.indexOf(niva), body,
+    onSelect: (i) => { niva = cfg.val[i]; valdAvLasare = true; pill.el.attr("data-niva", niva); if (onSelect) onSelect(niva); }
+  });
+  pill.el.classed("graf-knapp--niva", true).attr("data-niva", niva);
+  return {
+    el: pill.el,
+    get niva() { return niva; },
+    folj(matt, reserv) {
+      if (!valdAvLasare) niva = cfg.standard(matt, reserv);
+      pill.set(cfg.val.indexOf(niva));
+      pill.el.attr("data-niva", niva);
+      return niva;
+    }
+  };
+}
+
 // Enkel växlare (två till fyra lägen, segmenterad): Andel | Antal
 export function segment(parent, { options, activeIndex = 0, onSelect } = {}) {
   const wrap = parent.append("div").attr("class", "graf-segment").attr("role", "tablist");

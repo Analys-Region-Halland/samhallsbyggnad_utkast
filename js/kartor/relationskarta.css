@@ -1,0 +1,73 @@
+/* =============================================================================
+   RELATIONSKARTA (js/kartor/relationskarta.js) — pendlingsrelationerna i kap 03.
+   Kartans panel använder tk-klasserna i tillganglighetskarta.css; här ligger
+   legendens linjeprover, kommunknapparna och den sorterbara listan (prefix pr-).
+   ============================================================================= */
+.pr-kdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: -0.5px; flex: none; }
+.pr-kdot-alla { background: conic-gradient(#0C8C7E 0 60deg, #004990 0 120deg, #FF7E00 0 180deg, #A51300 0 240deg, #8cd211 0 300deg, #7b2d8e 0); }
+.pr-komval button { display: flex; align-items: center; }
+.tk-ctrl button.active .pr-kdot { box-shadow: 0 0 0 1.5px #fff; }
+
+.pr-leg-linje { height: 5px !important; width: 22px !important; border-radius: 3px !important; box-shadow: none !important; }
+.pr-leg-bredd { width: 22px !important; border-radius: 3px !important; background: #62788a; box-shadow: none !important; }
+.pr-leg-t2 { margin-top: 8px; }
+.pr-leg .tk-leg-r { gap: 10px; }
+
+.pr-pop { min-width: 240px; }
+.pr-pop table, .pr-pop tr, .pr-pop td { background: transparent !important; }
+.pr-pop-rang { margin-top: 6px; padding-top: 5px; border-top: 1px solid #D6D6D6; font-size: 11.5px; color: #39495a; line-height: 1.35; }
+.pr-pop-rang b { color: #004990; }
+.pr-popup .maplibregl-popup-content { padding: 9px 11px; border-radius: 9px; }
+
+/* ── Listan under kartan ── */
+.pr-lista { padding: 14px 1.4rem 4px; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #1f2422; }
+.pr-lista-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 8px; }
+.pr-lista-t { font-weight: 700; font-size: 14px; }
+.pr-lista-n { font-size: 12px; color: #6b7471; }
+.pr-tab-wrap { overflow-x: auto; }
+.pr-tab { background: transparent !important; width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.pr-tab th { background: transparent !important; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #6b7471;
+  text-align: left; padding: 6px 8px 7px; border-bottom: 2px solid #1f2422; white-space: nowrap; vertical-align: bottom; }
+.pr-tab th button { all: unset; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; border-bottom: 1px dotted #9aa4a9; }
+.pr-tab th button:hover, .pr-tab th[aria-sort="ascending"] button, .pr-tab th[aria-sort="descending"] button { color: #004990; border-bottom-color: #004990; }
+.pr-tab th button:focus-visible { outline: 2px solid #004990; outline-offset: 2px; }
+.pr-tab td { padding: 6px 8px; border-bottom: 1px solid #eef1f0; vertical-align: middle; }
+.pr-tab tbody tr { cursor: pointer; transition: background .1s; }
+.pr-tab tbody tr:hover td, .pr-tab tbody tr.pr-aktiv td { background: #F0F7FC; }
+.pr-tab tbody tr.pr-aktiv td:first-child { box-shadow: inset 3px 0 0 #004990; }
+.pr-tab tbody tr:focus-visible { outline: 2px solid #004990; outline-offset: -2px; }
+.pr-namn > div { display: flex; align-items: center; gap: 9px; min-width: 160px; }
+.pr-namn span { font-weight: 600; line-height: 1.25; }
+.pr-namn small, .pr-tal small { display: block; font-weight: 400; font-size: 11px; color: #8a8f8d; }
+.pr-ldot { flex: none; width: 16px; height: 5px; border-radius: 3px; }
+.pr-tal { text-align: right !important; white-space: nowrap; }
+.pr-tal b { font-weight: 600; }
+.pr-chg { font-weight: 700; color: #004990; }
+.pr-chg.pr-neg { color: #B35400; }
+.pr-spark { display: block; }
+.pr-kol-rang { white-space: nowrap; min-width: 92px; }
+.pr-kol-rang b { display: inline-block; min-width: 38px; font-weight: 700; }
+.pr-pos { display: inline-block; position: relative; width: 48px; height: 6px; border-radius: 3px; vertical-align: middle;
+  background: #E6EBEA; }
+.pr-pos i { position: absolute; top: -2.5px; width: 3px; height: 11px; margin-left: -1.5px; border-radius: 1px; background: #1f2422; box-shadow: 0 0 0 1.5px #fff; }
+.pr-fler { margin: 10px 0 4px; padding: 6px 14px; border: 1px solid #D6D6D6; border-radius: 999px; background: #fff;
+  font: 600 12.5px 'IBM Plex Sans', system-ui, sans-serif; color: #1f2422; cursor: pointer; }
+.pr-fler:hover { border-color: #004990; color: #004990; }
+
+@media (max-width: 720px) {
+  .pr-kol-spark, .pr-kol-rs { display: none; }
+}
+@media (max-width: 520px) {
+  .pr-lista { padding: 12px 0.8rem 4px; }
+  .pr-kol-pct { display: none; }
+  .pr-tab td, .pr-tab th { padding-left: 5px; padding-right: 5px; }
+  .pr-namn > div { min-width: 0; }
+  .pr-pos, .pr-tal small, .pr-kdot { display: none; }
+  .pr-kol-rang { min-width: 0; }
+  .pr-kol-rang b { min-width: 0; }
+  .pr-tab { font-size: 12.5px; }
+  .pr-tab th { white-space: normal; letter-spacing: 0; font-size: 10px; }
+  .pr-ldot { width: 10px; }
+}
+/* Kartgalleriet och miniatyrer: bara kartan */
+.kr-js-karta .pr-lista { display: none; }
